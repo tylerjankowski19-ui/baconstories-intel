@@ -21,74 +21,33 @@
     --red-bg: rgba(239,68,68,0.12);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding-bottom: 60px;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 60px; }
 
-  /* HEADER */
-  .header {
-    background: linear-gradient(135deg, #1a1430 0%, #0f1525 100%);
-    padding: 52px 20px 20px;
-    border-bottom: 1px solid var(--border);
-  }
+  .header { background: linear-gradient(135deg, #1a1430 0%, #0f1525 100%); padding: 52px 20px 20px; border-bottom: 1px solid var(--border); }
   .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
   .logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
   .logo span { color: var(--accent); }
   .badge { font-size: 11px; background: var(--accent); color: #fff; padding: 3px 10px; border-radius: 20px; font-weight: 600; letter-spacing: 0.5px; }
   .header-sub { font-size: 13px; color: var(--muted); }
 
-  /* TABS */
-  .tabs {
-    display: flex; gap: 6px; padding: 14px 20px;
-    overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
-    background: var(--bg); position: sticky; top: 0; z-index: 99;
-    border-bottom: 1px solid var(--border);
-  }
+  .tabs { display: flex; gap: 6px; padding: 14px 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; background: var(--bg); position: sticky; top: 0; z-index: 99; border-bottom: 1px solid var(--border); }
   .tabs::-webkit-scrollbar { display: none; }
-  .tab {
-    flex-shrink: 0; padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600;
-    cursor: pointer; border: 1.5px solid var(--border); background: var(--surface); color: var(--muted);
-    transition: all 0.2s; -webkit-tap-highlight-color: transparent;
-  }
+  .tab { flex-shrink: 0; padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--surface); color: var(--muted); transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
   .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-  /* SECTIONS */
   .section { display: none; padding: 18px 16px; }
   .section.active { display: block; }
   .section-title { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px; }
 
-  /* VIDEO CARDS */
-  .video-card {
-    background: var(--surface); border-radius: 16px; border: 1px solid var(--border);
-    margin-bottom: 16px; overflow: hidden; cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    transition: transform 0.12s;
-  }
+  .video-card { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); margin-bottom: 16px; overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 0.12s; }
   .video-card:active { transform: scale(0.98); }
-  .thumb-wrap {
-    position: relative; width: 100%; height: 200px;
-    background: linear-gradient(135deg, #1a1430, #0f2530);
-    display: flex; align-items: center; justify-content: center;
-  }
+  .thumb-wrap { position: relative; width: 100%; height: 200px; background: linear-gradient(135deg, #1a1430, #0f2530); display: flex; align-items: center; justify-content: center; }
   .thumb-bg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
   .thumb-emoji { font-size: 64px; opacity: 0.3; }
   .play-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-  .play-btn {
-    width: 52px; height: 52px; background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(10px); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    border: 1.5px solid rgba(255,255,255,0.3);
-  }
+  .play-btn { width: 52px; height: 52px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1.5px solid rgba(255,255,255,0.3); }
   .play-btn svg { margin-left: 3px; }
-  .views-pill {
-    position: absolute; top: 10px; right: 10px;
-    background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
-    padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; color: #fff;
-  }
+  .views-pill { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; color: #fff; }
   .card-body { padding: 14px; }
   .card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; line-height: 1.3; }
   .card-channel { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
@@ -97,7 +56,6 @@
   .perf-name { font-size: 12px; color: var(--muted); flex: 1; }
   .perf-bar-wrap { flex: 2; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
   .perf-bar { height: 100%; border-radius: 3px; }
-  .perf-value { font-size: 12px; font-weight: 700; min-width: 44px; text-align: right; }
   .rating-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-top: 4px; }
   .rating-chip.green { background: var(--green-bg); color: var(--green); }
   .rating-chip.orange { background: var(--orange-bg); color: var(--orange); }
@@ -110,7 +68,6 @@
   .why-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
   .why-chip { font-size: 11px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; border-radius: 20px; font-weight: 600; }
 
-  /* PATTERNS */
   .pattern-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 14px; }
   .pattern-rank { font-size: 11px; font-weight: 800; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
   .pattern-title { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
@@ -121,7 +78,6 @@
   .tier-s { color: #ffd700; }
   .tier-a { color: var(--green); }
 
-  /* SCRIPTS */
   .script-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 24px; overflow: hidden; }
   .script-header { padding: 16px; background: linear-gradient(135deg, #1a1430 0%, #0f1525 100%); border-bottom: 1px solid var(--border); }
   .script-num { font-size: 11px; color: var(--accent); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
@@ -129,86 +85,26 @@
   .script-meta { display: flex; gap: 6px; flex-wrap: wrap; }
   .script-tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; border: 1px solid var(--border); color: var(--muted); background: var(--surface2); }
   .script-body { padding: 0; }
-
-  /* SCRIPT SECTIONS */
-  .script-block {
-    border-bottom: 1px solid var(--border);
-  }
-  .script-block-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 14px 10px;
-  }
-  .script-block-label {
-    font-size: 11px; font-weight: 800; letter-spacing: 1.2px;
-    text-transform: uppercase; color: var(--accent);
-  }
+  .script-block { border-bottom: 1px solid var(--border); }
+  .script-block-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px 10px; }
+  .script-block-label { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--accent); }
   .script-block-time { font-size: 11px; color: var(--muted); font-weight: 600; }
-  .script-block-copy {
-    font-size: 11px; padding: 4px 10px; border-radius: 20px;
-    background: var(--surface2); border: 1px solid var(--border);
-    color: var(--muted); cursor: pointer; font-weight: 600;
-    -webkit-tap-highlight-color: transparent; transition: all 0.15s;
-    white-space: nowrap;
-  }
+  .script-block-copy { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); cursor: pointer; font-weight: 600; -webkit-tap-highlight-color: transparent; transition: all 0.15s; white-space: nowrap; }
   .script-block-copy:active, .script-block-copy.copied { background: var(--green-bg); border-color: var(--green); color: var(--green); }
-  .script-text {
-    font-size: 14.5px; line-height: 1.75; color: var(--text);
-    padding: 0 14px 14px; white-space: pre-wrap;
-  }
-  .script-note {
-    font-size: 12px; color: var(--muted); font-style: italic;
-    background: var(--surface2); border-radius: 8px; padding: 8px 12px;
-    margin: 0 14px 14px; line-height: 1.5;
-  }
-
-  /* THUMB CONCEPT */
+  .script-text { font-size: 14.5px; line-height: 1.75; color: var(--text); padding: 0 14px 14px; white-space: pre-wrap; }
+  .script-note { font-size: 12px; color: var(--muted); font-style: italic; background: var(--surface2); border-radius: 8px; padding: 8px 12px; margin: 0 14px 14px; line-height: 1.5; }
   .thumb-section { padding: 14px; border-top: 1px solid var(--border); background: var(--surface2); }
   .thumb-section-label { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
   .thumb-layer { font-size: 13px; color: var(--muted); margin-bottom: 6px; line-height: 1.5; }
   .thumb-layer strong { color: var(--text); font-size: 12px; display: block; margin-bottom: 1px; }
-
-  /* COPY ALL BUTTON */
-  .copy-all-btn {
-    width: calc(100% - 28px); margin: 14px; padding: 14px;
-    background: var(--accent); color: #fff;
-    border: none; border-radius: 12px;
-    font-size: 15px; font-weight: 700; cursor: pointer;
-    letter-spacing: 0.3px; transition: opacity 0.15s;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    -webkit-tap-highlight-color: transparent;
-  }
+  .copy-all-btn { width: calc(100% - 28px); margin: 14px; padding: 14px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; letter-spacing: 0.3px; transition: opacity 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; -webkit-tap-highlight-color: transparent; }
   .copy-all-btn:active { opacity: 0.8; }
   .copy-all-btn.copied { background: var(--green); }
 
-  /* TOAST */
-  .toast {
-    position: fixed; bottom: 30px; left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: #22c55e; color: #fff;
-    padding: 10px 22px; border-radius: 30px;
-    font-size: 13px; font-weight: 700;
-    transition: transform 0.3s ease; z-index: 999;
-    white-space: nowrap; box-shadow: 0 4px 20px rgba(34,197,94,0.4);
-  }
+  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #22c55e; color: #fff; padding: 10px 22px; border-radius: 30px; font-size: 13px; font-weight: 700; transition: transform 0.3s ease; z-index: 999; white-space: nowrap; box-shadow: 0 4px 20px rgba(34,197,94,0.4); }
   .toast.show { transform: translateX(-50%) translateY(0); }
-
-  /* SCROLL TOP */
-  .scroll-top {
-    position: fixed; bottom: 24px; right: 18px;
-    width: 40px; height: 40px;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    cursor: pointer; opacity: 0; transition: opacity 0.3s; z-index: 200;
-  }
+  .scroll-top { position: fixed; bottom: 24px; right: 18px; width: 40px; height: 40px; background: var(--surface2); border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: opacity 0.3s; z-index: 200; }
   .scroll-top.visible { opacity: 1; }
-
-  /* GAME LEGEND */
-  .game-pill {
-    display: inline-block; font-size: 11px; font-weight: 700;
-    background: rgba(124,109,255,0.15); border: 1px solid rgba(124,109,255,0.35);
-    color: var(--accent); padding: 2px 8px; border-radius: 20px;
-    vertical-align: middle; margin: 0 1px;
-  }
 </style>
 </head>
 <body>
@@ -218,7 +114,7 @@
     <div class="logo">Bacon<span>Intel</span></div>
     <div class="badge" id="daily-badge">DAILY INTEL</div>
   </div>
-  <div class="header-sub" id="daily-date-sub">Roblox Shorts · Competitor Analysis</div>
+  <div class="header-sub" id="header-date">Roblox Shorts · Competitor Analysis</div>
 </div>
 
 <div class="tabs">
@@ -229,892 +125,572 @@
   <div class="tab" onclick="showTab('mychannel',this)">📱 My Channel</div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     VIDEOS TAB
-════════════════════════════════════════ -->
-<div class="section active" id="tab-videos">
-  <p class="section-title">Top Performing Shorts</p>
-
-  <!-- Card 1 -->
-  <div class="video-card" onclick="openVideo('https://www.youtube.com/shorts/shj_JKC5J7w')">
-    <div class="thumb-wrap">
-      <div class="thumb-bg"><div class="thumb-emoji">😈</div></div>
-      <div class="play-overlay">
-        <div class="play-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
-      </div>
-      <div class="views-pill">2.9M views</div>
-    </div>
-    <div class="card-body">
-      <div class="card-title">Let's see how rare you are 😈</div>
-      <div class="card-channel">RobloxRift · 107K subs</div>
-      <div class="perf-label">Performance Breakdown</div>
-      <div class="perf-row">
-        <div class="perf-name">View Count</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:100%;background:var(--green)"></div></div>
-        <div class="perf-value" style="color:var(--green)">2.9M</div>
-      </div>
-      <div class="perf-row">
-        <div class="perf-name">Sub/View Ratio</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:100%;background:var(--green)"></div></div>
-        <div class="perf-value" style="color:var(--green)">27x</div>
-      </div>
-      <div class="perf-row">
-        <div class="perf-name">Virality Score</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:100%;background:var(--green)"></div></div>
-        <div class="perf-value" style="color:var(--green)">10/10</div>
-      </div>
-      <div class="rating-chip green"><div class="dot green"></div> OUTSTANDING · Top 1% Performance</div>
-      <div class="divider"></div>
-      <div class="why-row">
-        <span class="why-chip">Rarity Quiz</span>
-        <span class="why-chip">Identity Hook</span>
-        <span class="why-chip">Comment Flood</span>
-        <span class="why-chip">Tier S Format</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 2 -->
-  <div class="video-card" onclick="openVideo('https://www.youtube.com/results?search_query=RaccoonRants+roblox+rant+countries+2026')">
-    <div class="thumb-wrap">
-      <div class="thumb-bg"><div class="thumb-emoji">💀</div></div>
-      <div class="play-overlay">
-        <div class="play-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
-      </div>
-      <div class="views-pill">2.1M views</div>
-    </div>
-    <div class="card-body">
-      <div class="card-title">Countries That Aren't In 2026 💀😳</div>
-      <div class="card-channel">RaccoonRants · 128K subs</div>
-      <div class="perf-label">Performance Breakdown</div>
-      <div class="perf-row">
-        <div class="perf-name">View Count</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:93%;background:var(--green)"></div></div>
-        <div class="perf-value" style="color:var(--green)">2.1M</div>
-      </div>
-      <div class="perf-row">
-        <div class="perf-name">Sub/View Ratio</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:95%;background:var(--green)"></div></div>
-        <div class="perf-value" style="color:var(--green)">16x</div>
-      </div>
-      <div class="perf-row">
-        <div class="perf-name">Broad Appeal</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:98%;background:var(--green)"></div></div>
-        <div class="perf-value" style="color:var(--green)">Very High</div>
-      </div>
-      <div class="rating-chip green"><div class="dot green"></div> OUTSTANDING · Broad Hook</div>
-      <div class="divider"></div>
-      <div class="why-row">
-        <span class="why-chip">Shocking Fact</span>
-        <span class="why-chip">Non-Roblox Topic</span>
-        <span class="why-chip">Broad Audience</span>
-        <span class="why-chip">Fear Hook</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 3 -->
-  <div class="video-card" onclick="openVideo('https://www.youtube.com/results?search_query=RaccoonRants+small+creators+need+roblox+shorts')">
-    <div class="thumb-wrap">
-      <div class="thumb-bg"><div class="thumb-emoji">🔥</div></div>
-      <div class="play-overlay">
-        <div class="play-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
-      </div>
-      <div class="views-pill">1.4M views</div>
-    </div>
-    <div class="card-body">
-      <div class="card-title">Small Creators NEED To Try This 🔥</div>
-      <div class="card-channel">RaccoonRants · 128K subs</div>
-      <div class="perf-label">Performance Breakdown</div>
-      <div class="perf-row">
-        <div class="perf-name">View Count</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:80%;background:var(--green)"></div></div>
-        <div class="perf-value" style="color:var(--green)">1.4M</div>
-      </div>
-      <div class="perf-row">
-        <div class="perf-name">Sub/View Ratio</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:87%;background:var(--green)"></div></div>
-        <div class="perf-value" style="color:var(--green)">11x</div>
-      </div>
-      <div class="perf-row">
-        <div class="perf-name">Share Rate</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:90%;background:var(--green)"></div></div>
-        <div class="perf-value" style="color:var(--green)">Very High</div>
-      </div>
-      <div class="rating-chip green"><div class="dot green"></div> EXCELLENT · Creator FOMO</div>
-      <div class="divider"></div>
-      <div class="why-row">
-        <span class="why-chip">Creator Meta</span>
-        <span class="why-chip">FOMO Hook</span>
-        <span class="why-chip">High Share Rate</span>
-        <span class="why-chip">All-Caps</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 4 -->
-  <div class="video-card" onclick="openVideo('https://www.youtube.com/@RobloxRift_0908/shorts')">
-    <div class="thumb-wrap">
-      <div class="thumb-bg"><div class="thumb-emoji">🤯</div></div>
-      <div class="play-overlay">
-        <div class="play-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
-      </div>
-      <div class="views-pill">916K views</div>
-    </div>
-    <div class="card-body">
-      <div class="card-title">You can be a winner of 100000 ROBUX 🤯</div>
-      <div class="card-channel">RobloxRift · 107K subs</div>
-      <div class="perf-label">Performance Breakdown</div>
-      <div class="perf-row">
-        <div class="perf-name">View Count</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:60%;background:var(--green)"></div></div>
-        <div class="perf-value" style="color:var(--green)">916K</div>
-      </div>
-      <div class="perf-row">
-        <div class="perf-name">Sub/View Ratio</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:74%;background:var(--green)"></div></div>
-        <div class="perf-value" style="color:var(--green)">8.6x</div>
-      </div>
-      <div class="perf-row">
-        <div class="perf-name">Retention</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:82%;background:var(--green)"></div></div>
-        <div class="perf-value" style="color:var(--green)">High</div>
-      </div>
-      <div class="rating-chip green"><div class="dot green"></div> STRONG · Reward Hook</div>
-      <div class="divider"></div>
-      <div class="why-row">
-        <span class="why-chip">Giveaway Hook</span>
-        <span class="why-chip">Big Number</span>
-        <span class="why-chip">Full Watch</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 5 -->
-  <div class="video-card" onclick="openVideo('https://www.youtube.com/results?search_query=RaccoonRants+illegal+things+teachers+roblox+rant')">
-    <div class="thumb-wrap">
-      <div class="thumb-bg"><div class="thumb-emoji">❌</div></div>
-      <div class="play-overlay">
-        <div class="play-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
-      </div>
-      <div class="views-pill">237K views</div>
-    </div>
-    <div class="card-body">
-      <div class="card-title">Illegal Things Teachers Still Do In School ❌💀</div>
-      <div class="card-channel">RaccoonRants · 128K subs</div>
-      <div class="perf-label">Performance Breakdown</div>
-      <div class="perf-row">
-        <div class="perf-name">View Count</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:34%;background:var(--orange)"></div></div>
-        <div class="perf-value" style="color:var(--orange)">237K</div>
-      </div>
-      <div class="perf-row">
-        <div class="perf-name">Sub/View Ratio</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:52%;background:var(--orange)"></div></div>
-        <div class="perf-value" style="color:var(--orange)">1.9x</div>
-      </div>
-      <div class="perf-row">
-        <div class="perf-name">Broad Appeal</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:68%;background:var(--orange)"></div></div>
-        <div class="perf-value" style="color:var(--orange)">Medium</div>
-      </div>
-      <div class="rating-chip orange"><div class="dot orange"></div> GOOD · Relatable Topic</div>
-      <div class="divider"></div>
-      <div class="why-row">
-        <span class="why-chip">Relatable</span>
-        <span class="why-chip">Shocking</span>
-        <span class="why-chip">Authority Figure</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 6 -->
-  <div class="video-card" onclick="openVideo('https://www.youtube.com/@fixxCell/shorts')">
-    <div class="thumb-wrap">
-      <div class="thumb-bg"><div class="thumb-emoji">😭</div></div>
-      <div class="play-overlay">
-        <div class="play-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
-      </div>
-      <div class="views-pill">107K views</div>
-    </div>
-    <div class="card-body">
-      <div class="card-title">The NEW Virus 😭</div>
-      <div class="card-channel">Cell (fixxCell) · 63K subs</div>
-      <div class="perf-label">Performance Breakdown</div>
-      <div class="perf-row">
-        <div class="perf-name">View Count</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:20%;background:var(--orange)"></div></div>
-        <div class="perf-value" style="color:var(--orange)">107K</div>
-      </div>
-      <div class="perf-row">
-        <div class="perf-name">Sub/View Ratio</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:68%;background:var(--green)"></div></div>
-        <div class="perf-value" style="color:var(--green)">1.7x</div>
-      </div>
-      <div class="perf-row">
-        <div class="perf-name">Fear Factor</div>
-        <div class="perf-bar-wrap"><div class="perf-bar" style="width:85%;background:var(--green)"></div></div>
-        <div class="perf-value" style="color:var(--green)">High</div>
-      </div>
-      <div class="rating-chip orange"><div class="dot orange"></div> SOLID · Platform Drama</div>
-      <div class="divider"></div>
-      <div class="why-row">
-        <span class="why-chip">Platform Drama</span>
-        <span class="why-chip">Fear Hook</span>
-        <span class="why-chip">FOMO</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Ratio Key -->
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:4px;">
-    <div class="section-title" style="margin-bottom:10px;">Sub/View Ratio Key</div>
-    <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
-      <div style="display:flex;align-items:flex-start;gap:10px;"><div class="dot green" style="margin-top:4px;"></div><span><strong style="color:var(--green)">Green (5x+)</strong> — Reached far beyond your subscriber base. Algorithm is pushing it hard.</span></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;"><div class="dot orange" style="margin-top:4px;"></div><span><strong style="color:var(--orange)">Orange (1–5x)</strong> — Solid performance. Outperforming your sub count but not viral yet.</span></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;"><div class="dot red" style="margin-top:4px;"></div><span><strong style="color:var(--red)">Red (under 1x)</strong> — Mostly just subscribers watching. The hook isn't pulling in new viewers.</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     PATTERNS TAB
-════════════════════════════════════════ -->
-<div class="section" id="tab-patterns">
-  <p class="section-title">What's Actually Working</p>
-
-  <div class="pattern-card">
-    <div class="pattern-rank">🥇 PATTERN #1 · <span class="tier-s">TIER S</span></div>
-    <div class="pattern-title">Rarity / Identity Quiz Format</div>
-    <div class="pattern-desc">Viewers can't scroll past content that asks "how rare are you?" It forces self-identification and floods the comment section. Every competitor who uses this hits 100K+ minimum. Pair it with Roblox tier language (OG player, grinder, tourist) and it performs even stronger.</div>
-    <div class="pattern-examples">
-      <div class="pattern-ex">"Let's see how rare you are 😈"<div class="pattern-views">2.9M views · RobloxRift</div></div>
-      <div class="pattern-ex">"How rare are you 😈"<div class="pattern-views">133K views · RobloxRift</div></div>
-    </div>
-  </div>
-
-  <div class="pattern-card">
-    <div class="pattern-rank">🥈 PATTERN #2 · <span class="tier-s">TIER S</span></div>
-    <div class="pattern-title">Real-World Shocking Facts (Non-Roblox Topic)</div>
-    <div class="pattern-desc">The cheat code for growth. Use a Roblox background but talk about something universally shocking — geography, history, science, weird world records. This breaks the niche ceiling and reaches people who've never played Roblox. RaccoonRants built 128K subs almost entirely on this format.</div>
-    <div class="pattern-examples">
-      <div class="pattern-ex">"Countries That Aren't In 2026 💀😳"<div class="pattern-views">2.1M views · RaccoonRants</div></div>
-      <div class="pattern-ex">"Illegal Things Teachers Still Do 💀"<div class="pattern-views">237K views · RaccoonRants</div></div>
-      <div class="pattern-ex">"The Most Unlucky Birthdays Ever 🎂💀"<div class="pattern-views">116K views · RaccoonRants</div></div>
-    </div>
-  </div>
-
-  <div class="pattern-card">
-    <div class="pattern-rank">🥉 PATTERN #3 · <span class="tier-s">TIER S</span></div>
-    <div class="pattern-title">Creator Meta / Growth Hack Content</div>
-    <div class="pattern-desc">Taps into the massive aspiring-creator audience on YouTube. Viewers who also want to grow their channels share this instantly. High share rate = algorithm boost. Best when it feels like insider knowledge they weren't supposed to know.</div>
-    <div class="pattern-examples">
-      <div class="pattern-ex">"Small Creators NEED To Try This 🔥"<div class="pattern-views">1.4M views · RaccoonRants</div></div>
-      <div class="pattern-ex">"How to help small creators 🫡"<div class="pattern-views">173K views · RobloxRift</div></div>
-    </div>
-  </div>
-
-  <div class="pattern-card">
-    <div class="pattern-rank">PATTERN #4 · <span class="tier-a">TIER A</span></div>
-    <div class="pattern-title">Platform Drama / Urgency Hooks</div>
-    <div class="pattern-desc">Roblox players have anxiety about missing updates, bans, or changes to their favorite games. ALL CAPS titles trigger the "must watch NOW" reflex. Works best when tied to a real event — an actual update, a moderation controversy, or a game going down.</div>
-    <div class="pattern-examples">
-      <div class="pattern-ex">"IT'S OVER FOR ROBLOX!!!"<div class="pattern-views">75K views · Cell</div></div>
-      <div class="pattern-ex">"The NEW Virus 😭"<div class="pattern-views">107K views · Cell</div></div>
-    </div>
-  </div>
-
-  <div class="pattern-card">
-    <div class="pattern-rank">PATTERN #5 · <span class="tier-a">TIER A</span></div>
-    <div class="pattern-title">Big Number / Reward Hook</div>
-    <div class="pattern-desc">Viewers stay for the full video if they think they might qualify for something. Even without a real giveaway, framing content around a large number — "100,000 Robux", "Top 1% of players", "only 3 people know this" — spikes completion rate.</div>
-    <div class="pattern-examples">
-      <div class="pattern-ex">"You can be a winner of 100000 ROBUX 🤯"<div class="pattern-views">916K views · RobloxRift</div></div>
-    </div>
-  </div>
-
-  <div style="background:var(--red-bg);border:1px solid rgba(239,68,68,0.3);border-radius:14px;padding:14px;margin-top:4px;">
-    <div class="section-title" style="margin-bottom:10px;color:var(--red);">⚠️ What to AVOID</div>
-    <div style="font-size:13px;color:var(--muted);line-height:1.8;">
-      <div>❌ Part 2s without a viral Part 1</div>
-      <div>❌ Niche patch notes nobody outside Roblox cares about</div>
-      <div>❌ Generic "sub to me" asks with no hook</div>
-      <div>❌ Titles over 10 words — the shorter the better</div>
-      <div>❌ More than 2 emojis in the title</div>
-      <div>❌ Starting the script with "Hey guys" or your channel name</div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     SCRIPTS TAB
-════════════════════════════════════════ -->
-<div class="section" id="tab-scripts">
-<!-- SCRIPTS-START -->
-  <p class="section-title">3 Ready-to-Record Scripts</p>
-  <p style="font-size:12px;color:var(--muted);margin:-8px 0 16px 0;">June 3, 2026 · Based on live competitor data · Rotate archetypes daily</p>
-
-  <!-- ── SCRIPT 1 ── -->
-  <div class="script-card">
-    <div class="script-header">
-      <div class="script-num">Script 01 · Shocking Fact · Tier S Format · Today's Top Archetype</div>
-      <div class="script-title">"Jobs That Actually Pay You To Do Nothing 💀"</div>
-      <div class="script-meta">
-        <span class="script-tag">~60 sec</span>
-        <span class="script-tag">Broad Audience</span>
-        <span class="script-tag">High share rate</span>
-        <span class="script-tag">Inspired by RaccoonRants 220K</span>
-      </div>
-    </div>
-    <div class="script-body">
-      <div class="script-block">
-        <div class="script-block-header">
-          <div><div class="script-block-label">🎣 Hook</div><div class="script-block-time">0:00 – 0:03</div></div>
-          <button class="script-block-copy" onclick="copyBlock(this, 's1_hook')">Copy</button>
-        </div>
-        <div class="script-text" id="s1_hook">There are jobs where you get paid to do nothing.
-Not a joke.
-Real money. Zero work.</div>
-      </div>
-      <div class="script-block">
-        <div class="script-block-header">
-          <div><div class="script-block-label">📈 Build</div><div class="script-block-time">0:03 – 0:15</div></div>
-          <button class="script-block-copy" onclick="copyBlock(this, 's1_build')">Copy</button>
-        </div>
-        <div class="script-text" id="s1_build">Companies literally hire people just to sit at a desk.
-Japan has a job called professional cuddler.
-Switzerland pays citizens just for being alive.
-No application. No interview. Just money.
-And it's completely legal.</div>
-      </div>
-      <div class="script-block">
-        <div class="script-block-header">
-          <div><div class="script-block-label">💥 Payload</div><div class="script-block-time">0:15 – 0:50</div></div>
-          <button class="script-block-copy" onclick="copyBlock(this, 's1_payload')">Copy</button>
-        </div>
-        <div class="script-text" id="s1_payload">Professional line stander — someone pays YOU to wait in line for them. Up to $1,000 a day.
-Golf ball diver — you swim in water hazards collecting lost balls. $100,000 a year.
-Furniture tester — you sit on couches and rate them. That's the job.
-Chicken sexer — determines a baby chick's gender. One of the highest-paid jobs in farming.
-Snake milker — extracts venom from live snakes. $60,000 a year.
-And the craziest one? Professional bridesmaid. Strangers hire you to stand at their wedding. Smile. Hold flowers. Act like you care. $600 per wedding.</div>
-        <div class="script-note">🎮 Footage guide: Any Roblox gameplay in the background — keep cuts fast, under 2 seconds per item. The script carries this one, not the footage.</div>
-      </div>
-      <div class="script-block">
-        <div class="script-block-header">
-          <div><div class="script-block-label">📣 CTA</div><div class="script-block-time">0:50 – 0:60</div></div>
-          <button class="script-block-copy" onclick="copyBlock(this, 's1_cta')">Copy</button>
-        </div>
-        <div class="script-text" id="s1_cta">Which one would you actually do?
-Comment the job below — I'm reading every single one.</div>
-      </div>
-    </div>
-    <div class="thumb-section">
-      <div class="thumb-section-label">🖼️ Thumbnail Concept</div>
-      <div class="thumb-layer"><strong>Background</strong>Any Roblox gameplay — bright, colorful world. Character standing idle.</div>
-      <div class="thumb-layer"><strong>Caption text</strong>"PAID TO DO NOTHING 💰" — white bold all-caps, black stroke, top of screen.</div>
-      <div class="thumb-layer"><strong>Reaction image</strong>Shocked real face or "😳" meme PNG cutout, bottom right. High contrast.</div>
-    </div>
-    <button class="copy-all-btn" id="copyBtn1" onclick="copyFullScript(1)">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-      Copy Full Script
-    </button>
-  </div>
-
-  <!-- ── SCRIPT 2 ── -->
-  <div class="script-card">
-    <div class="script-header">
-      <div class="script-num">Script 02 · Relatable Behavior · Tier A Format</div>
-      <div class="script-title">"THAT ONE FRIEND Who Ruins Every Game 😭"</div>
-      <div class="script-meta">
-        <span class="script-tag">~55 sec</span>
-        <span class="script-tag">High comment bait</span>
-        <span class="script-tag">Identity hook</span>
-        <span class="script-tag">RusPlays 16K with this archetype</span>
-      </div>
-    </div>
-    <div class="script-body">
-      <div class="script-block">
-        <div class="script-block-header">
-          <div><div class="script-block-label">🎣 Hook</div><div class="script-block-time">0:00 – 0:03</div></div>
-          <button class="script-block-copy" onclick="copyBlock(this, 's2_hook')">Copy</button>
-        </div>
-        <div class="script-text" id="s2_hook">Every friend group has this one player.
-And if you don't know who it is — it's probably you.</div>
-      </div>
-      <div class="script-block">
-        <div class="script-block-header">
-          <div><div class="script-block-label">📈 Build</div><div class="script-block-time">0:03 – 0:12</div></div>
-          <button class="script-block-copy" onclick="copyBlock(this, 's2_build')">Copy</button>
-        </div>
-        <div class="script-text" id="s2_build">You know the type.
-Dies first every round.
-Blames the game.
-Blames everyone else.
-Rage quits.
-Then rejoins five seconds later like nothing happened.</div>
-      </div>
-      <div class="script-block">
-        <div class="script-block-header">
-          <div><div class="script-block-label">💥 Payload</div><div class="script-block-time">0:12 – 0:48</div></div>
-          <button class="script-block-copy" onclick="copyBlock(this, 's2_payload')">Copy</button>
-        </div>
-        <div class="script-text" id="s2_payload">They always go AFK at the worst possible moment. The round starts. Gone.
-They vote for the hardest difficulty even though they've never finished a single level.
-They ask you to carry them and then go offline the second you get to the boss.
-Their mic is always on during the most chaotic moments. You're trying to focus and their whole family is arguing in the background.
-They team kill at least once every session. Every. Single. Session.
-But here's the thing.
-You keep playing with them anyway.
-Because somehow it's always the funniest session when they show up.</div>
-        <div class="script-note">🎮 Footage guide: Any Roblox gameplay in the background — keep it moving. The energy of the script matches the chaos, so faster cuts work better here.</div>
-      </div>
-      <div class="script-block">
-        <div class="script-block-header">
-          <div><div class="script-block-label">📣 CTA</div><div class="script-block-time">0:48 – 0:58</div></div>
-          <button class="script-block-copy" onclick="copyBlock(this, 's2_cta')">Copy</button>
-        </div>
-        <div class="script-text" id="s2_cta">Tag that friend in the comments.
-Or confess — are YOU that friend?</div>
-      </div>
-    </div>
-    <div class="thumb-section">
-      <div class="thumb-section-label">🖼️ Thumbnail Concept</div>
-      <div class="thumb-layer"><strong>Background</strong>Any Roblox gameplay — character mid-fail or falling. Bright colors.</div>
-      <div class="thumb-layer"><strong>Caption text</strong>"THAT ONE FRIEND 😭" — bold white, black stroke, top of screen.</div>
-      <div class="thumb-layer"><strong>Reaction image</strong>Crying laughing meme face PNG, bottom right corner, slight shadow.</div>
-    </div>
-    <button class="copy-all-btn" id="copyBtn2" onclick="copyFullScript(2)">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-      Copy Full Script
-    </button>
-  </div>
-
-  <!-- ── SCRIPT 3 ── -->
-  <div class="script-card">
-    <div class="script-header">
-      <div class="script-num">Script 03 · Platform Drama · Tier A Format</div>
-      <div class="script-title">"Roblox BANNED Me For Saying This Word 😔"</div>
-      <div class="script-meta">
-        <span class="script-tag">~55 sec</span>
-        <span class="script-tag">Platform drama</span>
-        <span class="script-tag">High anger rate</span>
-        <span class="script-tag">fixxCell 28K with same angle</span>
-      </div>
-    </div>
-    <div class="script-body">
-      <div class="script-block">
-        <div class="script-block-header">
-          <div><div class="script-block-label">🎣 Hook</div><div class="script-block-time">0:00 – 0:03</div></div>
-          <button class="script-block-copy" onclick="copyBlock(this, 's3_hook')">Copy</button>
-        </div>
-        <div class="script-text" id="s3_hook">Roblox just banned me.
-Not for hacking. Not for scamming.
-For saying a completely normal word.</div>
-      </div>
-      <div class="script-block">
-        <div class="script-block-header">
-          <div><div class="script-block-label">📈 Build</div><div class="script-block-time">0:03 – 0:15</div></div>
-          <button class="script-block-copy" onclick="copyBlock(this, 's3_build')">Copy</button>
-        </div>
-        <div class="script-text" id="s3_build">The Roblox filter has always been broken.
-But it's getting worse.
-Words that used to be fine are getting flagged now.
-And the system doesn't warn you — it just bans you.
-No appeal. No explanation. Just gone.</div>
-      </div>
-      <div class="script-block">
-        <div class="script-block-header">
-          <div><div class="script-block-label">💥 Payload</div><div class="script-block-time">0:15 – 0:48</div></div>
-          <button class="script-block-copy" onclick="copyBlock(this, 's3_payload')">Copy</button>
-        </div>
-        <div class="script-text" id="s3_payload">The word "grape" is filtered in some servers. Not a slur. Not offensive. A fruit.
-"Egg" gets you flagged in certain games.
-"Basement" is banned in Roblox chat. Basement.
-Players have been banned for saying their own username because it contained a filtered substring.
-Someone got a three-day ban for typing "I like trains."
-Another got flagged for a homework question — the word "killed" in a history context. Instant ban.
-And Roblox's moderation team reviews these manually.
-Which means a real human looked at "I like trains" and decided — yes. Bannable offense.</div>
-        <div class="script-note">🎮 Footage guide: Any Roblox gameplay in the background. If you can show the chat box with ##### censored bars, even better — but regular gameplay works fine.</div>
-      </div>
-      <div class="script-block">
-        <div class="script-block-header">
-          <div><div class="script-block-label">📣 CTA</div><div class="script-block-time">0:48 – 0:58</div></div>
-          <button class="script-block-copy" onclick="copyBlock(this, 's3_cta')">Copy</button>
-        </div>
-        <div class="script-text" id="s3_cta">What's the most ridiculous thing you've been filtered for?
-Drop it below — the weirder the better.</div>
-      </div>
-    </div>
-    <div class="thumb-section">
-      <div class="thumb-section-label">🖼️ Thumbnail Concept</div>
-      <div class="thumb-layer"><strong>Background</strong>Any Roblox gameplay — or Roblox chat interface with ##### bars over normal words.</div>
-      <div class="thumb-layer"><strong>Caption text</strong>"BANNED FOR SAYING THIS 😔" — white bold, black stroke, top.</div>
-      <div class="thumb-layer"><strong>Reaction image</strong>Confused/betrayed face meme PNG, bottom right.</div>
-    </div>
-    <button class="copy-all-btn" id="copyBtn3" onclick="copyFullScript(3)">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-      Copy Full Script
-    </button>
-  </div>
-
-  <div style="text-align:center;font-size:12px;color:var(--muted);padding:6px 0 20px;line-height:1.8;">
-    Scripts built from patterns across 8 competitor channels.<br>
-    Hook → Build → Payload → CTA · All game references are accurate.
-  </div>
-<!-- SCRIPTS-END -->
-</div>
-
-<!-- ═══════════════════════════════════════
-     DAILY INTEL TAB
-════════════════════════════════════════ -->
-<div class="section" id="tab-intel">
-<!-- DAILY-INTEL-START -->
-<p class="section-title">Today's Trend Report</p>
-<div class="pattern-card" style="border-left:4px solid var(--accent);margin-bottom:14px;">
-  <div class="pattern-rank">📅 JUNE 3, 2026 · LIVE SCRAPE · DOMINANT ARCHETYPE</div>
-  <div class="pattern-title">Shocking Fact / Real-World Crossover</div>
-  <div class="pattern-desc">RaccoonRants hit <strong>220K</strong> with a sound trend hijack and <strong>31K</strong> with a relatable studying fact. Broad real-world content is massively outperforming Roblox-only topics. The algorithm doesn't care if it's Roblox — it cares if it's shareable.</div>
-</div>
-
-<div class="pattern-card" style="border-left:4px solid var(--green);margin-bottom:14px;">
-  <div class="pattern-rank">🏆 STANDOUT VIDEO THIS WEEK</div>
-  <div class="pattern-title">Use This Sound NOW 🚨🔥</div>
-  <div class="pattern-desc"><strong>RaccoonRants · 220K views</strong><br>Why it worked: Trend hijack + urgency ("NOW") + creator meta angle. Told viewers to use a specific trending audio. Pure algorithm play — early movers get the wave.</div>
-</div>
-
-<div class="pattern-card" style="border-left:4px solid var(--orange);margin-bottom:14px;">
-  <div class="pattern-rank">🎯 GAP OPPORTUNITY</div>
-  <div class="pattern-title">Nobody Is Doing Consistent Shocking Facts</div>
-  <div class="pattern-desc">RaccoonRants' all-time top short is 2.1M views ("Countries That Aren't In 2026"). This week they got 31K with a relatable fact. Zero other channels in this group are doing real-world shocking facts consistently. <strong>Tyler can own this lane.</strong></div>
-</div>
-
-<div class="pattern-card" style="margin-bottom:14px;">
-  <div class="pattern-rank">📊 CHANNEL SNAPSHOTS — LIVE DATA</div>
-  <div class="pattern-title">Today's Top Views</div>
-  <table style="width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;">
-    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-      <td style="padding:6px 8px;color:var(--muted);">Channel</td>
-      <td style="padding:6px 8px;color:var(--muted);">Top Video</td>
-      <td style="padding:6px 8px;color:var(--muted);text-align:right;">Views</td>
-    </tr>
-    <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-      <td style="padding:6px 8px;">RaccoonRants</td>
-      <td style="padding:6px 8px;color:var(--muted);">Use This Sound NOW 🚨🔥</td>
-      <td style="padding:6px 8px;text-align:right;color:var(--green);font-weight:bold;">220K</td>
-    </tr>
-    <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-      <td style="padding:6px 8px;">SynBlox</td>
-      <td style="padding:6px 8px;color:var(--muted);">GUGUGAGA Lucky Block VS TSUNAMI 🌊💀</td>
-      <td style="padding:6px 8px;text-align:right;color:var(--green);">121K</td>
-    </tr>
-    <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-      <td style="padding:6px 8px;">RantsBlox</td>
-      <td style="padding:6px 8px;color:var(--muted);">Shower Thoughts Memes!</td>
-      <td style="padding:6px 8px;text-align:right;color:var(--green);">90K</td>
-    </tr>
-    <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-      <td style="padding:6px 8px;">RaccoonRants</td>
-      <td style="padding:6px 8px;color:var(--muted);">Imagine Studying YEARS for This...💀</td>
-      <td style="padding:6px 8px;text-align:right;color:var(--orange);">31K</td>
-    </tr>
-    <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-      <td style="padding:6px 8px;">RobloxRift</td>
-      <td style="padding:6px 8px;color:var(--muted);">The company which wanted getting sued😭</td>
-      <td style="padding:6px 8px;text-align:right;color:var(--orange);">28K</td>
-    </tr>
-    <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-      <td style="padding:6px 8px;">fixxCell</td>
-      <td style="padding:6px 8px;color:var(--muted);">Roblox BANNED me for saying "Hi" 😔</td>
-      <td style="padding:6px 8px;text-align:right;color:var(--orange);">28K</td>
-    </tr>
-    <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-      <td style="padding:6px 8px;">ForceLive</td>
-      <td style="padding:6px 8px;color:var(--muted);">Please DON'T Let This Go VIRAL!</td>
-      <td style="padding:6px 8px;text-align:right;color:var(--muted);">20K</td>
-    </tr>
-    <tr>
-      <td style="padding:6px 8px;">RusPlays</td>
-      <td style="padding:6px 8px;color:var(--muted);">MICHAEL JACKSON IS ALIVE 🤯</td>
-      <td style="padding:6px 8px;text-align:right;color:var(--muted);">19K</td>
-    </tr>
-  </table>
-</div>
-
-<div class="pattern-card" style="border-left:4px solid var(--accent);margin-bottom:14px;">
-  <div class="pattern-rank">✏️ TODAY'S TITLE OPTIONS</div>
-  <div class="pattern-title">Use One of These</div>
-  <div class="pattern-examples">
-    <div class="pattern-ex">"Jobs That Actually Pay You To Do Nothing 💀" <span class="pattern-views">Shocking Fact</span></div>
-    <div class="pattern-ex">"Things That Are 100% Legal But Shouldn't Be 💀😳" <span class="pattern-views">Shocking Fact</span></div>
-    <div class="pattern-ex">"Countries Where School Is Illegal 😭💀" <span class="pattern-views">Shocking Fact</span></div>
-  </div>
-</div>
-
-<div class="divider"></div>
-<div style="text-align:center;font-size:12px;color:var(--muted);padding:4px 0 20px;">Auto-updated every morning at 8am 🔄</div>
-<!-- DAILY-INTEL-END -->
-</div>
-
-<!-- ═══════════════════════════════════════
-     MY CHANNEL TAB
-════════════════════════════════════════ -->
+<div class="section active" id="tab-videos"><p class="section-title">Top Performing Shorts</p><div id="videos-container"></div></div>
+<div class="section" id="tab-patterns"><p class="section-title">What's Actually Working</p><div id="patterns-container"></div></div>
+<div class="section" id="tab-scripts"><p class="section-title">3 Ready-to-Record Scripts</p><p id="scripts-sub" style="font-size:12px;color:var(--muted);margin:-8px 0 16px 0;"></p><div id="scripts-container"></div></div>
+<div class="section" id="tab-intel"><p class="section-title">Today's Trend Report</p><div id="intel-container"></div></div>
 <div class="section" id="tab-mychannel">
-<!-- MY-CHANNEL-START -->
-<p class="section-title">BaconStories · @BaconStoriesOnline</p>
-<div class="pattern-card" style="border-left:4px solid var(--orange);margin-bottom:14px;">
-  <div class="pattern-rank">💡 KEY INSIGHT</div>
-  <div class="pattern-title">Your best title has a real hook. Your worst titles have no noun.</div>
-  <div class="pattern-desc">"Nah this is so true though" (5.2K) wins because it creates identity — people click to see if they agree. But "ROBLOX" with hashtags (2K) and "you might be in the top 1%" (935) fail because one has no hook and the other is too vague to click. Specific topics = specific clicks.</div>
+  <p class="section-title">BaconStories · @BaconStoriesOnline</p>
+  <div id="mychannel-container"></div>
 </div>
 
-<div class="video-card" style="margin-bottom:12px;">
-  <div class="card-body">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-      <div class="card-title">Nah this is so true though</div>
-      <span class="rating-chip green"><span class="dot green"></span>BEST</span>
-    </div>
-    <div class="card-channel">5.2K views · Top performer</div>
-    <div class="why-row" style="margin-top:8px;">
-      <span class="why-chip">identity hook</span>
-      <span class="why-chip">relatable</span>
-      <span class="why-chip">no hashtags in title</span>
-    </div>
-    <div style="font-size:12px;color:var(--muted);margin-top:8px;">The formula: hook that makes people think "wait, is this about me?" Fix: be even more specific — "Nah THIS friend type is so real 😭"</div>
-  </div>
-</div>
-
-<div class="video-card" style="margin-bottom:12px;">
-  <div class="card-body">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-      <div class="card-title">ROBLOX #roblox #shorts #fyp...</div>
-      <span class="rating-chip red"><span class="dot red"></span>AVOID</span>
-    </div>
-    <div class="card-channel">2K views</div>
-    <div class="why-row" style="margin-top:8px;">
-      <span class="why-chip">no real title</span>
-      <span class="why-chip">hashtag spam</span>
-      <span class="why-chip">zero hook</span>
-    </div>
-    <div style="font-size:12px;color:var(--muted);margin-top:8px;">Permanently retire this format. Hashtags in title cap your reach. The word "ROBLOX" alone is not a hook.</div>
-  </div>
-</div>
-
-<div class="video-card" style="margin-bottom:12px;">
-  <div class="card-body">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-      <div class="card-title">you might be in the top 1% 😈</div>
-      <span class="rating-chip orange"><span class="dot orange"></span>NEEDS WORK</span>
-    </div>
-    <div class="card-channel">935 views</div>
-    <div class="why-row" style="margin-top:8px;">
-      <span class="why-chip">good archetype</span>
-      <span class="why-chip">too vague</span>
-    </div>
-    <div style="font-size:12px;color:var(--muted);margin-top:8px;">Rarity quiz is Tier S — but "top 1%" of WHAT? Fix: "Only top 1% of Roblox players know all 5 of these 😈"</div>
-  </div>
-</div>
-
-<div class="video-card" style="margin-bottom:12px;">
-  <div class="card-body">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-      <div class="card-title">Facts That Sound Completely Made Up 💀😳</div>
-      <span class="rating-chip orange"><span class="dot orange"></span>NEEDS WORK</span>
-    </div>
-    <div class="card-channel">1K views</div>
-    <div class="why-row" style="margin-top:8px;">
-      <span class="why-chip">right archetype</span>
-      <span class="why-chip">hashtag spam</span>
-      <span class="why-chip">weak distribution</span>
-    </div>
-    <div style="font-size:12px;color:var(--muted);margin-top:8px;">Good title format — killed by hashtags in title. Remove them, push to description only. This could have hit 20K+.</div>
-  </div>
-</div>
-
-<div class="video-card" style="margin-bottom:12px;">
-  <div class="card-body">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-      <div class="card-title">NEW CEO of Roblox #shorts #roblox...</div>
-      <span class="rating-chip orange"><span class="dot orange"></span>NEEDS WORK</span>
-    </div>
-    <div class="card-channel">1.2K views</div>
-    <div class="why-row" style="margin-top:8px;">
-      <span class="why-chip">platform drama</span>
-      <span class="why-chip">hashtag spam</span>
-      <span class="why-chip">missed the window</span>
-    </div>
-    <div style="font-size:12px;color:var(--muted);margin-top:8px;">Drama content has a 48hr window. Post it fast or it's dead. Also cut hashtags from the title.</div>
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<div class="pattern-card" style="border-left:4px solid var(--accent);margin-bottom:14px;">
-  <div class="pattern-rank">🎯 THIS WEEK'S ACTION LIST</div>
-  <div class="pattern-title">Do These Now</div>
-  <div class="pattern-examples">
-    <div class="pattern-ex">1. Cut ALL hashtags from titles — move to description only, every video</div>
-    <div class="pattern-ex">2. Try today's Shocking Fact script — RaccoonRants proved this format hits 220K+</div>
-    <div class="pattern-ex">3. Make your rarity quiz more specific: not "top 1%" but "top 1% of Roblox obbyers"</div>
-    <div class="pattern-ex">4. Post drama content within 24hrs of news breaking or don't post it</div>
-    <div class="pattern-ex">5. End every video with a single comment CTA — your 5.2K video proves engagement works</div>
-    <div class="pattern-ex">6. Try broad real-world facts with Roblox bg — nobody in your competitor set owns this lane</div>
-  </div>
-</div>
-
-<div style="text-align:center;font-size:12px;color:var(--muted);padding:4px 0 20px;">Auto-updated every morning at 8am 🔄</div>
-<!-- MY-CHANNEL-END -->
-</div>
-
-<!-- TOAST -->
 <div class="toast" id="toast">Copied ✓</div>
-
-<!-- SCROLL TOP -->
 <div class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
 </div>
 
 <script>
-const fullScripts = {
-  1: `SCRIPT 01 — "What Type of Roblox Player Are You? 😈"
-Format: Rarity Quiz | ~75 sec | Tier S
+// ══════════════════════════════════════════════
+//  DATE UTILITIES
+// ══════════════════════════════════════════════
+const TODAY = new Date();
+const DAY_OF_YEAR = Math.floor((TODAY - new Date(TODAY.getFullYear(), 0, 0)) / 86400000);
+// Offset so dayOfYear 155 (June 4, 2026) = index 0
+const D = ((DAY_OF_YEAR - 155) % 100 + 100) % 100;
 
-━━━━━━━━━━━━━━━━━━━━━━━━━
-[HOOK — 0:00 to 0:04]
-━━━━━━━━━━━━━━━━━━━━━━━━━
-There are exactly four types of Roblox players. And depending on which one you are, it tells me everything about you.
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DATE_STR = `${MONTHS[TODAY.getMonth()]} ${TODAY.getDate()}, ${TODAY.getFullYear()}`;
+const DAYS_OF_WEEK = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const DOW = TODAY.getDay(); // 0=Sun
 
-━━━━━━━━━━━━━━━━━━━━━━━━━
-[BUILD — 0:04 to 0:18]
-━━━━━━━━━━━━━━━━━━━━━━━━━
-I'm not talking about skill level. I'm not talking about how many Robux you have. I'm talking about the type of player you fundamentally are — your whole identity in this game. I've seen thousands of people play and it comes down to four archetypes, every single time. Let's find out which one you are.
+// ══════════════════════════════════════════════
+//  VIDEO POOL — 4 sets × 6 videos, cycles every 4 days
+// ══════════════════════════════════════════════
+const VIDEO_SETS = [
+  // Set 0: June 4 research batch (today's scraped data)
+  [
+    { title: 'Marvel Memes! 😂', channel: 'RantsBlox', views: '67K', viewsNum: 67000, barPct: 100, emoji: '🦸', rating: 'green', ratingLabel: "THIS WEEK'S #1 · Pop-Culture Crossover", tags: ['No Roblox Context Needed','Marvel Fan Crossover','Reaction Format','Fast-Cut Style'], url: 'https://www.youtube.com/@RantsBlox/shorts' },
+    { title: 'British Memes', channel: 'RantsBlox', views: '34K', viewsNum: 34000, barPct: 51, emoji: '🫖', rating: 'green', ratingLabel: 'EXCELLENT · Cultural Meme Format', tags: ['Broad Cultural Hook','No Gaming Context','Relatable Humor'], url: 'https://www.youtube.com/@RantsBlox/shorts' },
+    { title: 'Imagine Studying YEARS for This...💀', channel: 'RaccoonRants', views: '32K', viewsNum: 32000, barPct: 48, emoji: '📚', rating: 'green', ratingLabel: 'EXCELLENT · Suffering/Relatable Fact', tags: ['Relatable Suffering','Real-World Crossover','Emotional Hook'], url: 'https://www.youtube.com/channel/UCLeMva2TqwDYhFdOQCbCJAw/shorts' },
+    { title: 'YOUTUBERS VS Lucky Block 💀', channel: 'SynBlox', views: '32K', viewsNum: 32000, barPct: 48, emoji: '🍀', rating: 'green', ratingLabel: 'EXCELLENT · VS Format', tags: ['VS / Challenge Format','Creator Crossover','Roblox-Native Topic'], url: 'https://www.youtube.com/channel/UC5S22nWMLbY0y9i1HwLdqEg/shorts' },
+    { title: 'The company which wanted getting sued 😭', channel: 'RobloxRift', views: '29K', viewsNum: 29000, barPct: 43, emoji: '⚖️', rating: 'orange', ratingLabel: 'SOLID · Platform Drama Format', tags: ['Platform Drama','Corporate Outrage','Emotional Emoji'], url: 'https://www.youtube.com/@RobloxRift_0908/shorts' },
+    { title: 'He Survived 438 Days Lost at Sea 😳💀', channel: 'RaccoonRants', views: '23K', viewsNum: 23000, barPct: 34, emoji: '🌊', rating: 'orange', ratingLabel: 'SOLID · Survival/Shocking Fact', tags: ['Survival Format','Specific Number Hook','Non-Roblox Topic'], url: 'https://www.youtube.com/channel/UCLeMva2TqwDYhFdOQCbCJAw/shorts' },
+  ],
+  // Set 1: All-time viral benchmark
+  [
+    { title: "Let's see how rare you are 😈", channel: 'RobloxRift', views: '2.9M', viewsNum: 2900000, barPct: 100, emoji: '😈', rating: 'green', ratingLabel: 'ALL-TIME VIRAL · Rarity Quiz', tags: ['Identity Hook','Self-Identification','Comment Flood Bait'], url: 'https://www.youtube.com/@RobloxRift/shorts' },
+    { title: "Countries That Aren't In 2026 💀😳", channel: 'RaccoonRants', views: '2.1M', viewsNum: 2100000, barPct: 72, emoji: '🌍', rating: 'green', ratingLabel: 'ALL-TIME VIRAL · Shocking Fact', tags: ['Broad Audience','Non-Roblox Topic','Geography Crossover'], url: 'https://www.youtube.com/channel/UCLeMva2TqwDYhFdOQCbCJAw/shorts' },
+    { title: 'Small Creators NEED To Try This 🔥', channel: 'RaccoonRants', views: '1.4M', viewsNum: 1400000, barPct: 48, emoji: '🔥', rating: 'green', ratingLabel: 'MEGA VIRAL · Creator Meta', tags: ['Creator FOMO','Meta Content','Aspiration Hook'], url: 'https://www.youtube.com/channel/UCLeMva2TqwDYhFdOQCbCJAw/shorts' },
+    { title: 'You can be a winner of 100000 ROBUX 🤯', channel: 'RobloxRift', views: '916K', viewsNum: 916000, barPct: 32, emoji: '🤯', rating: 'green', ratingLabel: 'VIRAL · Reward/Giveaway Hook', tags: ['Giveaway Hook','Platform Currency','Watch-Through Bait'], url: 'https://www.youtube.com/@RobloxRift/shorts' },
+    { title: 'GUGUGAGA Lucky Block VS TSUNAMI', channel: 'SynBlox', views: '120K', viewsNum: 120000, barPct: 4, emoji: '🎲', rating: 'green', ratingLabel: 'STRONG · Gameplay Drama', tags: ['VS Format','Spectacle Content','Roblox-Native'], url: 'https://www.youtube.com/channel/UC5S22nWMLbY0y9i1HwLdqEg/shorts' },
+    { title: 'The Most Unlucky Birthdays Ever 🎂💀', channel: 'RaccoonRants', views: '116K', viewsNum: 116000, barPct: 4, emoji: '🎂', rating: 'green', ratingLabel: 'STRONG · Relatable/Shock', tags: ['Broad Relatable','Shocking Fact','Emotional Hook'], url: 'https://www.youtube.com/channel/UCLeMva2TqwDYhFdOQCbCJAw/shorts' },
+  ],
+  // Set 2: High-performers 100K–400K range
+  [
+    { title: 'THIS WILL BE FUN 😭🔥', channel: 'RaccoonRants', views: '384K', viewsNum: 384000, barPct: 100, emoji: '🎮', rating: 'green', ratingLabel: 'VIRAL · Pure Curiosity Gap', tags: ['Curiosity Gap','Emotion-Only Title','No Specifics Needed'], url: 'https://www.youtube.com/channel/UCLeMva2TqwDYhFdOQCbCJAw/shorts' },
+    { title: 'Illegal Things Teachers Still Do In School ❌💀', channel: 'RaccoonRants', views: '237K', viewsNum: 237000, barPct: 62, emoji: '🏫', rating: 'green', ratingLabel: 'GREAT · Authority + Shock', tags: ['Authority Drama','Relatable Hook','Non-Roblox Crossover'], url: 'https://www.youtube.com/channel/UCLeMva2TqwDYhFdOQCbCJAw/shorts' },
+    { title: 'Can you make it.. 🤫', channel: 'RobloxRift', views: '231K', viewsNum: 231000, barPct: 60, emoji: '🤫', rating: 'green', ratingLabel: 'GREAT · Direct Viewer Challenge', tags: ['Direct Challenge','Comment Reply Bait','Curiosity Hook'], url: 'https://www.youtube.com/@RobloxRift/shorts' },
+    { title: 'How to help small creators 🫡', channel: 'RobloxRift', views: '173K', viewsNum: 173000, barPct: 45, emoji: '🫡', rating: 'green', ratingLabel: 'STRONG · Creator Solidarity', tags: ['Creator Meta','Solidarity Hook','Shareable Content'], url: 'https://www.youtube.com/@RobloxRift/shorts' },
+    { title: 'The NEW Virus 😭', channel: 'fixxCell', views: '107K', viewsNum: 107000, barPct: 28, emoji: '🦠', rating: 'green', ratingLabel: 'STRONG · Platform Drama', tags: ['Platform Drama','Fear Hook','Urgency Title'], url: 'https://www.youtube.com/@fixxCell/shorts' },
+    { title: "IT'S OVER FOR ROBLOX!!!", channel: 'fixxCell', views: '75K', viewsNum: 75000, barPct: 20, emoji: '💥', rating: 'green', ratingLabel: 'SOLID · All-Caps Drama', tags: ['All-Caps Urgency','Platform Drama','Fear Bait'], url: 'https://www.youtube.com/@fixxCell/shorts' },
+  ],
+  // Set 3: Secondary research batch — identity + relatable
+  [
+    { title: 'How rare are you 😈', channel: 'RobloxRift', views: '133K', viewsNum: 133000, barPct: 100, emoji: '😈', rating: 'green', ratingLabel: 'STRONG · Identity/Rarity Quiz', tags: ['Rarity Hook','Identity Challenge','Comment Flood'], url: 'https://www.youtube.com/@RobloxRift/shorts' },
+    { title: 'Things You Do Without Realizing 😱', channel: 'SynBlox', views: '72K', viewsNum: 72000, barPct: 54, emoji: '😱', rating: 'green', ratingLabel: 'SOLID · Relatable Behavior', tags: ['Relatable Behavior','Broad Appeal','Self-Aware Hook'], url: 'https://www.youtube.com/channel/UC5S22nWMLbY0y9i1HwLdqEg/shorts' },
+    { title: 'the ending was GENUINELY CRAZY omggggh 😭', channel: 'SynBlox', views: '27K', viewsNum: 27000, barPct: 20, emoji: '😭', rating: 'orange', ratingLabel: 'SOLID · Emotional Reaction Format', tags: ['Emotional Hook','Gameplay Drama','Lowercase Authority Trick'], url: 'https://www.youtube.com/channel/UC5S22nWMLbY0y9i1HwLdqEg/shorts' },
+    { title: "Please DON'T Actually Let This Video GoVIRAL!", channel: 'ForceLive', views: '20K', viewsNum: 20000, barPct: 15, emoji: '🙏', rating: 'orange', ratingLabel: 'SOLID · Reverse Psychology', tags: ['Anti-Viral Hook','Reverse Psychology','Use Sparingly'], url: 'https://www.youtube.com/@ForceLive/shorts' },
+    { title: 'WHICH ROBLOX SHOOTER GAME IS BETTER?', channel: 'fixxCell', views: '17K', viewsNum: 17000, barPct: 13, emoji: '🎯', rating: 'orange', ratingLabel: 'AVERAGE · Game Comparison', tags: ['VS Format','Game Comparison','Roblox-Specific'], url: 'https://www.youtube.com/@fixxCell/shorts' },
+    { title: 'THIS WILL BE FUN 😭🔥', channel: 'RaccoonRants', views: '384K', viewsNum: 384000, barPct: 60, emoji: '🎮', rating: 'green', ratingLabel: 'VIRAL · Curiosity Gap (Benchmark)', tags: ['Pure Curiosity Gap','Proven Archetype','Study This Title'], url: 'https://www.youtube.com/channel/UCLeMva2TqwDYhFdOQCbCJAw/shorts' },
+  ],
+];
 
-━━━━━━━━━━━━━━━━━━━━━━━━━
-[PAYLOAD — 0:18 to 1:05]
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Type one — the Tourist. This is the player who opens Roblox, jumps into whatever's trending on the front page, plays for twenty minutes, and leaves. They've been in Brookhaven at least once this week just to mess with people in the roleplay. They've tried Dress to Impress but they don't actually care about the fashion — they just wanted to see what it was. They're everywhere and nowhere at the same time. That's probably 60% of the playerbase.
+// ══════════════════════════════════════════════
+//  PATTERN DATA — rotates which is #1 each day
+// ══════════════════════════════════════════════
+const PATTERNS_DATA = [
+  { rank: '🥇 PATTERN #1', tier: 'TIER S', title: 'Pop-Culture / Meme Crossover', desc: 'RantsBlox hit 67K with "Marvel Memes!" and 34K with "British Memes" — zero Roblox context required. The algorithm rewards content anyone can enjoy. Broad cultural hooks (Marvel, sports, world events) extend your audience far beyond Roblox players. This is the highest-ceiling lane right now.', examples: [{ text: '"Marvel Memes! 😂"', views: '67K · RantsBlox' }, { text: '"British Memes"', views: '34K · RantsBlox' }, { text: '"Countries That Aren\'t In 2026 💀😳"', views: '2.1M · RaccoonRants' }] },
+  { rank: '🥈 PATTERN #2', tier: 'TIER S', title: 'Relatable Suffering / Specific Number Hook', desc: 'RaccoonRants consistently hits 20K–32K with real-world suffering content. The key is a SPECIFIC number. "He studied a long time" = boring. "He studied YEARS for THIS" = click. Numbers create visceral relatability. Pair with 💀 emoji. Works for both Roblox topics and real-world content.', examples: [{ text: '"Imagine Studying YEARS for This...💀"', views: '32K · RaccoonRants' }, { text: '"He Survived 438 Days Lost at Sea 😳💀"', views: '23K · RaccoonRants' }, { text: '"The Most Unlucky Birthdays Ever 🎂💀"', views: '116K · RaccoonRants' }] },
+  { rank: '🥉 PATTERN #3', tier: 'TIER S', title: 'Rarity / Identity Quiz — The Proven #1 Format', desc: 'The single highest-performing archetype in this niche. RobloxRift hit 2.9M with "Let\'s see how rare you are 😈" and 133K with "How rare are you 😈". Forces viewer self-identification — comments flood in with "I\'m rare!" Creating personal identity around your viewership is the most viral mechanic in short-form.', examples: [{ text: '"Let\'s see how rare you are 😈"', views: '2.9M · RobloxRift' }, { text: '"How rare are you 😈"', views: '133K · RobloxRift' }, { text: '"99% of Roblox Players Never Got This Badge 💀🏆"', views: 'Tyler\'s script' }] },
+  { rank: 'PATTERN #4', tier: 'TIER A', title: 'Platform Drama / Quiet Changes Nobody Noticed', desc: 'RobloxRift hit 29K with "The company which wanted getting sued 😭" — corporate drama with emotional emoji. fixxCell hit 107K with "The NEW Virus 😭". This lane is nearly uncontested right now. Nobody is doing "Roblox silently changed X" content consistently. First mover wins.', examples: [{ text: '"The company which wanted getting sued 😭"', views: '29K · RobloxRift' }, { text: '"The NEW Virus 😭"', views: '107K · fixxCell' }, { text: '"IT\'S OVER FOR ROBLOX!!!"', views: '75K · fixxCell' }] },
+  { rank: 'PATTERN #5', tier: 'TIER A', title: 'VS / Challenge / Creator Crossover', desc: 'SynBlox consistently lands 27K–120K with VS format. "YOUTUBERS VS Lucky Block" works because it combines a known person (creators) with a known Roblox mechanic. The VS structure creates automatic stakes — viewers want to know who wins. Adding famous names boosts CTR further.', examples: [{ text: '"YOUTUBERS VS Lucky Block 💀"', views: '32K · SynBlox' }, { text: '"GUGUGAGA Lucky Block VS TSUNAMI"', views: '120K · SynBlox' }, { text: '"the ending was GENUINELY CRAZY omggggh 😭"', views: '27K · SynBlox' }] },
+  { rank: 'PATTERN #6', tier: 'TIER A', title: 'Creator Solidarity / Growth Hack Content', desc: 'RaccoonRants hit 1.4M with "Small Creators NEED To Try This 🔥" — creator meta content that taps aspiration identity. RobloxRift hit 173K with "How to help small creators 🫡". This content gets SHARED, not just watched. People share it to their creator friends. Sharing multiplies reach without requiring watch-time.', examples: [{ text: '"Small Creators NEED To Try This 🔥"', views: '1.4M · RaccoonRants' }, { text: '"How to help small creators 🫡"', views: '173K · RobloxRift' }] },
+];
 
-Type two — the Grinder. This player has a mission. They're maxing out their Blox Fruits stats, they're grinding sea three trying to get the Leopard fruit, and they will not stop until they hit the damage cap. Or they're 200 hours deep into Pet Simulator 99 hatching eggs trying to pull a Titanic Cat. These are the people who treat a kids game like a full-time job and they are completely unashamed about it.
+// Rotate which pattern is highlighted as #1 today
+const PATTERN_ORDER = [0,1,2,3,4,5]; // default order
+const patternHighlight = D % PATTERNS_DATA.length;
 
-Type three — the OG. You remember when Tower of Hell first dropped and everyone was losing their minds over it. You've got a Murder Mystery 2 knife collection from back when the trading system actually made sense. You've watched Roblox change, you've complained about every single update, and you're still here anyway. That's rare. Maybe 15% of players.
+// ══════════════════════════════════════════════
+//  SCRIPT POOL — 9 scripts, 3 families
+//  [0,1,2] = Relatable Behavior
+//  [3,4,5] = Platform Drama
+//  [6,7,8] = Rarity Quiz / Shocking Facts
+//  Each day: script at D%3, (D%3)+3, (D%3)+6
+// ══════════════════════════════════════════════
+const SCRIPTS = [
+  // ── RELATABLE BEHAVIOR #1 ──────────────────────────────────────────────
+  {
+    archetype: 'Relatable Behavior',
+    title: 'The 4 Players Ruining Every Roblox Obby Run 💀😭',
+    tags: ['Relatable Behavior', 'Tower of Hell', 'Voiceover Rant'],
+    hook: { time: '0:00–0:03', text: 'You KNOW exactly who they are. The second they join your server, the run is dead.' },
+    build: { time: '0:03–0:15', text: "There's always four of them. Every obby. Every single time. And they ALL do the exact same thing. It's like they were sent to ruin your life specifically." },
+    payload: { time: '0:15–0:50', text: "First — the guy who reaches checkpoint 47 and LEAVES the server. Why. Why are you here. Second — the kid who types \"gg ez\" after dying on stage 2. You fell. You're not winning. Stop. Third — the person who finds the one glitch spot and camps it for 20 minutes instead of just finishing. We can all SEE you. And fourth — worst of all — the guy who hits stage 1 and starts WALKING instead of running. You are not speedrunning anything. You're walking. In an obby. This is a crime. These four exist on every server. Every game. Without fail." },
+    cta: { time: '0:50–0:60', text: 'Which one of these is actually YOU? Be honest in the comments.' },
+    footage: '📹 Tower of Hell / Flood Escape gameplay. Show player dying on stage 1, "gg ez" in chat, someone walking instead of running.',
+    thumb: { bg: '🎮 Colorful obby platform stages, Tower of Hell aesthetic', text: '📝 "THESE 4 RUIN EVERY RUN 💀" — bold red/white with black outline', reaction: '😱 Bacon hair character, hands on head, shocked expression' },
+  },
+  // ── RELATABLE BEHAVIOR #2 ──────────────────────────────────────────────
+  {
+    archetype: 'Relatable Behavior',
+    title: 'That One Player Who Ruins Every Blox Fruits Server 💀',
+    tags: ['Relatable Behavior', 'Blox Fruits', 'Server Villain'],
+    hook: { time: '0:00–0:03', text: 'Every Blox Fruits server has one. And the second you see them, your whole session is over.' },
+    build: { time: '0:03–0:15', text: "I don't care how long you've been playing. I don't care what fruit you have. The moment this person shows up, every low-level player on the server is done. It's not gameplay anymore. It's just survival." },
+    payload: { time: '0:15–0:50', text: "You know exactly who I'm talking about. The guy who hits Sea 3 and comes back to starter island. For absolutely no reason. He's not farming. He's not helping anyone. He's just there. Deleting every new player who spawns. With a fruit worth 2,000,000 Beli. While they're trying to complete their first quest. And he always types 'gg' afterwards. In the STARTER AREA. You didn't win anything. You bullied a new player. Those aren't the same thing. And then there's the trading scammer who messages you 'bro I'll give you Dragon for your Flame 1:1 good trade trust me' — no. No it's not. You think new players can't see prices? They have Google. This stops working eventually." },
+    cta: { time: '0:50–0:60', text: 'Have you been the new player or the Sea 3 guy? Be honest. Comments only.' },
+    footage: '📹 Blox Fruits starter island gameplay. Show low-level player getting one-shotted. Show Sea 3-level character on beginner island.',
+    thumb: { bg: '🎮 Blox Fruits island, colorful ocean world', text: '📝 "he does this every server 💀" in bold red/white', reaction: '😭 Sighing / crying SpongeBob meme cutout' },
+  },
+  // ── RELATABLE BEHAVIOR #3 ──────────────────────────────────────────────
+  {
+    archetype: 'Relatable Behavior',
+    title: "Things Every Roblox Player Does But Won't Admit 😭",
+    tags: ['Relatable Behavior', 'Universal Habits', 'Comment Bait'],
+    hook: { time: '0:00–0:03', text: "There are things every Roblox player does. Nobody talks about them. Everyone does them. Including you." },
+    build: { time: '0:03–0:15', text: "I've been watching this community for years and there is a list of behaviors that are completely universal but absolutely nobody admits to. So I'm going to admit them for you." },
+    payload: { time: '0:15–0:50', text: "Number one — you have definitely looked up a game on YouTube before clicking on it in Roblox. Just to make sure it was worth loading. We've all done it. Number two — you have spent Robux on an avatar item and then never worn it because you found something better the same day. Gone. Number three — you have told people you're 'taking a break from Roblox' and then logged in the same night. The break lasted four hours. Number four — you have 100% been in a roleplay server at least once. You joined for like six minutes. You said nothing. You left. You told nobody. Number five — you have DEFINITELY started a game, played for three minutes, decided it was bad, left, and then gone back to the exact same game an hour later because you were bored. Every single person listening to this has done all five. At least once." },
+    cta: { time: '0:50–0:60', text: 'Which number hit hardest? Drop it below. Be honest.' },
+    footage: '📹 Roblox avatar screen, Robux purchase screen, various game lobbies. Fast cuts between each behavior.',
+    thumb: { bg: '🎮 Bright colorful Roblox lobby, busy avatar selection', text: '📝 "you\'ve done ALL of these 😭" in white bold', reaction: '😳 Caught/surprised face meme PNG, drop shadow' },
+  },
+  // ── PLATFORM DRAMA #1 ──────────────────────────────────────────────────
+  {
+    archetype: 'Platform Drama',
+    title: 'Roblox Quietly Deleted This Feature and Said Nothing 😭💀',
+    tags: ['Platform Drama', 'Roblox Update', 'Controversy'],
+    hook: { time: '0:00–0:03', text: 'Roblox removed something last month. No announcement. No update log. Just gone.' },
+    build: { time: '0:03–0:15', text: "They didn't tweet it. They didn't post it. They literally hoped you wouldn't notice. And most people didn't. But some players did — and they're furious." },
+    payload: { time: '0:15–0:50', text: "Roblox silently patched the ability to see your full friends list in order of last online. Used to be right there. One tap, you could see who was playing, what game, when they last logged in. It helped you find old friends who went inactive. Parents used it to check if their kids were actually online. Developers used it to track playtester activity. Now it's buried so deep most people think it's gone. Because it basically is. No explanation. No blog post. Just quietly removed in a platform update that had nothing to do with friends lists. That's the part that gets me. They didn't even mention it. They just decided you didn't need it anymore." },
+    cta: { time: '0:50–0:60', text: 'Did you even notice this was gone? Or are you just finding out right now?' },
+    footage: '📹 Screen record Roblox friends tab. Show where the feature used to be. Text overlay with dates of the quiet update.',
+    thumb: { bg: '🎮 Roblox friends list UI, dark/blurred background', text: '📝 "THEY DELETED THIS 😭" — white bold, red X over friends icon', reaction: '😱 Betrayed Roblox character pointing at screen' },
+  },
+  // ── PLATFORM DRAMA #2 ──────────────────────────────────────────────────
+  {
+    archetype: 'Platform Drama',
+    title: "Roblox Changed Their Payout System and Nobody's Talking About It 💀",
+    tags: ['Platform Drama', 'Developer Economy', 'DevEx Change'],
+    hook: { time: '0:00–0:03', text: "Roblox just changed how developers get paid. And most players have no idea what it actually means for the games they play." },
+    build: { time: '0:03–0:15', text: "This went live recently. No major announcement. It's buried in a developer blog post that most players don't read. But it changes what kinds of games get made on this platform going forward." },
+    payload: { time: '0:15–0:50', text: "Roblox updated the DevEx program — where developers exchange Robux for real money. The rate changed. They also raised the minimum cashout threshold and added new verification requirements. Small developers who used to cash out monthly now need to hit a higher bar. What does that mean for you as a player? The mid-size creators — the ones building the most creative games, the ones that aren't front-page but have loyal communities — those creators are now waiting longer to get paid. Some are already moving to other platforms. Roblox HQ announced this like it was a win for everyone. The developer forums disagreed loudly. Most players saw nothing because Roblox didn't announce it on their main channels. They just changed it." },
+    cta: { time: '0:50–0:60', text: "Do you think Roblox actually cares about small developers? Real answer in the comments." },
+    footage: '📹 Roblox Studio interface. Show DevEx page. Show developer forum reactions. Text overlays with the before/after rate.',
+    thumb: { bg: '🎮 Roblox Studio UI, dark blurred backdrop with Robux coins', text: '📝 "they changed this quietly 💀" in white bold', reaction: '😡 Confused/betrayed character pointing at screen' },
+  },
+  // ── PLATFORM DRAMA #3 ──────────────────────────────────────────────────
+  {
+    archetype: 'Platform Drama',
+    title: 'Why Roblox Is Secretly Getting Worse 😭',
+    tags: ['Platform Drama', 'Platform Decline', 'Honest Rant'],
+    hook: { time: '0:00–0:03', text: "Roblox is making more money than ever. The user count is up. And the game is getting worse. All at the same time." },
+    build: { time: '0:03–0:15', text: "I know that sounds like a rant with no proof. So I'm going to give you the proof. Because the numbers Roblox shows investors are not the same numbers that matter to you as a player." },
+    payload: { time: '0:15–0:50', text: "Roblox reports daily active users. They don't report average session length. It's been dropping since 2022. The average player spends less time per session than two years ago. Nobody's writing about this. Second — the front page algorithm. Roblox changed how games get recommended in 2023. The result is that 15 games now get 80% of all new player traffic. The same 15. Every single day. If a new game doesn't have an existing audience to drive traffic in the first 48 hours, it basically never gets discovered. Third — UGC item flood. Roblox opened avatar items to more creators to drive revenue. The catalog has exploded. Quality control is basically gone. You've seen the items. Some are literally cubes with a texture. The platform is growing the metrics that look good to Wall Street and quietly neglecting the metrics that matter to you." },
+    cta: { time: '0:50–0:60', text: "Am I wrong? Genuinely — tell me where I'm off in the comments." },
+    footage: '📹 Roblox front page UI, slightly red-tinted. Show catalog clutter. Show front page dominated by same games.',
+    thumb: { bg: '🎮 Roblox front page, faint red distortion overlay', text: '📝 "the truth nobody says 😭" in white bold', reaction: '😤 Stern/disappointed face meme, drop shadow' },
+  },
+  // ── RARITY QUIZ / SHOCKING FACTS #1 ───────────────────────────────────
+  {
+    archetype: 'Rarity Quiz',
+    title: '99% of Roblox Players Never Got This Badge 💀🏆',
+    tags: ['Rarity Quiz', 'Hidden Badges', 'Challenge'],
+    hook: { time: '0:00–0:03', text: 'There are Roblox badges that less than 1% of the entire platform has ever earned.' },
+    build: { time: '0:03–0:15', text: "I'm not talking about paying for gamepass stuff. I mean free badges. Right there. Thousands of players have tried. Most fail. A few quit forever. And some of these have been sitting in games for over 8 years." },
+    payload: { time: '0:15–0:50', text: "The \"Chairbarian\" badge in BedWars — requires winning a 1v4 solo against a full squad. Less than 0.3% of players have it. The \"Ghost\" badge in Phantom Forces — get 10 kills without being spotted ONCE in a full 20-minute match. Snipers have tried for years. Most give up. The \"True Survivor\" badge in Natural Disaster Survival — survive every single disaster type in one session, in order, without dying. The RNG sequence is astronomically unlikely. And the oldest one — \"Veteran\" badge from a 2008 Roblox game that still works today. The creator locked it behind a room that requires a password hidden in a YouTube video from 2009. Most of those videos are deleted now. People pay real money for the link." },
+    cta: { time: '0:50–0:60', text: 'Have you ever actually earned a badge that felt impossible? Drop the game name below.' },
+    footage: '📹 Screen record badge pages in BedWars, Phantom Forces, Natural Disaster Survival. Zoom in on low % earned stat.',
+    thumb: { bg: '🎮 Glowing badge graphic, dark background with gold shimmer', text: '📝 "YOU\'LL NEVER GET THIS 💀" — gold/white bold', reaction: '🏆 Stunned Roblox character with a trophy' },
+  },
+  // ── RARITY QUIZ / SHOCKING FACTS #2 ───────────────────────────────────
+  {
+    archetype: 'Rarity Quiz',
+    title: 'How Rare Are You As a Roblox Player 😈',
+    tags: ['Rarity Quiz', 'Identity Hook', 'OG Players'],
+    hook: { time: '0:00–0:03', text: "If you started Roblox before 2020, you are already in the top 5% of the platform. Most players have no idea." },
+    build: { time: '0:03–0:15', text: "Roblox has over 80 million monthly active users right now. But the majority joined after 2021. Which means OG players are genuinely rare. Let me rank exactly how rare you are." },
+    payload: { time: '0:15–0:50', text: "If you've been playing since before the character redesign in 2021 — that's top 20%. If you remember when the old Roblox logo looked like a bowtie — top 10%. If you have any limited item that's now worth over 5,000 Robux — top 5%. If you still have the original Classic ROBLOX hat from 2008 in your inventory — you are literally in the top 0.1% of all players. Under 100,000 people on the entire platform. And if you were there on the day Roblox hit one million players — you are a dinosaur. There might be fewer than 10,000 of you left who still actively play." },
+    cta: { time: '0:50–0:60', text: 'Drop your join year in the comments. I want to see how rare this comment section actually is.' },
+    footage: '📹 Old Roblox screenshots (found online). Classic character, old UI, old logo. Contrast with modern Roblox.',
+    thumb: { bg: '🎮 Pink/purple Roblox world, old-style character aesthetic', text: '📝 "you might be TOP 1% 😈" in white bold', reaction: '😈 Chad meme face, drop shadow bottom center' },
+  },
+  // ── RARITY QUIZ / SHOCKING FACTS #3 ───────────────────────────────────
+  {
+    archetype: 'Shocking Facts',
+    title: 'Facts That Sound Completely Made Up 💀😳',
+    tags: ['Shocking Facts', 'Real-World Crossover', 'Mind-Blowing'],
+    hook: { time: '0:00–0:03', text: "Bro these facts are so unhinged I had to look all of them up twice before I believed them." },
+    build: { time: '0:03–0:15', text: "Like genuinely every single one sounds like something someone made up on the internet. But they're all real. I'm going rapid fire — pay attention because one of these is going to completely break your brain. Comment the one that got you the worst." },
+    payload: { time: '0:15–0:50', text: "Fact one — Oxford University is older than the Aztec Empire. Oxford was founded in 1096. The Aztec Empire didn't start until 1300. That's not a typo. Fact two — sharks have existed longer than trees. When sharks first evolved, there were zero trees on this planet. None. Fact three — the fax machine was invented before the telephone. You could fax documents in 1843. Alexander Graham Bell didn't patent the telephone until 1876. Fact four — Cleopatra lived closer in time to the Moon landing than to when the pyramids were built. She was born around 69 BC. The Great Pyramid was built around 2560 BC. The Moon landing was 1969. Do that math. Fact five — the woolly mammoth was still alive when the pyramids were being built. There was a population of dwarf mammoths on an island off Siberia that survived until 1650 BC." },
+    cta: { time: '0:50–0:60', text: 'Drop the number of the one that broke you in the comments. I need to see if everyone cracks on the same one.' },
+    footage: '📹 Roblox Natural Disaster Survival or Brookhaven as background. Rapid-cut wide shots. Text overlays with each fact.',
+    thumb: { bg: '🎮 Natural Disasters — mid-tsunami, bright blue water flooding island', text: '📝 "this one is going to break your brain 💀" in white', reaction: '🤯 SpongeBob imagination rainbow OR shocked B&W face, PNG cutout' },
+  },
+];
 
-And type four — the rarest kind. You don't just play Roblox. You've built in it. You've scripted something, you've made a game, even if nobody played it. You understand what goes into this platform at a level most players never will. If that's you, you are genuinely in the top 1% and most people you play with have no idea.
+// ══════════════════════════════════════════════
+//  DAILY INTEL — 4 sets matching video sets
+// ══════════════════════════════════════════════
+const INTEL_SETS = [
+  // Set 0: June 4 data
+  {
+    topArchetype: 'Relatable Behavior + Platform Drama + Rarity Quiz',
+    desc: 'RantsBlox led with 67K on "Marvel Memes!" — broad pop-culture crossover dominating again. RaccoonRants continues with survival/suffering content at 32K. Platform Drama (quiet Roblox changes) is an uncontested lane right now.',
+    standout: { title: 'Marvel Memes! 😂', channel: 'RantsBlox', views: '67K', why: 'Pop-culture meme format requires zero Roblox context to enjoy. Maximum audience reach — Marvel fans + Roblox players. Fast-cut reaction style drives 100% watch-through on shorts.' },
+    gap: { title: 'Platform Drama — Quiet Roblox Changes Nobody Noticed', desc: 'Zero channels in this group do "Roblox silently changed X" content consistently. SynBlox owns VS format, RantsBlox owns meme format, RaccoonRants owns real-world facts. Platform Drama is completely open. Tyler can own this lane.' },
+    titles: [
+      { text: '"The 4 Players Ruining Every Roblox Obby Run 💀😭"', archetype: 'Relatable Behavior' },
+      { text: '"Roblox Quietly Deleted This Feature and Said Nothing 😭💀"', archetype: 'Platform Drama' },
+      { text: '"99% of Roblox Players Never Got This Badge 💀🏆"', archetype: 'Rarity Quiz' },
+    ],
+    table: [
+      { channel: 'RantsBlox', video: 'Marvel Memes! 😂', views: '67K', color: 'green' },
+      { channel: 'RantsBlox', video: 'British Memes', views: '34K', color: 'green' },
+      { channel: 'RaccoonRants', video: 'Imagine Studying YEARS for This...💀', views: '32K', color: 'green' },
+      { channel: 'SynBlox', video: 'YOUTUBERS VS Lucky Block 💀', views: '32K', color: 'green' },
+      { channel: 'RobloxRift', video: 'The company which wanted getting sued 😭', views: '29K', color: 'orange' },
+      { channel: 'RaccoonRants', video: 'He Survived 438 Days Lost at Sea 😳💀', views: '23K', color: 'orange' },
+      { channel: 'ForceLive', video: "Please DON'T Let This Go VIRAL!", views: '20K', color: 'muted' },
+      { channel: 'fixxCell', video: 'WHICH ROBLOX SHOOTER GAME IS BETTER?', views: '17K', color: 'muted' },
+    ],
+  },
+  // Set 1: Viral benchmarks
+  {
+    topArchetype: 'Rarity Quiz + Creator Meta + Reward Hook',
+    desc: 'RobloxRift\'s 2.9M hit "Let\'s see how rare you are" proves the rarity/identity format is the #1 highest-ceiling archetype in this niche. RaccoonRants\' 1.4M "Small Creators NEED To Try This" shows creator meta content gets SHARED, not just watched.',
+    standout: { title: "Let's see how rare you are 😈", channel: 'RobloxRift', views: '2.9M', why: 'Rarity/identity quiz forces viewer self-identification. "Am I rare?" is one of the most powerful questions you can ask. Comments flood with "I\'m rare!" — algorithm sees massive engagement, rewards with distribution.' },
+    gap: { title: 'Reward / Giveaway Hook — Highest Completion Rate Format', desc: 'RobloxRift hit 916K on a giveaway-hook video. Viewers watch to completion hoping to qualify. This format consistently hits top 5% completion rates. Almost nobody in this group is using it right now beyond RobloxRift.' },
+    titles: [
+      { text: '"How Rare Are You As a Roblox Player 😈"', archetype: 'Rarity Quiz' },
+      { text: '"That One Player Who Ruins Every Blox Fruits Server 💀"', archetype: 'Relatable Behavior' },
+      { text: '"Small Channels Actually NEED To Know This 🔥"', archetype: 'Creator Meta' },
+    ],
+    table: [
+      { channel: 'RobloxRift', video: "Let's see how rare you are 😈", views: '2.9M', color: 'green' },
+      { channel: 'RaccoonRants', video: "Countries That Aren't In 2026 💀😳", views: '2.1M', color: 'green' },
+      { channel: 'RaccoonRants', video: 'Small Creators NEED To Try This 🔥', views: '1.4M', color: 'green' },
+      { channel: 'RobloxRift', video: 'You can be a winner of 100000 ROBUX 🤯', views: '916K', color: 'green' },
+      { channel: 'SynBlox', video: 'GUGUGAGA Lucky Block VS TSUNAMI', views: '120K', color: 'green' },
+      { channel: 'RaccoonRants', video: 'The Most Unlucky Birthdays Ever 🎂💀', views: '116K', color: 'green' },
+    ],
+  },
+  // Set 2: Mid-tier + authority drama
+  {
+    topArchetype: 'Curiosity Gap + Authority Drama + Direct Viewer Challenge',
+    desc: 'RaccoonRants hit 384K on a title that contains almost NO information — just emotion and curiosity. "THIS WILL BE FUN 😭🔥" tells you nothing and makes you click anyway. Pure curiosity gap is a grossly underused mechanic in Roblox shorts.',
+    standout: { title: 'THIS WILL BE FUN 😭🔥', channel: 'RaccoonRants', views: '384K', why: 'Title contains zero descriptive information — only emotion. Forces the click. Demonstrates that you don\'t need to explain the video in the title. The emotion IS the hook. This is the highest-risk, highest-reward title format.' },
+    gap: { title: '"Illegal Things [Authority] Still Do" Format — Untapped in Roblox Niche', desc: 'RaccoonRants hit 237K with "Illegal Things Teachers Still Do In School". This authority-drama-relatable combo works for ANY topic. "Illegal Things Roblox Still Does" or "Things Roblox Admins Should Be Fired For" are direct adaptations nobody has made yet.' },
+    titles: [
+      { text: '"Things Every Roblox Player Does But Won\'t Admit 😭"', archetype: 'Relatable Behavior' },
+      { text: '"Roblox Changed Their Payout System and Nobody\'s Talking About It 💀"', archetype: 'Platform Drama' },
+      { text: '"Facts That Sound Completely Made Up 💀😳"', archetype: 'Shocking Facts' },
+    ],
+    table: [
+      { channel: 'RaccoonRants', video: 'THIS WILL BE FUN 😭🔥', views: '384K', color: 'green' },
+      { channel: 'RaccoonRants', video: 'Illegal Things Teachers Still Do In School ❌💀', views: '237K', color: 'green' },
+      { channel: 'RobloxRift', video: 'Can you make it.. 🤫', views: '231K', color: 'green' },
+      { channel: 'RobloxRift', video: 'How to help small creators 🫡', views: '173K', color: 'green' },
+      { channel: 'fixxCell', video: 'The NEW Virus 😭', views: '107K', color: 'green' },
+      { channel: 'fixxCell', video: "IT'S OVER FOR ROBLOX!!!", views: '75K', color: 'green' },
+    ],
+  },
+  // Set 3: Secondary research batch
+  {
+    topArchetype: 'Identity Quiz + Relatable Behavior + Viral Push',
+    desc: 'RobloxRift\'s 133K with "How rare are you 😈" proves the rarity format works even at lower subscriber counts — it\'s the format, not the fame. SynBlox continues with relatable behavior content. The reverse-psychology "Don\'t let this go viral" format has a ceiling and should be used sparingly.',
+    standout: { title: 'How rare are you 😈', channel: 'RobloxRift', views: '133K', why: 'Simplest possible rarity hook. Same mechanic as the 2.9M video. Proves the format works at scale regardless of channel size. The emoji choice (😈) signals this is a fun challenge, not a boring quiz — that distinction drives clicks.' },
+    gap: { title: 'Direct Viewer Challenge — "Can you make it" Format', desc: '"Can you make it.. 🤫" hit 231K. This format directly challenges the viewer to do something — and the ellipsis creates a pause that makes you want to know what "it" is. This specific challenge format is being underused by every channel except RobloxRift.' },
+    titles: [
+      { text: '"Only TRUE Roblox OGs Remember This 💀"', archetype: 'Rarity Quiz' },
+      { text: '"Why Roblox Is Secretly Getting Worse 😭"', archetype: 'Platform Drama' },
+      { text: '"How Rare Are You As a Roblox Player 😈"', archetype: 'Identity Quiz' },
+    ],
+    table: [
+      { channel: 'RobloxRift', video: 'How rare are you 😈', views: '133K', color: 'green' },
+      { channel: 'SynBlox', video: 'Things You Do Without Realizing 😱', views: '72K', color: 'green' },
+      { channel: 'SynBlox', video: 'the ending was GENUINELY CRAZY omggggh 😭', views: '27K', color: 'orange' },
+      { channel: 'ForceLive', video: "Please DON'T Actually Let This Go VIRAL!", views: '20K', color: 'orange' },
+      { channel: 'fixxCell', video: 'WHICH ROBLOX SHOOTER GAME IS BETTER?', views: '17K', color: 'muted' },
+      { channel: 'RaccoonRants', video: 'THIS WILL BE FUN 😭🔥', views: '384K', color: 'green' },
+    ],
+  },
+];
 
-━━━━━━━━━━━━━━━━━━━━━━━━━
-[CTA — 1:05 to 1:15]
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Drop your type in the comments. One, two, three, or four. And be honest — nobody's judging. I already know most of you are secretly a two.
+// ══════════════════════════════════════════════
+//  DAY-OF-WEEK ACTION LIST FOR MY CHANNEL
+// ══════════════════════════════════════════════
+const DOW_ACTIONS = [
+  // Sunday
+  '<strong>Plan next week\'s 5 scripts</strong> using the archetype rotation. Schedule: Mon=Rarity, Tue=Relatable, Wed=Drama, Thu=Shocking, Fri=Creator Meta.<br><br><strong>Review last week\'s comment engagement</strong> — which video generated the most comments? That\'s your top archetype this week. Double down on it.<br><br><strong>Batch your thumbnail concepts</strong> for all 5 planned videos so you never block during recording.',
+  // Monday
+  '<strong>Record Script 1 this week</strong> (Relatable Behavior — use today\'s assigned script from the Scripts tab). These get the most comment engagement = algorithm loves them early in the week.<br><br><strong>Check Roblox update logs</strong> for any quiet platform changes this week. Platform Drama content performs best when it\'s fresh.<br><br><strong>Add a specific noun to your next title</strong> before publishing. Rule: if you can answer the title without clicking, rewrite it.',
+  // Tuesday
+  '<strong>Review your last 5 thumbnails</strong> against the 3-layer formula: (1) gameplay background, (2) caption text mid-sentence, (3) reaction image with drop shadow. Most creators miss Layer 2.<br><br><strong>A/B your next title</strong> — write two versions of the same topic with different archetypes. Test in your head: which one makes YOU want to click more?<br><br><strong>Film B-roll today</strong> for the week\'s scripts. Capture obby runs, Blox Fruits, and Roblox UI screenshots.',
+  // Wednesday
+  '<strong>Post your Script 1 if not live yet</strong> — Wednesday uploads tend to peak Thursday–Friday on Shorts.<br><br><strong>Research Platform Drama angles</strong> — check the Roblox blog, developer forums, and Twitter/X for any quiet changes, moderation drama, or economy nerfs.<br><br><strong>Write your hook first</strong> for tomorrow\'s script. Test it: does it start mid-thought? Does it create instant curiosity without context?',
+  // Thursday
+  '<strong>Record and post Script 2</strong> (Platform Drama — use today\'s tab). Thursday posts catch the weekend viewing spike.<br><br><strong>Analyze comment patterns</strong> on your most recent video. If nobody\'s answering your CTA question, your CTA question was too vague or too hard. Fix it for next time.<br><br><strong>Check competitor channels</strong> for what posted this week — look for patterns in which formats are getting pushed by the algorithm right now.',
+  // Friday
+  '<strong>Post your best script of the week</strong> — Friday afternoon + Saturday morning has the highest Roblox short-form viewership for your demographic.<br><br><strong>Engage your comment section</strong> within the first hour of posting — reply to every comment in the first 30 minutes. The algorithm treats creator replies as engagement signals.<br><br><strong>Draft next week\'s hook lines</strong> — just the first sentence of 5 potential scripts. Write 5, keep the best 3.',
+  // Saturday
+  '<strong>Analyze this week\'s performance</strong> — which video got most views vs. most comments? They\'re often different videos. Most views = algorithm loved the hook. Most comments = audience resonated with the topic.<br><br><strong>Film retakes</strong> for any script that felt weak on the first pass. Voiceover energy drops when you record tired — Saturday morning energy is good for re-records.<br><br><strong>Update your title swipe file</strong> — save any competitor title this week that made YOU want to click.',
+];
 
-━━━━━━━━━━━━━━━━━━━━━━━━━
-THUMBNAIL CONCEPT
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Background: Bright pink/purple Roblox world. Character mid-sprint in Blox Fruits or Brookhaven.
-Caption: "you might be in the top 1% 😈"
-Reaction image: Chad/Gigachad meme face PNG, bottom center, drop shadow, no box.
+// ══════════════════════════════════════════════
+//  RENDER FUNCTIONS
+// ══════════════════════════════════════════════
 
-HASHTAGS: #roblox #rblx #robloxshorts #shorts #relatable`,
+function renderVideos() {
+  const setIdx = D % 4;
+  const videos = VIDEO_SETS[setIdx];
+  const maxViews = videos[0].viewsNum;
+  let html = '';
+  videos.forEach(v => {
+    const barW = Math.round((v.viewsNum / maxViews) * 100);
+    const barColor = v.rating === 'green' ? 'var(--green)' : 'var(--orange)';
+    html += `
+    <div class="video-card" onclick="openVideo('${v.url}')">
+      <div class="thumb-wrap">
+        <div class="thumb-bg"><div class="thumb-emoji">${v.emoji}</div></div>
+        <div class="play-overlay"><div class="play-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div></div>
+        <div class="views-pill">${v.views} views</div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">${v.title}</div>
+        <div class="card-channel">${v.channel} · ${DATE_STR}</div>
+        <div class="perf-label">Performance Breakdown</div>
+        <div class="perf-row">
+          <div class="perf-name">View Count</div>
+          <div class="perf-bar-wrap"><div class="perf-bar" style="width:${barW}%;background:${barColor}"></div></div>
+          <div class="perf-value" style="color:${barColor}">${v.views}</div>
+        </div>
+        <div class="rating-chip ${v.rating}"><div class="dot ${v.rating}"></div> ${v.ratingLabel}</div>
+        <div class="divider"></div>
+        <div class="why-row">${v.tags.map(t=>`<span class="why-chip">${t}</span>`).join('')}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('videos-container').innerHTML = html;
+}
 
-  2: `SCRIPT 02 — "Facts That Sound Completely Made Up 💀😳"
-Format: Shocking Facts | ~80 sec | Tier S
+function renderPatterns() {
+  // Rotate which pattern is featured as #1
+  const featured = PATTERNS_DATA[patternHighlight];
+  const rest = PATTERNS_DATA.filter((_,i) => i !== patternHighlight);
 
-━━━━━━━━━━━━━━━━━━━━━━━━━
-[HOOK — 0:00 to 0:04]
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Bro these facts are so unhinged I had to look all of them up twice before I believed them.
+  let html = `
+  <div class="pattern-card" style="border-left:4px solid var(--accent);">
+    <div class="pattern-rank">⭐ TODAY'S FEATURED · ${DATE_STR}</div>
+    <div class="pattern-title">${featured.title}</div>
+    <div class="pattern-desc">${featured.desc}</div>
+    <div class="pattern-examples">
+      ${featured.examples.map(e=>`<div class="pattern-ex">${e.text} <div class="pattern-views">${e.views}</div></div>`).join('')}
+    </div>
+  </div>`;
 
-━━━━━━━━━━━━━━━━━━━━━━━━━
-[BUILD — 0:04 to 0:16]
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Like genuinely every single one of these sounds like something someone made up on the internet. But they're all real. I'm going rapid fire — pay attention because one of these is going to completely break your brain. Comment the one that got you the worst.
+  rest.forEach((p,i) => {
+    const tierClass = p.tier === 'TIER S' ? 'tier-s' : 'tier-a';
+    html += `
+    <div class="pattern-card">
+      <div class="pattern-rank">${p.rank} · <span class="${tierClass}">${p.tier}</span></div>
+      <div class="pattern-title">${p.title}</div>
+      <div class="pattern-desc">${p.desc}</div>
+      <div class="pattern-examples">
+        ${p.examples.map(e=>`<div class="pattern-ex">${e.text} <div class="pattern-views">${e.views}</div></div>`).join('')}
+      </div>
+    </div>`;
+  });
 
-━━━━━━━━━━━━━━━━━━━━━━━━━
-[PAYLOAD — 0:16 to 1:10]
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Fact one — Oxford University is older than the Aztec Empire. Oxford was founded in 1096. The Aztec Empire didn't start until 1300. That's not a typo.
+  html += `
+  <div class="pattern-card" style="border-left:4px solid var(--red)">
+    <div class="pattern-rank" style="color:var(--red)">❌ WHAT'S NOT WORKING</div>
+    <div class="pattern-title">Avoid These</div>
+    <div class="pattern-desc" style="display:flex;flex-direction:column;gap:6px;margin-top:8px;">
+      <div>❌ Vague titles — "Speed just did THIS" tells viewers nothing specific</div>
+      <div>❌ Titles with no noun — viewers must picture what they'll see</div>
+      <div>❌ Pure Roblox-only content with zero crossover appeal</div>
+      <div>❌ More than 2 emojis in the title</div>
+      <div>❌ Starting the script with "Hey guys" or your channel name</div>
+      <div>❌ Generic "sub to me" CTAs — always ask a QUESTION instead</div>
+      <div>❌ Reverse-psychology "don't let this go viral" format more than once per 2 weeks</div>
+    </div>
+  </div>`;
 
-Fact two — sharks have existed longer than trees. When sharks first evolved, there were zero trees on this planet. None. Sharks swam around a world with no trees.
+  document.getElementById('patterns-container').innerHTML = html;
+}
 
-Fact three — the fax machine was invented before the telephone. You could fax documents in 1843. Alexander Graham Bell didn't patent the telephone until 1876. People were sending paper across wires before they could make a call.
+function renderScripts() {
+  const si = D % 3; // 0, 1, or 2
+  const todayScripts = [SCRIPTS[si], SCRIPTS[si + 3], SCRIPTS[si + 6]];
+  const archetypes = todayScripts.map(s => s.archetype).join(' · ');
 
-Fact four — there are more possible games of chess than there are atoms in the observable universe. Every game of chess you've ever seen played has almost certainly never been played before in human history.
+  document.getElementById('scripts-sub').textContent = `${DATE_STR} · Archetypes: ${archetypes}`;
 
-Fact five — Cleopatra lived closer in time to the Moon landing than to when the pyramids were built. She was born around 69 BC. The Great Pyramid was built around 2560 BC. The Moon landing was 1969. Do that math.
+  let html = '';
+  todayScripts.forEach((s, idx) => {
+    const n = idx + 1;
+    const idPre = `s${n}`;
+    html += `
+    <div class="script-card">
+      <div class="script-header">
+        <div class="script-num">Script 0${n} · ${s.archetype}</div>
+        <div class="script-title">${s.title}</div>
+        <div class="script-meta">${s.tags.map(t=>`<span class="script-tag">${t}</span>`).join('')}</div>
+      </div>
+      <div class="script-body">
+        ${['hook','build','payload','cta'].map(part => {
+          const sec = s[part];
+          const label = part.toUpperCase();
+          return `
+        <div class="script-block">
+          <div class="script-block-header">
+            <div><span class="script-block-label">${label}</span>&nbsp;&nbsp;<span class="script-block-time">${sec.time}</span></div>
+            <button class="script-block-copy" onclick="copyBlock(this, '${idPre}_${part}')">Copy</button>
+          </div>
+          <div class="script-text" id="${idPre}_${part}">${sec.text}</div>
+        </div>`;
+        }).join('')}
+      </div>
+      <div class="script-note">${s.footage}</div>
+      <div class="thumb-section">
+        <div class="thumb-section-label">🖼 Thumbnail Concept</div>
+        <div class="thumb-layer">${s.thumb.bg}</div>
+        <div class="thumb-layer">${s.thumb.text}</div>
+        <div class="thumb-layer">${s.thumb.reaction}</div>
+      </div>
+      <button class="copy-all-btn" id="copyBtn${n}" onclick="copyFullScript(${n})">📋 Copy Full Script</button>
+    </div>`;
+  });
 
-Fact six — the woolly mammoth was still alive when the Great Pyramid was being built. There was a population of dwarf mammoths on an island off Siberia that survived until 1650 BC. The Egyptians were building monuments while mammoths still existed.
+  document.getElementById('scripts-container').innerHTML = html;
+  // Store today's scripts for copy-all
+  window._todayScripts = todayScripts;
+}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━
-[CTA — 1:10 to 1:20]
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Drop the number of the one that broke you in the comments. I need to see if everyone cracks on the same one or if people are actually split.
+function renderIntel() {
+  const setIdx = D % 4;
+  const intel = INTEL_SETS[setIdx];
+  let html = `
+  <div class="pattern-card" style="border-left:4px solid var(--accent);margin-bottom:14px;">
+    <div class="pattern-rank">📅 ${DATE_STR.toUpperCase()} · TODAY'S TOP ARCHETYPE</div>
+    <div class="pattern-title">${intel.topArchetype}</div>
+    <div class="pattern-desc">${intel.desc}</div>
+  </div>
 
-━━━━━━━━━━━━━━━━━━━━━━━━━
-THUMBNAIL CONCEPT
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Background: Natural Disasters — mid-tsunami, bright blue water flooding green island.
-Caption: "this one is going to break your brain 💀"
-Reaction image: SpongeBob imagination rainbow meme OR shocked B&W face, bottom right, PNG cutout.
+  <div class="pattern-card" style="border-left:4px solid var(--green);margin-bottom:14px;">
+    <div class="pattern-rank">🏆 STANDOUT VIDEO THIS BATCH</div>
+    <div class="pattern-title">${intel.standout.title}</div>
+    <div class="pattern-desc"><strong>${intel.standout.channel} · ${intel.standout.views} views</strong><br>${intel.standout.why}</div>
+  </div>
 
-HASHTAGS: #roblox #rblx #robloxshorts #shorts #facts`,
+  <div class="pattern-card" style="border-left:4px solid var(--orange);margin-bottom:14px;">
+    <div class="pattern-rank">🎯 GAP OPPORTUNITY</div>
+    <div class="pattern-title">${intel.gap.title}</div>
+    <div class="pattern-desc">${intel.gap.desc}</div>
+  </div>
 
-  3: `SCRIPT 03 — "Why Your Roblox Shorts Aren't Getting Views 🔥"
-Format: Creator Meta | ~85 sec | Tier A
+  <div class="pattern-card" style="margin-bottom:14px;">
+    <div class="pattern-rank">📊 CHANNEL SNAPSHOTS</div>
+    <div class="pattern-title">Today's Top Views</div>
+    <table style="width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;">
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+        <td style="padding:6px 8px;color:var(--muted);">Channel</td>
+        <td style="padding:6px 8px;color:var(--muted);">Top Video</td>
+        <td style="padding:6px 8px;color:var(--muted);text-align:right;">Views</td>
+      </tr>
+      ${intel.table.map(row => `
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+        <td style="padding:6px 8px;">${row.channel}</td>
+        <td style="padding:6px 8px;color:var(--muted);font-size:12px;">${row.video}</td>
+        <td style="padding:6px 8px;text-align:right;color:var(--${row.color});font-weight:bold;">${row.views}</td>
+      </tr>`).join('')}
+    </table>
+  </div>
 
-━━━━━━━━━━━━━━━━━━━━━━━━━
-[HOOK — 0:00 to 0:05]
-━━━━━━━━━━━━━━━━━━━━━━━━━
-If you're posting Roblox Shorts every single day and still stuck under a thousand views — it's not your content. It's one mistake that's killing every video before it even gets a chance.
+  <div class="pattern-card" style="border-left:4px solid var(--accent);margin-bottom:14px;">
+    <div class="pattern-rank">✏️ TODAY'S TITLE OPTIONS</div>
+    <div class="pattern-title">Use One of These</div>
+    <div class="pattern-examples">
+      ${intel.titles.map(t=>`<div class="pattern-ex">${t.text} <span class="pattern-views">${t.archetype}</span></div>`).join('')}
+    </div>
+  </div>
 
-━━━━━━━━━━━━━━━━━━━━━━━━━
-[BUILD — 0:05 to 0:20]
-━━━━━━━━━━━━━━━━━━━━━━━━━
-I've been watching Roblox short-form creators for a while now. And I keep seeing the same thing. Good gameplay, decent edits, real effort going in. But the views just don't come. And the reason is something nobody talks about because it's not obvious until you see it from the outside.
+  <div class="divider"></div>
+  <div style="text-align:center;font-size:12px;color:var(--muted);padding:4px 0 20px;">Rotates daily · Built from 6-channel competitor research 🔄</div>`;
 
-━━━━━━━━━━━━━━━━━━━━━━━━━
-[PAYLOAD — 0:20 to 1:15]
-━━━━━━━━━━━━━━━━━━━━━━━━━
-The algorithm doesn't care how long you've been posting. It doesn't care about your consistency. It cares about one thing — did someone watch your first three seconds and keep going? That's it.
+  document.getElementById('intel-container').innerHTML = html;
+}
 
-Think about it like Build a Boat. You can spend an hour on the perfect design. But if the boat sinks in the first five seconds, none of that work matters. Your hook is the foundation. If it's weak, everything collapses.
+function renderMyChannel() {
+  const action = DOW_ACTIONS[DOW];
+  const dayName = DAYS_OF_WEEK[DOW];
+  let html = `
+  <div class="pattern-card" style="border-left:4px solid var(--orange);margin-bottom:14px;">
+    <div class="pattern-rank">💡 KEY INSIGHT — Last Research Update</div>
+    <div class="pattern-title">Titles are too vague — they tell what happened, not WHY it's interesting.</div>
+    <div class="pattern-desc">"SPEED JUST DID THIS 💀" (1K) and "The Secret Behind Youtube 💀" (902) both fail the curiosity gap test. "Speed just did THIS" — did what? If viewers can answer the title without clicking, they won't click. Competitors hit 17K–67K by making you NEED to know what's inside. Fix: add the specific noun. "Speed EXPOSED Roblox On Stream 💀" beats "Speed just did this" every time.</div>
+  </div>
 
-Most creators open with "hey guys welcome back to my channel." You just told the algorithm to kill the video. Nobody who doesn't already know you is staying past that.
+  <div class="video-card" style="margin-bottom:12px;">
+    <div class="card-body">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div class="card-title">SPEED JUST DID THIS 💀</div>
+        <span class="script-tag" style="background:rgba(249,115,22,0.2);color:var(--orange);white-space:nowrap;">NEEDS WORK</span>
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">📊 ~1K views · As of June 4, 2026</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+        <span class="script-tag">Good emoji use</span>
+        <span class="script-tag">Trend-relevant topic</span>
+        <span class="script-tag">Missing specificity</span>
+      </div>
+      <div style="font-size:13px;color:var(--accent);">🔧 Fix: "Speed EXPOSED Roblox On His Stream 💀 #ishowspeed" — give them the noun, make them click to see HOW it went down.</div>
+    </div>
+  </div>
 
-Every channel that breaks past 100K views starts mid-thought. The video is already happening before the viewer realizes they're watching. It feels like they dropped into something already in progress — and that creates a pull to stay and catch up.
+  <div class="video-card" style="margin-bottom:12px;">
+    <div class="card-body">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div class="card-title">The Secret Behind Youtube 💀</div>
+        <span class="script-tag" style="background:rgba(239,68,68,0.2);color:var(--red);white-space:nowrap;">AVOID</span>
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">📊 902 views · As of June 4, 2026</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+        <span class="script-tag">Too broad</span>
+        <span class="script-tag">No Roblox angle</span>
+        <span class="script-tag">Weak hook</span>
+      </div>
+      <div style="font-size:13px;color:var(--accent);">🔧 Fix: "Roblox Creators Can't Make Money Anymore and YouTube Won't Tell You Why 💀" — same topic, specific angle, massive curiosity gap.</div>
+    </div>
+  </div>
 
-Try this: before you post your next short, cover the first three seconds with your hand and play the rest. If the rest is strong, you just have a hook problem. And that's fixable in one sentence.
+  <div class="pattern-card" style="border-left:4px solid var(--green);margin-bottom:14px;">
+    <div class="pattern-rank">✅ ${dayName.toUpperCase()} ACTION LIST</div>
+    <div class="pattern-title">Today's 3 Priorities</div>
+    <div class="pattern-desc">${action}</div>
+  </div>`;
 
-The best hooks are either a shocking statement — "Roblox just quietly removed one of the most popular features in Rivals and nobody noticed" — or a direct identity challenge — "if you've been here since before 2020 you're genuinely in the top 1%." Both of those make someone stop scrolling.
+  document.getElementById('mychannel-container').innerHTML = html;
+}
 
-Even something like Bloxburg content — instead of "today we're building a house" — start with "this is the most expensive build I've ever made in Bloxburg and you can copy it for free." Now I'm watching. Now I want to see how.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━
-[CTA — 1:15 to 1:25]
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Try it on your next short and let me know what happens. Drop your channel in the comments — I'll actually check. And if your hook was already strong, I want to know that too.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━
-THUMBNAIL CONCEPT
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Background: Build a Boat — boat visibly sinking/exploding in bright blue water.
-Caption: "this is why your videos never blow up 🔥"
-Reaction image: Pointing guy (orange shirt) or astronaut meme, PNG cutout bottom left pointing at caption.
-
-HASHTAGS: #roblox #rblx #robloxshorts #shorts #smallcreators`
-};
+// ══════════════════════════════════════════════
+//  INTERACTION HANDLERS
+// ══════════════════════════════════════════════
 
 function showTab(name, el) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   el.classList.add('active');
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function openVideo(url) { window.open(url, '_blank'); }
 
 function copyBlock(btn, id) {
-  const text = document.getElementById(id).innerText;
-  doCopy(text, () => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  doCopy(el.innerText, () => {
     const orig = btn.textContent;
     btn.textContent = 'Copied ✓';
     btn.classList.add('copied');
@@ -1124,48 +700,69 @@ function copyBlock(btn, id) {
 
 function copyFullScript(num) {
   const btn = document.getElementById('copyBtn' + num);
-  docopy(fullScripts[num], () => {
+  const s = (window._todayScripts || [])[num - 1];
+  if (!s) return;
+  const text = [
+    `SCRIPT 0${num} — "${s.title}"`,
+    `Archetype: ${s.archetype}`,
+    '',
+    '━━━━━━━━━━━━━━━━━━━━━━━━━',
+    `[HOOK — ${s.hook.time}]`,
+    '━━━━━━━━━━━━━━━━━━━━━━━━━',
+    s.hook.text,
+    '',
+    '━━━━━━━━━━━━━━━━━━━━━━━━━',
+    `[BUILD — ${s.build.time}]`,
+    '━━━━━━━━━━━━━━━━━━━━━━━━━',
+    s.build.text,
+    '',
+    '━━━━━━━━━━━━━━━━━━━━━━━━━',
+    `[PAYLOAD — ${s.payload.time}]`,
+    '━━━━━━━━━━━━━━━━━━━━━━━━━',
+    s.payload.text,
+    '',
+    '━━━━━━━━━━━━━━━━━━━━━━━━━',
+    `[CTA — ${s.cta.time}]`,
+    '━━━━━━━━━━━━━━━━━━━━━━━━━',
+    s.cta.text,
+    '',
+    '━━━━━━━━━━━━━━━━━━━━━━━━━',
+    'THUMBNAIL CONCEPT',
+    '━━━━━━━━━━━━━━━━━━━━━━━━━',
+    s.thumb.bg,
+    s.thumb.text,
+    s.thumb.reaction,
+    '',
+    'HASHTAGS: #roblox #rblx #robloxshorts #shorts',
+  ].join('\n');
+
+  doCopy(text, () => {
+    if (!btn) return;
     btn.classList.add('copied');
-    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    btn.innerHTML = '✓ Copied!';
     setTimeout(() => {
       btn.classList.remove('copied');
-      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy Full Script';
+      btn.innerHTML = '📋 Copy Full Script';
     }, 2500);
   });
 }
 
 function doCopy(text, cb) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(() => { showToast(); if(cb) cb(); }).catch(() => fallbackCopy(text, cb));
-  } else { fallbackCopy(text, cb); }
-}
-
-// unified alias
-function doopy(text, cb) { doCopy(text, cb); }
-function docy(text, cb) { doCopy(text, cb); }
-function docp(text, cb) { doCopy(text, cb); }
-function docy2(text, cb) { doCopy(text, cb); }
-
-// fix naming
-window.doopy = doCopy;
-
-function copyFullScript(num) {
-  const btn = document.getElementById('copyBtn' + num);
-  doCopy(fullScripts[num], () => {
-    btn.classList.add('copied');
-    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
-    setTimeout(() => {
-      btn.classList.remove('copied');
-      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy Full Script';
-    }, 2500);
-  });
+    navigator.clipboard.writeText(text).then(() => { showToast(); if (cb) cb(); }).catch(() => fallbackCopy(text, cb));
+  } else {
+    fallbackCopy(text, cb);
+  }
 }
 
 function fallbackCopy(text, cb) {
   const ta = document.createElement('textarea');
-  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-  document.body.appendChild(ta); ta.focus(); ta.select();
-  try { document.execCommand('copy'); showToast(); if(cb) cb(); } catch(e) {}
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try { document.execCommand('copy'); showToast(); if (cb) cb(); } catch(e) {}
   document.body.removeChild(ta);
 }
 
@@ -1178,6 +775,20 @@ function showToast() {
 window.addEventListener('scroll', () => {
   document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 280);
 });
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+(function init() {
+  // Set date in header
+  document.getElementById('header-date').textContent = `Roblox Shorts · ${DATE_STR}`;
+
+  renderVideos();
+  renderPatterns();
+  renderScripts();
+  renderIntel();
+  renderMyChannel();
+})();
 </script>
 </body>
 </html>
