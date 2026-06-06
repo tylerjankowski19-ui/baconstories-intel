@@ -140,6 +140,13 @@
   .toast.show { transform: translateX(-50%) translateY(0); }
   .scroll-top { position: fixed; bottom: 24px; right: 18px; width: 40px; height: 40px; background: var(--surface2); border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: opacity 0.3s; z-index: 200; }
   .scroll-top.visible { opacity: 1; }
+
+  /* ── Image Prompt Rows ── */
+  .img-prompt-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 14px 12px; background: rgba(124,109,255,0.07); border-top: 1px dashed rgba(124,109,255,0.25); }
+  .img-prompt-text { font-size: 12px; color: var(--muted); line-height: 1.5; flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .img-prompt-copy { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: rgba(124,109,255,0.15); border: 1px solid rgba(124,109,255,0.35); color: var(--accent); cursor: pointer; font-weight: 600; white-space: nowrap; flex-shrink: 0; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
+  .img-prompt-copy.copied { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+  .script-block.collapsed .img-prompt-row { display: none; }
 </style>
 </head>
 <body>
@@ -283,6 +290,13 @@ const SCRIPTS = [
       { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
       { label: 'CTA', text: "Comment A, B, C, or VIP — which one are you picking? And if your little sibling has ever pulled this on you, I need that story in the comments right now." },
     ],
+    imagePrompts: {
+      hook:    'Roblox-style cartoon image. Roblox living room. Main Roblox character standing next to a cracked TV, mouth open in shock. Little brother Roblox character in the background smirking and backing away. The shadow of a parent appears at the top of the staircase. Bright indoor setting, slightly chaotic. Blocky Roblox arms and hands, bright cartoon colors, detailed living room background.',
+      optionA: 'Roblox-style cartoon image. Main Roblox character sitting alone in a dim bedroom, arms folded, looking defeated. Phone face-down on the desk with a red X over it. Sunny day visible through the window they cannot enjoy. Blocky Roblox arms and hands, bright cartoon colors, detailed bedroom background.',
+      optionB: 'Roblox-style cartoon image. Roblox character holding an upside-down empty piggy bank, coins gone. Standing in front of a store window displaying a brand new TV with a price tag. Sad drooping expression. Blocky Roblox arms and hands, bright cartoon colors, detailed store-front background.',
+      optionC: 'Roblox-style cartoon image. Roblox character gesturing with both hands trying to explain to a parent, who looks skeptical with arms crossed. Little brother Roblox character in background crying dramatically for sympathy. Blocky Roblox arms and hands, bright cartoon colors, detailed living room background.',
+      vip:     'Roblox-style cartoon image. Little brother Roblox character frozen mid-brag on the phone, caught red-handed. Both parents pointing at him with stern expressions. Main Roblox character in the background grinning with thumbs up. Gold crown floating above the main character. Blocky Roblox arms and hands, warm celebratory lighting, detailed living room background.',
+    },
     footage: '📹 Roblox gameplay background. Cracked TV graphic overlay. Quick cuts between each option.',
     thumb: { bg: '🎮 Roblox living room or house map, slightly chaotic', text: '📝 "HE BLAMED YOU 💀😭" in bold red/white, cracked screen effect', reaction: '😭 Devastated character pointing at viewer, drop shadow' },
   },
@@ -300,6 +314,13 @@ const SCRIPTS = [
       { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
       { label: 'CTA', text: "A, B, C, or VIP — which school are you surviving? Drop it in the comments. Be honest." },
     ],
+    imagePrompts: {
+      hook:    'Roblox-style cartoon image. Three miserable-looking school buildings side by side with labels A, B, C. Main Roblox character standing in front with a horrified expression and hands on head. Overcast sky, slightly dramatic. Blocky Roblox arms and hands, bright cartoon colors, detailed outdoor street background.',
+      optionA: 'Roblox-style cartoon image. Cramped classroom packed with Roblox characters buried under towers of homework. Teacher at the board pointing to equations. Main character in front row, head in hands, eyes half closed. Fluorescent lights overhead. Blocky Roblox arms and hands, bright cartoon colors, detailed classroom background.',
+      optionB: 'Roblox-style cartoon image. Roblox characters running laps in school uniforms, one falling behind. A coach blowing a whistle on the side. Rain falling lightly. Everyone looks exhausted. Blocky Roblox arms and hands, bright cartoon colors, detailed outdoor track background.',
+      optionC: 'Roblox-style cartoon image. Row of Roblox characters in stiff identical uniforms standing perfectly at attention. All look uncomfortable. A strict teacher walks past inspecting each one. Blocky Roblox arms and hands, bright cartoon colors, formal school hallway background.',
+      vip:     'Roblox-style cartoon image. Chill campus — Roblox characters lounging in beanbag chairs, a buffet food table in the background, a clock on the wall showing noon on Friday. Everyone smiling and relaxed. Main character with gold crown above their head. Blocky Roblox arms and hands, warm bright lighting, detailed campus background.',
+    },
     footage: '📹 Roblox school or town map. Show each school with text overlay. VIP school reveal with gold shimmer.',
     thumb: { bg: '🎮 Roblox school building, bright daytime, slight chaos feeling', text: '📝 "WHICH SCHOOL ARE YOU PICKING? 💀" in white bold', reaction: '😳 Shocked character staring at school entrance, drop shadow' },
   },
@@ -317,6 +338,13 @@ const SCRIPTS = [
       { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
       { label: 'CTA', text: "A, B, C, or VIP — which set of rules are you living with? Drop it in the comments." },
     ],
+    imagePrompts: {
+      hook:    'Roblox-style cartoon image. Family meeting scene at a dining table. Two parent Roblox characters sitting across from the main character with serious expressions, holding a printed list of rules. Main character sinking in their chair, looking worried. Blocky Roblox arms and hands, bright cartoon colors, detailed kitchen background.',
+      optionA: 'Roblox-style cartoon image. Parent Roblox character holding a magnifying glass over a homework sheet, inspecting every word. Main character sitting nervously beside them biting their nails. Pile of textbooks on the table. Blocky Roblox arms and hands, bright cartoon colors, detailed home office background.',
+      optionB: 'Roblox-style cartoon image. Roblox character pushing a heavy mop across the floor, surrounded by a mountain of dirty dishes in the sink. Clock on the wall showing late evening. Exhausted expression. Blocky Roblox arms and hands, bright cartoon colors, detailed kitchen background.',
+      optionC: 'Roblox-style cartoon image. Main Roblox character lying in bed wide awake at 8:30 PM, staring at the ceiling. Phone charging in the kitchen visible through the open door, out of reach. Moonlight through window. Blocky Roblox arms and hands, dim cozy bedroom lighting, bright cartoon colors.',
+      vip:     'Roblox-style cartoon image. Roblox character lounging on a couch with a game controller, totally relaxed. Both parents walking in smiling and handing over an envelope with money. No rules in sight. Gold crown above the main character. Blocky Roblox arms and hands, warm cozy living room lighting, bright cartoon colors.',
+    },
     footage: '📹 Roblox house or apartment map. Show each rule with text overlay. VIP reveal with gold shimmer effect.',
     thumb: { bg: '🎮 Roblox house interior, family meeting vibe', text: '📝 "NEW HOUSE RULES 💀" in bold red/white', reaction: '😱 Character reading a list with shocked expression, drop shadow' },
   },
@@ -334,6 +362,13 @@ const SCRIPTS = [
       { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
       { label: 'CTA', text: "A, B, C, or VIP — comment which one you are getting. And if you have been caught gaming at 3AM, drop exactly what happened." },
     ],
+    imagePrompts: {
+      hook:    "Roblox-style cartoon image. Dark bedroom, main Roblox character's face glowing from the monitor. Clock on the wall reads 3:00 AM. A parent's tall silhouette stands in the doorway with the light from the hall spilling in. Character frozen in panic. Blocky Roblox arms and hands, dark moody lighting, bright cartoon style.",
+      optionA: 'Roblox-style cartoon image. Empty desk where devices used to be. Shelves completely cleared. Main character standing there staring at the bare desk with a devastated expression. Dust outline where the console was. Blocky Roblox arms and hands, bright cartoon colors, detailed bedroom background.',
+      optionB: 'Roblox-style cartoon image. Home router with a red light. Every screen in the room showing a blocked/error message. Main character slumped in chair looking defeated, holding a controller with nothing to connect to. Blocky Roblox arms and hands, bright cartoon colors, detailed bedroom background.',
+      optionC: 'Roblox-style cartoon image. Family around the dining table, parents holding stacks of printed articles about sleep. Main character slouched in their chair looking like they would rather be anywhere else. One parent pointing to a chart. Blocky Roblox arms and hands, bright cartoon colors, detailed kitchen background.',
+      vip:     'Roblox-style cartoon image. Dad Roblox character hunched over a keyboard, squinting at the screen trying to figure out how to play. Main character standing beside him coaching, pointing at the screen. Mom character in the doorway laughing. Clock on the wall reads 11 PM. Gold crown above the main character. Blocky Roblox arms and hands, warm living room lighting, bright cartoon colors.',
+    },
     footage: '📹 Roblox screen glowing in a dark room with 3AM clock graphic. Parent shadow overlay. Family meeting scene.',
     thumb: { bg: '🎮 Roblox screen glowing in dark room, clock showing 3AM', text: '📝 "CAUGHT AT 3AM 💀" in white bold with red glow', reaction: '😱 Wide-eyed caught character with headphones, drop shadow' },
   },
@@ -351,6 +386,13 @@ const SCRIPTS = [
       { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
       { label: 'CTA', text: "A, B, C, or VIP — which trip are you going on? Drop it in the comments. And tell me the worst school trip you have actually been on." },
     ],
+    imagePrompts: {
+      hook:    'Roblox-style cartoon image. Classroom with a vote board at the front showing three options — museum, hike, recycling plant. Every Roblox character in the class looks miserable staring at the board. Main character in the front row holding their head. Blocky Roblox arms and hands, bright cartoon colors, detailed classroom background.',
+      optionA: 'Roblox-style cartoon image. Roblox characters standing in a boring museum, staring at a glass case containing a rock. Everyone has completely dead eyes. A tour guide Roblox character points enthusiastically. Main character looking like they want to leave immediately. Blocky Roblox arms and hands, bright cartoon colors, detailed museum background.',
+      optionB: 'Roblox-style cartoon image. Roblox characters hiking in school uniforms in light rain. One character slipping on mud, another wringing water out of their collar. All looking miserable on a forest trail. Blocky Roblox arms and hands, slightly grey outdoor lighting, bright cartoon colors.',
+      optionC: 'Roblox-style cartoon image. Roblox characters at a recycling plant, all holding their noses with one hand. Conveyor belt of plastic bottles in the background. Main character staring at a bottle going around for the fifth time. Blocky Roblox arms and hands, bright cartoon colors, industrial background.',
+      vip:     'Roblox-style cartoon image. Theme park with colorful rides in the background. Roblox characters cheering with fast pass wristbands raised. A sit-down restaurant visible in the distance. Main character with gold crown, huge smile, arms in the air. Confetti falling. Blocky Roblox arms and hands, warm sunny lighting, bright cartoon colors.',
+    },
     footage: '📹 Roblox theme park or outdoor field map. Text overlays for each trip. VIP reveal with fireworks.',
     thumb: { bg: '🎮 Roblox colorful outdoor map with school trip energy', text: '📝 "WHICH TRIP ARE YOU PICKING? 💀" in bold white', reaction: '😭 Character staring at three terrible options, confused face' },
   },
@@ -368,6 +410,13 @@ const SCRIPTS = [
       { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
       { label: 'CTA', text: "A, B, C, or VIP — which one are you surviving today? Drop it in the comments." },
     ],
+    imagePrompts: {
+      hook:    'Roblox-style cartoon image. Cafeteria serving area with almost nothing left. Three sad-looking food items under heat lamps. Main Roblox character standing in line, jaw dropped in horror. Other characters behind them looking equally distressed. Blocky Roblox arms and hands, bright cartoon colors, detailed cafeteria background.',
+      optionA: 'Roblox-style cartoon image. Close-up shot of a cafeteria tray with a suspicious beige casserole on it. Main Roblox character holding the tray at arm length with a disgusted expression. Slight steam rising from the casserole. Blocky Roblox arms and hands, bright cartoon colors, detailed cafeteria background.',
+      optionB: 'Roblox-style cartoon image. Roblox character holding a plate with wilted lettuce, one lonely crouton, and a leaking dressing packet. Inspecting it like they are solving a crime. Looking sad. Blocky Roblox arms and hands, bright cartoon colors, detailed cafeteria background.',
+      optionC: 'Roblox-style cartoon image. Roblox character staring at a tray with two plain slices of bread and a tiny foil butter packet that is already ripped wrong. Character looking at it with dead eyes. Nothing else on the tray. Blocky Roblox arms and hands, bright cartoon colors, detailed cafeteria background.',
+      vip:     'Roblox-style cartoon image. Back corner of the cafeteria glowing gold. A custom burger bar with toppings, a brownie and soft serve dessert station. Roblox characters crowding around excitedly. A clock on the wall shows extended lunch time. Main character at the front with gold crown, huge smile. Blocky Roblox arms and hands, warm golden lighting, bright cartoon colors.',
+    },
     footage: '📹 Roblox cafeteria or restaurant map. Show each food option with description overlay. VIP reveal with gold glow.',
     thumb: { bg: '🎮 Roblox cafeteria interior with food trays on table', text: '📝 "THE WORST LUNCH 💀😭" in bold white/red', reaction: '🤢 Disgusted character staring at food tray, drop shadow' },
   },
@@ -385,6 +434,13 @@ const SCRIPTS = [
       { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
       { label: 'CTA', text: "A, B, C, or VIP — which power are you using first? Drop it in the comments." },
     ],
+    imagePrompts: {
+      hook:    'Roblox-style cartoon image. Roblox character standing at a podium wearing a tiny president badge, looking proud. Then a very small piece of paper gets handed to them listing three powers. Character expression shifts from excited to confused. Blocky Roblox arms and hands, bright cartoon colors, detailed school auditorium background.',
+      optionA: 'Roblox-style cartoon image. Roblox character at a small DJ booth in the school hallway, pressing play on a playlist. Half the students nearby look happy, half look annoyed. Character grinning proudly at their one and only power. Blocky Roblox arms and hands, bright cartoon colors, detailed hallway background.',
+      optionB: 'Roblox-style cartoon image. Roblox character standing next to a small brass plaque on a classroom door, posing for a photo. One other student in the background looks confused. Character looks way too proud of a very small plaque. Blocky Roblox arms and hands, bright cartoon colors, detailed school hallway background.',
+      optionC: 'Roblox-style cartoon image. Roblox character standing next to a printer in the school library, swapping out a white paper ream for a light blue one. Looking at their work with a completely unimpressed expression. A librarian walks by without noticing. Blocky Roblox arms and hands, bright cartoon colors, detailed library background.',
+      vip:     'Roblox-style cartoon image. Roblox character on an intercom in the principal office making an announcement. Cut to hallway — every student cheering, a FREE PERIOD banner dropping from the ceiling. Main character with gold crown above their head, looking legendary. Blocky Roblox arms and hands, bright celebratory lighting, detailed school background.',
+    },
     footage: '📹 Roblox school or office map. President badge graphic overlay. Text overlays for each power. VIP reveal with crown animation.',
     thumb: { bg: '🎮 Roblox school hallway, slightly official vibe', text: '📝 "YOU\'RE CLASS PRESIDENT 💀" in bold white with crown emoji', reaction: '😏 Confident character with crown, drop shadow' },
   },
@@ -402,6 +458,13 @@ const SCRIPTS = [
       { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
       { label: 'CTA', text: "A, B, C, or VIP — which summer are you living? Drop it in the comments. And tell me the worst plan that ever got cancelled on you." },
     ],
+    imagePrompts: {
+      hook:    'Roblox-style cartoon image. Main Roblox character staring at a calendar with a big red X over the summer plans. Three replacement option cards floating in front of them. Character looks devastated, shoulders slumped. Sunny day visible outside the window making it worse. Blocky Roblox arms and hands, bright cartoon colors, detailed bedroom background.',
+      optionA: 'Roblox-style cartoon image. Roblox character pushing a heavy lawnmower in blazing heat, sweat visible. Sun directly overhead, grass everywhere. Character looks completely miserable. Blocky Roblox arms and hands, bright summer outdoor lighting, bright cartoon colors.',
+      optionB: 'Roblox-style cartoon image. Cramped car interior, main Roblox character in the back seat, little sibling leg overlapping into their space. Phone showing no WiFi bars. Window shows highway going on forever. Character staring ahead with empty eyes. Blocky Roblox arms and hands, bright cartoon colors, detailed car interior background.',
+      optionC: 'Roblox-style cartoon image. Summer school classroom, main Roblox character slumped at a desk at 8 AM, barely awake. Clock on the wall, warm sunny day visible through the window outside. Teacher at the board already going over material. Blocky Roblox arms and hands, bright cartoon colors, detailed classroom background.',
+      vip:     'Roblox-style cartoon image. Gaming convention hall, bright and packed. Roblox character meeting a famous YouTuber at a signing table, getting their early access game box. Confetti falling, crowd cheering. Main character with gold crown, biggest smile possible. Blocky Roblox arms and hands, warm bright convention lighting, bright cartoon colors.',
+    },
     footage: '📹 Roblox summer or beach map, slightly desaturated. Sad calendar graphic. Text overlays per option. VIP gaming convention reveal.',
     thumb: { bg: '🎮 Roblox beach or summer map with empty calendar graphic', text: '📝 "SUMMER RUINED 💀😭" in bold white', reaction: '😭 Devastated character staring at empty calendar, drop shadow' },
   },
@@ -419,6 +482,13 @@ const SCRIPTS = [
       { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
       { label: 'CTA', text: "A, B, C, or VIP — what are you doing in this situation? Drop it in the comments. And if this has actually happened in your house I need the full story." },
     ],
+    imagePrompts: {
+      hook:    'Roblox-style cartoon image. Main Roblox character walks in and sees sibling at a computer showing a large Robux purchase confirmation screen. Both characters frozen, staring at each other. Sibling eyes wide in panic. Main character eyes equally wide in shock. Blocky Roblox arms and hands, bright cartoon colors, detailed bedroom background.',
+      optionA: 'Roblox-style cartoon image. Main Roblox character pointing dramatically at little sibling while both parents watch with serious expressions. Sibling is crying, parents look stern. Scene feels like a courtroom. Blocky Roblox arms and hands, bright cartoon colors, detailed living room background.',
+      optionB: 'Roblox-style cartoon image. Main Roblox character walking away down the hallway, back turned, hands in pockets. Looking stressed and conflicted. Sibling watching from behind the bedroom door, nervous. Blocky Roblox arms and hands, bright cartoon colors, detailed home hallway background.',
+      optionC: 'Roblox-style cartoon image. Main Roblox character and sibling doing a very serious handshake deal in a darkened room. Main character has a sly half-smile. Sibling looks relieved but uneasy. Blocky Roblox arms and hands, dim dramatic lighting, bright cartoon colors.',
+      vip:     'Roblox-style cartoon image. Main character coaching sibling with a repayment plan on paper. Then sibling confessing calmly to parents who look pleasantly surprised. Both parents smiling. Main character in background with gold crown, giving a thumbs up. Blocky Roblox arms and hands, warm family lighting, bright cartoon colors.',
+    },
     footage: '📹 Roblox purchase screen with Robux graphic. Secret reveal overlay. Family home Roblox map. Text overlays per option.',
     thumb: { bg: '🎮 Roblox purchase confirmation screen with glowing Robux', text: '📝 "YOU SAW EVERYTHING 💀" in bold white/red', reaction: '😱 Shocked character with hand over mouth, drop shadow' },
   },
@@ -666,12 +736,23 @@ function renderScripts() {
     let chunksHtml = '';
     let ci = 0;
 
+    const IMG_LABELS = { 'HOOK': 'hook', 'OPTION A': 'optionA', 'OPTION B': 'optionB', 'OPTION C': 'optionC', 'VIP OPTION 👑': 'vip' };
+
     s.sections.forEach(sec => {
       const chunks = chunkText(sec.text, 480);
       const color = sectionColor(sec.label);
+      const promptKey = IMG_LABELS[sec.label];
+      const promptText = promptKey && s.imagePrompts ? s.imagePrompts[promptKey] : null;
       chunks.forEach((chunk, pi) => {
         const chunkId = `s${n}_c${ci}`;
         const label = chunks.length > 1 ? `${sec.label} ${pi + 1}/${chunks.length}` : sec.label;
+        const isLastChunk = pi === chunks.length - 1;
+        const escapedPrompt = promptText ? escapeAttr(promptText) : '';
+        const imgRow = (promptText && isLastChunk) ? `
+          <div class="img-prompt-row">
+            <div class="img-prompt-text">🎨 ${escapedPrompt}</div>
+            <button class="img-prompt-copy" onclick="event.stopPropagation();copyImgPrompt(this)" data-prompt="${escapedPrompt}">Copy Prompt</button>
+          </div>` : '';
         chunksHtml += `
         <div class="script-block">
           <div class="script-block-header" onclick="toggleBlock(this.closest('.script-block'))">
@@ -684,7 +765,7 @@ function renderScripts() {
               <button class="script-block-copy" onclick="event.stopPropagation();copyBlock(this,'${chunkId}')">Copy</button>
             </div>
           </div>
-          <div class="script-text" id="${chunkId}">${chunk}</div>
+          <div class="script-text" id="${chunkId}">${chunk}</div>${imgRow}
         </div>`;
         ci++;
       });
@@ -841,6 +922,21 @@ function copyBlock(btn, id) {
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
   });
+}
+
+function copyImgPrompt(btn) {
+  var prompt = btn.getAttribute('data-prompt');
+  if (!prompt) return;
+  doCopy(prompt, function() {
+    var orig = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('copied');
+    setTimeout(function() { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function escapeAttr(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function copyFullScript(num) {
