@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background: near black -->
+  <rect width="512" height="512" rx="112" fill="#111111"/>
+  <!-- YouTube red pill -->
+  <rect x="56" y="148" width="400" height="200" rx="40" fill="#FF0000"/>
+  <!-- White play triangle -->
+  <polygon points="208,188 208,308 338,248" fill="white"/>
+  <!-- Scripts wordmark -->
+  <text x="256" y="430" font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif" font-size="72" font-weight="800" fill="white" text-anchor="middle" letter-spacing="-2">Scripts</text>
+</svg>

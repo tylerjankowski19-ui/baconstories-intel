@@ -9,154 +9,176 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BaconIntel">
-<meta name="theme-color" content="#14102a">
+<meta name="theme-color" content="#0a0a0a">
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
   :root {
-    --bg: #0a0a0f;
-    --surface: #13131a;
-    --surface2: #1c1c27;
-    --border: #2a2a3a;
-    --text: #f0f0f8;
-    --muted: #7070a0;
-    --accent: #7c6dff;
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1c1c1c;
+    --surface3: #242424;
+    --border: #ffffff0d;
+    --border2: #ffffff18;
+    --text: #ffffff;
+    --muted: #707070;
+    --muted2: #a0a0a0;
+    --accent: #ff0000;
+    --accent-dim: rgba(255,0,0,0.10);
     --green: #22c55e;
+    --green-bg: rgba(34,197,94,0.1);
     --orange: #f97316;
-    --red: #ef4444;
-    --green-bg: rgba(34,197,94,0.12);
-    --orange-bg: rgba(249,115,22,0.12);
-    --red-bg: rgba(239,68,68,0.12);
+    --orange-bg: rgba(249,115,22,0.1);
+    --red: #ff0000;
+    --red-bg: rgba(255,0,0,0.1);
+    --gold: #ffd700;
+    --yt-red: #ff0000;
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 60px; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 80px; -webkit-font-smoothing: antialiased; }
 
-  .header { background: linear-gradient(135deg, #1a1430 0%, #0f1525 100%); padding: 52px 20px 20px; border-bottom: 1px solid var(--border); }
-  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-  .logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-  .logo span { color: var(--accent); }
-  .badge { font-size: 11px; background: var(--accent); color: #fff; padding: 3px 10px; border-radius: 20px; font-weight: 600; letter-spacing: 0.5px; }
-  .header-sub { font-size: 13px; color: var(--muted); }
+  /* ── HEADER ── */
+  .header { padding: 56px 24px 28px; }
+  .header-greeting { font-size: 36px; font-weight: 300; letter-spacing: -1.5px; color: var(--text); line-height: 1.1; margin-bottom: 6px; }
+  .header-greeting strong { font-weight: 800; }
+  .header-date { font-size: 13px; color: var(--muted2); font-weight: 400; letter-spacing: 0.2px; }
+  .header-top { display: flex; align-items: flex-start; justify-content: space-between; }
+  .logo { font-size: 13px; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .badge { font-size: 10px; background: var(--yt-red); color: #fff; padding: 3px 9px; border-radius: 20px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; }
 
-  .tabs { display: flex; gap: 6px; padding: 14px 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; background: var(--bg); position: sticky; top: 0; z-index: 99; border-bottom: 1px solid var(--border); }
+  /* ── TABS ── */
+  .tabs { display: flex; gap: 0; padding: 0 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; background: var(--bg); position: sticky; top: 0; z-index: 99; border-bottom: 1px solid var(--border); }
   .tabs::-webkit-scrollbar { display: none; }
-  .tab { flex-shrink: 0; padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--surface); color: var(--muted); transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
-  .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tab { flex-shrink: 0; padding: 14px 16px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--muted); transition: all 0.2s; -webkit-tap-highlight-color: transparent; border-bottom: 2px solid transparent; margin-bottom: -1px; letter-spacing: 0.1px; }
+  .tab.active { color: var(--text); border-bottom-color: var(--accent); font-weight: 700; }
 
-  .section { display: none; padding: 18px 16px; }
+  /* ── SECTIONS ── */
+  .section { display: none; padding: 20px 16px; }
   .section.active { display: block; }
-  .section-title { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px; }
+  .section-label, .section-title { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
 
-  .video-card { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); margin-bottom: 16px; overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 0.12s; }
-  .video-card:active { transform: scale(0.98); }
-  .thumb-wrap { position: relative; width: 100%; height: 200px; background: linear-gradient(135deg, #1a1430, #0f2530); display: flex; align-items: center; justify-content: center; }
+  /* ── VIDEO CARDS ── */
+  .video-card { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 14px; overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 0.12s; }
+  .video-card:active { transform: scale(0.985); }
+  .thumb-wrap { position: relative; width: 100%; height: 190px; background: linear-gradient(135deg, #1a1430, #0f2530); display: flex; align-items: center; justify-content: center; }
   .thumb-bg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-  .thumb-emoji { font-size: 64px; opacity: 0.3; }
+  .thumb-emoji { font-size: 60px; opacity: 0.25; }
   .play-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-  .play-btn { width: 52px; height: 52px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1.5px solid rgba(255,255,255,0.3); }
+  .play-btn { width: 48px; height: 48px; background: rgba(255,255,255,0.12); backdrop-filter: blur(12px); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2); }
   .play-btn svg { margin-left: 3px; }
-  .views-pill { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; color: #fff; }
-  .card-body { padding: 14px; }
-  .card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; line-height: 1.3; }
-  .card-channel { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
-  .perf-label { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; color: var(--muted); }
+  .views-pill { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #fff; }
+  .card-body { padding: 16px; }
+  .card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; line-height: 1.35; letter-spacing: -0.2px; }
+  .card-channel { font-size: 12px; color: var(--muted); margin-bottom: 14px; font-weight: 500; }
+  .perf-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; color: var(--muted); }
   .perf-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
   .perf-name { font-size: 12px; color: var(--muted); flex: 1; }
-  .perf-bar-wrap { flex: 2; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
-  .perf-bar { height: 100%; border-radius: 3px; }
-  .rating-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-top: 4px; }
+  .perf-bar-wrap { flex: 2; height: 4px; background: var(--surface3); border-radius: 4px; overflow: hidden; }
+  .perf-bar { height: 100%; border-radius: 4px; }
+  .rating-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-top: 6px; letter-spacing: 0.3px; }
   .rating-chip.green { background: var(--green-bg); color: var(--green); }
   .rating-chip.orange { background: var(--orange-bg); color: var(--orange); }
   .rating-chip.red { background: var(--red-bg); color: var(--red); }
-  .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
   .dot.green { background: var(--green); }
   .dot.orange { background: var(--orange); }
   .dot.red { background: var(--red); }
-  .divider { height: 1px; background: var(--border); margin: 12px 0; }
+  .divider { height: 1px; background: var(--border); margin: 14px 0; }
   .why-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-  .why-chip { font-size: 11px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+  .why-chip { font-size: 11px; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted2); padding: 4px 10px; border-radius: 20px; font-weight: 500; }
 
-  .pattern-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 14px; }
-  .pattern-rank { font-size: 11px; font-weight: 800; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
-  .pattern-title { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
-  .pattern-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
-  .pattern-examples { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
-  .pattern-ex { font-size: 12px; background: var(--surface2); border-left: 3px solid var(--accent); padding: 8px 10px; border-radius: 0 8px 8px 0; color: var(--text); }
+  /* ── PATTERN CARDS ── */
+  .pattern-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 18px; margin-bottom: 12px; }
+  .pattern-rank { font-size: 10px; font-weight: 800; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .pattern-title { font-size: 17px; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.4px; line-height: 1.25; }
+  .pattern-desc { font-size: 13px; color: var(--muted2); line-height: 1.7; }
+  .pattern-examples { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .pattern-ex { font-size: 12px; background: var(--surface2); border-left: 3px solid var(--accent); padding: 10px 12px; border-radius: 0 10px 10px 0; color: var(--text); line-height: 1.5; }
   .pattern-views { font-size: 11px; color: var(--muted); margin-top: 3px; font-weight: 600; }
-  .tier-s { color: #ffd700; }
+  .tier-s { color: var(--gold); }
   .tier-a { color: var(--green); }
 
-  .script-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 24px; overflow: hidden; }
-  .script-header { padding: 16px; background: linear-gradient(135deg, #1a1430 0%, #0f1525 100%); border-bottom: 1px solid var(--border); }
-  .script-num { font-size: 11px; color: var(--accent); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-  .script-title { font-size: 17px; font-weight: 800; margin-bottom: 8px; line-height: 1.25; }
+  /* ── SCRIPT CARDS ── */
+  .script-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; margin-bottom: 20px; overflow: hidden; }
+  .script-header { padding: 20px; background: linear-gradient(135deg, #1a0000 0%, #0d0d0d 100%); border-bottom: 1px solid var(--border); }
+  .script-num { font-size: 10px; color: var(--green); font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .script-title { font-size: 18px; font-weight: 800; margin-bottom: 10px; line-height: 1.25; letter-spacing: -0.5px; }
   .script-meta { display: flex; gap: 6px; flex-wrap: wrap; }
-  .script-tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; border: 1px solid var(--border); color: var(--muted); background: var(--surface2); }
+  .script-tag { font-size: 10px; padding: 3px 10px; border-radius: 20px; font-weight: 600; border: 1px solid var(--border2); color: var(--muted2); background: var(--surface3); letter-spacing: 0.3px; }
   .script-body { padding: 0; }
   .script-block { border-bottom: 1px solid var(--border); }
-  .script-block-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px 10px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+  .script-block-header { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px 11px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
   .script-block-left { display: flex; align-items: center; gap: 8px; }
   .script-block-right { display: flex; align-items: center; gap: 8px; }
-  .script-block-label { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; }
-  .script-block-time { font-size: 11px; color: var(--muted); font-weight: 600; }
-  .script-block-copy { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); cursor: pointer; font-weight: 600; -webkit-tap-highlight-color: transparent; transition: all 0.15s; white-space: nowrap; }
+  .script-block-label { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
+  .script-block-time { font-size: 10px; color: var(--muted); font-weight: 600; }
+  .script-block-copy { font-size: 11px; padding: 5px 12px; border-radius: 20px; background: var(--surface3); border: 1px solid var(--border2); color: var(--muted2); cursor: pointer; font-weight: 600; -webkit-tap-highlight-color: transparent; transition: all 0.15s; white-space: nowrap; }
   .script-block-copy:active, .script-block-copy.copied { background: var(--green-bg); border-color: var(--green); color: var(--green); }
-  .chevron { font-size: 14px; color: var(--muted); transition: transform 0.2s; display: inline-block; flex-shrink: 0; }
+  .chevron { font-size: 13px; color: var(--muted); transition: transform 0.2s; display: inline-block; flex-shrink: 0; }
   .script-block.collapsed .chevron { transform: rotate(-90deg); }
   .script-block.collapsed .script-text { display: none; }
   .script-block.collapsed .script-block-copy { display: none; }
-  .script-text { font-size: 14.5px; line-height: 1.75; color: var(--text); padding: 0 14px 14px; white-space: pre-wrap; }
-  .script-note { font-size: 12px; color: var(--muted); font-style: italic; background: var(--surface2); border-radius: 8px; padding: 8px 12px; margin: 0 14px 14px; line-height: 1.5; }
-  .thumb-section { padding: 14px; border-top: 1px solid var(--border); background: var(--surface2); }
-  .thumb-section-label { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
-  .thumb-layer { font-size: 13px; color: var(--muted); margin-bottom: 6px; line-height: 1.5; }
-  .thumb-layer strong { color: var(--text); font-size: 12px; display: block; margin-bottom: 1px; }
-  .copy-all-btn { width: calc(100% - 28px); margin: 14px; padding: 14px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; letter-spacing: 0.3px; transition: opacity 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; -webkit-tap-highlight-color: transparent; }
+  .script-block.collapsed .img-prompt-row { display: none; }
+  .script-text { font-size: 15px; line-height: 1.8; color: var(--text); padding: 2px 16px 16px; white-space: pre-wrap; }
+  .script-note { font-size: 12px; color: var(--muted); font-style: italic; background: var(--surface2); border-radius: 10px; padding: 10px 14px; margin: 0 16px 16px; line-height: 1.6; }
+
+  /* ── IMAGE PROMPT ROWS ── */
+  .img-prompt-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 16px 14px; background: rgba(255,0,0,0.06); border-top: 1px dashed rgba(255,0,0,0.2); }
+  .img-prompt-text { font-size: 12px; color: var(--muted); line-height: 1.5; flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .img-prompt-copy { font-size: 11px; padding: 5px 12px; border-radius: 20px; background: rgba(255,0,0,0.10); border: 1px solid rgba(255,0,0,0.3); color: var(--accent); cursor: pointer; font-weight: 600; white-space: nowrap; flex-shrink: 0; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
+  .img-prompt-copy.copied { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+
+  /* ── THUMBNAIL SECTION ── */
+  .thumb-section { padding: 16px; border-top: 1px solid var(--border); background: var(--surface2); }
+  .thumb-section-label { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  .thumb-layer { font-size: 13px; color: var(--muted2); margin-bottom: 8px; line-height: 1.6; }
+  .thumb-layer strong { color: var(--text); font-size: 11px; display: block; margin-bottom: 2px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+
+  /* ── COPY ALL BUTTON ── */
+  .copy-all-btn { width: calc(100% - 32px); margin: 16px; padding: 15px; background: var(--accent); color: #fff; border: none; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; letter-spacing: 0.3px; transition: opacity 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; -webkit-tap-highlight-color: transparent; font-family: inherit; }
   .copy-all-btn:active { opacity: 0.8; }
   .copy-all-btn.copied { background: var(--green); }
 
-  /* ── Builder ── */
-  .builder-form { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 16px; }
-  .builder-label { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; display: block; }
-  .builder-input, .builder-select { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-size: 14px; padding: 11px 14px; border-radius: 10px; margin-bottom: 14px; -webkit-appearance: none; appearance: none; font-family: inherit; }
+  /* ── BUILDER ── */
+  .builder-form { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 14px; }
+  .builder-label { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; display: block; }
+  .builder-input, .builder-select { width: 100%; background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-size: 14px; padding: 12px 14px; border-radius: 12px; margin-bottom: 14px; -webkit-appearance: none; appearance: none; font-family: inherit; }
   .builder-input:focus, .builder-select:focus { outline: none; border-color: var(--accent); }
-  .builder-select option { background: #1c1c27; }
-  .builder-generate-btn { width: 100%; padding: 14px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; -webkit-tap-highlight-color: transparent; }
+  .builder-select option { background: #161624; }
+  .builder-generate-btn { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; -webkit-tap-highlight-color: transparent; font-family: inherit; }
   .builder-generate-btn:active { opacity: 0.8; }
   .builder-result { display: none; }
   .builder-result.visible { display: block; }
-  .builder-block { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
-  .builder-block-label { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--accent); padding: 10px 14px 4px; }
-  .builder-block-time { font-size: 11px; color: var(--muted); padding: 0 14px 8px; }
-  .builder-tip { font-size: 12px; color: var(--muted); background: rgba(124,109,255,0.1); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 8px 8px 0; margin: 0 14px 8px; line-height: 1.5; }
-  .builder-textarea { width: 100%; background: var(--surface2); border: none; border-top: 1px solid var(--border); color: var(--text); font-size: 14px; line-height: 1.7; padding: 12px 14px; resize: vertical; min-height: 90px; font-family: inherit; }
-  .builder-textarea:focus { outline: none; background: #1a1a2a; }
+  .builder-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 12px; overflow: hidden; }
+  .builder-block-label { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); padding: 12px 16px 4px; }
+  .builder-block-time { font-size: 11px; color: var(--muted); padding: 0 16px 8px; }
+  .builder-tip { font-size: 12px; color: var(--muted2); background: var(--accent-dim); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 0 8px 8px 0; margin: 0 16px 8px; line-height: 1.6; }
+  .builder-textarea { width: 100%; background: var(--surface2); border: none; border-top: 1px solid var(--border); color: var(--text); font-size: 14px; line-height: 1.75; padding: 12px 16px; resize: vertical; min-height: 90px; font-family: inherit; }
+  .builder-textarea:focus { outline: none; background: #1a0000; }
   .builder-title-wrap { margin-bottom: 12px; }
-  .builder-title-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-size: 15px; font-weight: 700; padding: 12px 14px; border-radius: 10px; font-family: inherit; }
+  .builder-title-input { width: 100%; background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-size: 15px; font-weight: 700; padding: 12px 16px; border-radius: 12px; font-family: inherit; }
   .builder-title-input:focus { outline: none; border-color: var(--accent); }
-  .builder-copy-btn { width: 100%; padding: 14px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; -webkit-tap-highlight-color: transparent; }
+  .builder-copy-btn { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; -webkit-tap-highlight-color: transparent; font-family: inherit; }
   .builder-copy-btn:active { opacity: 0.8; }
   .builder-copy-btn.copied { background: var(--green); }
 
-  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #22c55e; color: #fff; padding: 10px 22px; border-radius: 30px; font-size: 13px; font-weight: 700; transition: transform 0.3s ease; z-index: 999; white-space: nowrap; box-shadow: 0 4px 20px rgba(34,197,94,0.4); }
+  /* ── TOAST & SCROLL ── */
+  .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--green); color: #fff; padding: 10px 24px; border-radius: 30px; font-size: 13px; font-weight: 700; transition: transform 0.3s ease; z-index: 999; white-space: nowrap; box-shadow: 0 4px 24px rgba(34,197,94,0.35); font-family: inherit; }
   .toast.show { transform: translateX(-50%) translateY(0); }
-  .scroll-top { position: fixed; bottom: 24px; right: 18px; width: 40px; height: 40px; background: var(--surface2); border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: opacity 0.3s; z-index: 200; }
+  .scroll-top { position: fixed; bottom: 28px; right: 18px; width: 40px; height: 40px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: opacity 0.3s; z-index: 200; }
   .scroll-top.visible { opacity: 1; }
-
-  /* ── Image Prompt Rows ── */
-  .img-prompt-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 14px 12px; background: rgba(124,109,255,0.07); border-top: 1px dashed rgba(124,109,255,0.25); }
-  .img-prompt-text { font-size: 12px; color: var(--muted); line-height: 1.5; flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .img-prompt-copy { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: rgba(124,109,255,0.15); border: 1px solid rgba(124,109,255,0.35); color: var(--accent); cursor: pointer; font-weight: 600; white-space: nowrap; flex-shrink: 0; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
-  .img-prompt-copy.copied { background: var(--green-bg); border-color: var(--green); color: var(--green); }
-  .script-block.collapsed .img-prompt-row { display: none; }
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="header-top">
-    <div class="logo">Bacon<span>Intel</span></div>
-    <div class="badge" id="daily-badge">DAILY INTEL</div>
+    <div class="logo">BaconIntel</div>
+    <div class="badge">LIVE</div>
   </div>
-  <div class="header-sub" id="header-date">Roblox Shorts · Competitor Analysis</div>
+  <div class="header-greeting" id="header-greeting"><strong>good morning.</strong></div>
+  <div class="header-date" id="header-date"></div>
 </div>
 
 <div class="tabs">
@@ -199,6 +221,8 @@ const D = ((DAY_OF_YEAR - 155) % 100 + 100) % 100;
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DATE_STR = `${MONTHS[TODAY.getMonth()]} ${TODAY.getDate()}, ${TODAY.getFullYear()}`;
+const HOUR = TODAY.getHours();
+const GREETING = HOUR < 12 ? 'good morning.' : HOUR < 17 ? 'good afternoon.' : 'good evening.';
 const DAYS_OF_WEEK = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const DOW = TODAY.getDay(); // 0=Sun
 
@@ -492,6 +516,150 @@ const SCRIPTS = [
     footage: '📹 Roblox purchase screen with Robux graphic. Secret reveal overlay. Family home Roblox map. Text overlays per option.',
     thumb: { bg: '🎮 Roblox purchase confirmation screen with glowing Robux', text: '📝 "YOU SAW EVERYTHING 💀" in bold white/red', reaction: '😱 Shocked character with hand over mouth, drop shadow' },
   },
+  // ── SCENARIO #10 ──────────────────────────────────────────────────────
+  {
+    title: "Your Best Friend Just Betrayed Your Secret At School 💀😭",
+    tags: ['Friend Drama', 'Scenario Choice', 'VIP Unlock'],
+    sections: [
+      { label: 'HOOK', text: "GUYS. You told your best friend something you never told anyone. They told the entire grade. By third period, everyone knows." },
+      { label: 'SETUP', text: "What do you do?" },
+      { label: 'OPTION A', text: "Option A — you confront them face to face right now in the hallway. It gets loud. People stop and watch. Whatever they say back, everyone is going to hear it." },
+      { label: 'OPTION B', text: "Option B — you say absolutely nothing. You cut them off completely. No explanation, no argument. You just stop talking to them and let them figure out why." },
+      { label: 'OPTION C', text: "Option C — you pretend you're fine. You act like it doesn't bother you at all. You keep talking to them like normal. Inside you're planning your next move slowly." },
+      { label: 'VIP OPTION 👑', text: "VIP — turns out your friend told one person and that person spread it without permission. Your friend had no idea it went this far. They find you at lunch, apologize in front of everyone, and spend the rest of the week making it right." },
+      { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
+      { label: 'CTA', text: "Comment Option A, B, C, or VIP — what are you doing? And if your best friend has ever done something like this, I need the story." },
+    ],
+    imagePrompts: {
+      hook:    'Roblox-style cartoon image. School hallway. Main Roblox character frozen mid-step, holding their phone showing a group chat where their secret is being shared. Other Roblox characters in the background staring and whispering. Best friend visible in the distance looking away. Blocky Roblox arms and hands, bright cartoon colors, detailed school hallway background.',
+      optionA: 'Roblox-style cartoon image. Main Roblox character pointing at their former best friend in the school hallway. Other students stopped to watch. Both characters mid-argument, intense expressions. Blocky Roblox arms and hands, bright cartoon colors, detailed school hallway background.',
+      optionB: 'Roblox-style cartoon image. Main Roblox character walking past their former best friend in the hallway without making eye contact. Best friend reaches out but gets ignored. Silent and cold. Blocky Roblox arms and hands, bright cartoon colors, detailed school hallway background.',
+      optionC: 'Roblox-style cartoon image. Main Roblox character sitting next to their former best friend at lunch, fake-smiling, secretly plotting. Thought bubble shows a chess board. Best friend has no idea. Blocky Roblox arms and hands, bright cartoon colors, detailed cafeteria background.',
+      vip:     'Roblox-style cartoon image. Former best friend Roblox character approaching main character at a lunch table with a sincere apologetic expression. Other students watching. Main character surprised but touched. Gold crown above main character. Blocky Roblox arms and hands, warm lighting, bright cartoon colors.',
+    },
+    footage: '📹 Roblox school map. Phone screen showing group chat overlay. Dramatic hallway cutaways per option.',
+    thumb: { bg: '🎮 Roblox school hallway, crowded, slightly dramatic', text: '📝 "YOUR BEST FRIEND DID WHAT 💀😭" bold white', reaction: '😭 Shocked betrayed character, hand over mouth, drop shadow' },
+  },
+  // ── SCENARIO #11 ──────────────────────────────────────────────────────
+  {
+    title: "Your Teacher Just Accused You Of Cheating On The Test 💀",
+    tags: ['School Drama', 'Scenario Choice', 'VIP Unlock'],
+    sections: [
+      { label: 'HOOK', text: "WAIT! Your teacher just pulled you aside after handing back tests. She said your answers look too similar to the person next to you. You didn't cheat. They copied you." },
+      { label: 'SETUP', text: "Which move are you making?" },
+      { label: 'OPTION A', text: "Option A — you accept it. You take the zero on the test. You say nothing about who actually copied. You move on quietly and let it go." },
+      { label: 'OPTION B', text: "Option B — you tell the teacher exactly who copied you. You hand over your notes, your scratch work, your timeline. You let the facts speak. The other student gets called in immediately." },
+      { label: 'OPTION C', text: "Option C — you ask to retake the test right now, from scratch, in front of her. You prove you know the material cold. She can't argue with a perfect retake." },
+      { label: 'VIP OPTION 👑', text: "VIP — another student who sits on the other side of you watched the whole thing happen and goes to the teacher on your behalf. The teacher apologizes to you in front of the class. The grade is removed from your record completely and the student who copied fails the unit." },
+      { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
+      { label: 'CTA', text: "Comment Option A, B, C, or VIP — what are you picking? And if you have ever been accused of something you didn't do at school, drop it below." },
+    ],
+    imagePrompts: {
+      hook:    'Roblox-style cartoon image. Teacher Roblox character holding two test papers side by side, looking stern. Main character standing in front of her with an innocent shocked expression, hands up. Classroom in the background. Blocky Roblox arms and hands, bright cartoon colors, detailed classroom background.',
+      optionA: 'Roblox-style cartoon image. Main Roblox character sitting at desk staring at a test paper with a big zero on it. Expression is defeated but calm. Other students nearby. Blocky Roblox arms and hands, bright cartoon colors, detailed classroom background.',
+      optionB: 'Roblox-style cartoon image. Main Roblox character at the teacher desk spreading out notes, scratch paper, and a timeline. Teacher leaning in to examine. Student in background starting to sweat. Blocky Roblox arms and hands, bright cartoon colors, detailed classroom background.',
+      optionC: 'Roblox-style cartoon image. Main Roblox character sitting alone at a desk in front of the teacher, confidently writing on a fresh test. Teacher watching closely with arms crossed. Character is calm and focused. Blocky Roblox arms and hands, bright cartoon colors, detailed classroom background.',
+      vip:     'Roblox-style cartoon image. Student witness Roblox character pointing at the cheater while talking to the teacher. Teacher looks surprised. Main character in background relieved, gold crown above their head. Blocky Roblox arms and hands, warm light, bright cartoon colors.',
+    },
+    footage: '📹 Roblox classroom map. Test paper graphic overlay. Teacher confrontation scene. VIP reveal with gold shimmer.',
+    thumb: { bg: '🎮 Roblox classroom, test papers visible on desks', text: '📝 "ACCUSED OF CHEATING 💀" bold white/red', reaction: '😤 Angry innocent character with arms crossed, drop shadow' },
+  },
+  // ── SCENARIO #12 ──────────────────────────────────────────────────────
+  {
+    title: "Your Team Just Lost Because Of You. Now What? 💀😭",
+    tags: ['Sports Drama', 'Scenario Choice', 'VIP Unlock'],
+    sections: [
+      { label: 'HOOK', text: "HEY GUYS! Your team just lost the game. You missed the last shot. Everyone knows it. The locker room is completely silent." },
+      { label: 'SETUP', text: "What do you do next?" },
+      { label: 'OPTION A', text: "Option A — you apologize immediately to the whole team right there in the locker room. You take full responsibility out loud. Some players accept it. Some don't." },
+      { label: 'OPTION B', text: "Option B — you say nothing. You get changed, walk out, and go home. You don't want to talk about it. You will process it alone and come back better." },
+      { label: 'OPTION C', text: "Option C — you deflect. You bring up two other plays that went wrong before yours. You're not wrong but now the team is arguing about something bigger." },
+      { label: 'VIP OPTION 👑', text: "VIP — your coach pulls you aside before anyone can say anything. He tells you every great player has this moment and that missing is part of playing. The team rallies around you. By the bus ride home, your teammates are already talking about next week. The weight lifts." },
+      { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
+      { label: 'CTA', text: "Comment Option A, B, C, or VIP — what are you doing in that locker room? Drop it below." },
+    ],
+    imagePrompts: {
+      hook:    'Roblox-style cartoon image. Roblox sports field. Main character standing frozen after missing a shot, the goal or net visible in the background. Teammates standing around in silence, heads down. Scoreboard showing a loss. Blocky Roblox arms and hands, bright cartoon colors, detailed sports field background.',
+      optionA: 'Roblox-style cartoon image. Main Roblox character standing in front of a locker room full of teammates, head down, apologizing. Some teammates look sympathetic, some look away. Lockers in the background. Blocky Roblox arms and hands, bright cartoon colors, detailed locker room background.',
+      optionB: 'Roblox-style cartoon image. Main Roblox character walking out of a locker room alone, bag over shoulder, head low. Teammates still inside visible through the door. Empty hallway ahead. Blocky Roblox arms and hands, slightly dim lighting, bright cartoon colors.',
+      optionC: 'Roblox-style cartoon image. Roblox characters in a locker room mid-argument. Main character gesturing defensively. Other players arguing back. Coach in the background looking frustrated. Blocky Roblox arms and hands, bright cartoon colors, detailed locker room background.',
+      vip:     'Roblox-style cartoon image. Coach Roblox character with hand on main character shoulder, encouraging expression. In the background, teammates starting to smile and rally together. Bus visible through a window, team heading home together. Gold crown above main character. Blocky Roblox arms and hands, warm lighting, bright cartoon colors.',
+    },
+    footage: '📹 Roblox sports map. Slow motion missed shot overlay. Locker room cutaways per option. VIP coach moment with warm lighting.',
+    thumb: { bg: '🎮 Roblox sports field at end of game, slightly dark', text: '📝 "YOU COST THE GAME 💀😭" bold white', reaction: '😭 Devastated character staring at the ground, drop shadow' },
+  },
+  // ── SCENARIO #13 ──────────────────────────────────────────────────────
+  {
+    title: "You Just Found $100 On The Ground At School 💀",
+    tags: ['Moral Dilemma', 'Scenario Choice', 'VIP Unlock'],
+    sections: [
+      { label: 'HOOK', text: "GUYS. You just found a $100 bill on the ground in the school hallway. No one saw you find it. There is no name on it." },
+      { label: 'SETUP', text: "What are you doing with it?" },
+      { label: 'OPTION A', text: "Option A — you turn it in to the office. You don't know whose it is and it's not yours. If nobody claims it in a week they'll give it back to you. Technically the right move." },
+      { label: 'OPTION B', text: "Option B — you keep it. Finders keepers. You didn't steal it, you found it. You spend it by the end of the week and you move on with your life." },
+      { label: 'OPTION C', text: "Option C — you ask around quietly to see if anyone lost money. You don't announce the amount. If someone says yes you ask them to prove it before you hand it over." },
+      { label: 'VIP OPTION 👑', text: "VIP — you turn it in and forget about it. Two days later the teacher announces it was never claimed. It gets handed back to you officially in front of the class. You walk out with $100 you earned honestly and everyone respects it." },
+      { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
+      { label: 'CTA', text: "Comment Option A, B, C, or VIP — be honest. What are you actually doing? Drop it below." },
+    ],
+    imagePrompts: {
+      hook:    'Roblox-style cartoon image. Main Roblox character looking down at a $100 bill on the school hallway floor. No one else visible nearby. Character expression is shocked and curious. Lockers in the background. Blocky Roblox arms and hands, bright cartoon colors, detailed school hallway background.',
+      optionA: 'Roblox-style cartoon image. Main Roblox character handing the $100 bill to a school office staff character behind a desk. Staff looks surprised. Main character looks proud but slightly unsure. Office setting in background. Blocky Roblox arms and hands, bright cartoon colors, detailed office background.',
+      optionB: 'Roblox-style cartoon image. Main Roblox character at a store checkout, paying with the $100 bill, big smile on face. Shopping bag on the counter. Character looks very pleased with themselves. Blocky Roblox arms and hands, bright cartoon colors, detailed store background.',
+      optionC: 'Roblox-style cartoon image. Main Roblox character discreetly asking another student something, leaning in quietly. The $100 bill hidden in their pocket. Other student looking confused. Hallway setting. Blocky Roblox arms and hands, bright cartoon colors, detailed school hallway background.',
+      vip:     'Roblox-style cartoon image. Teacher Roblox character at the front of class handing the $100 back to the main character officially. Classmates watching, some impressed. Main character beaming, gold crown above their head. Blocky Roblox arms and hands, warm classroom lighting, bright cartoon colors.',
+    },
+    footage: '📹 Roblox school hallway map. Money graphic overlay. Cutaways per choice. VIP classroom reveal with gold shimmer.',
+    thumb: { bg: '🎮 Roblox school hallway, $100 bill on the ground', text: '📝 "FOUND $100 AT SCHOOL 💀" bold white/green', reaction: '😱 Character looking down at money, eyes wide, drop shadow' },
+  },
+  // ── SCENARIO #14 ──────────────────────────────────────────────────────
+  {
+    title: "Your Parents Said You Have To Get A Job This Summer 💀😭",
+    tags: ['Summer Drama', 'Scenario Choice', 'VIP Unlock'],
+    sections: [
+      { label: 'HOOK', text: "HEY GUYS! Your parents just told you that this summer you are getting a job. No negotiation. You have to pick from the three they found for you." },
+      { label: 'SETUP', text: "Which job are you taking?" },
+      { label: 'OPTION A', text: "Option A — grocery store cashier. You stand at a register for 6-hour shifts scanning items while people argue about coupons that expired in 2019. The AC is on but the register breaks twice a shift." },
+      { label: 'OPTION B', text: "Option B — lawn care crew. You wake up at 6AM, mow grass, trim hedges, and blow leaves in the sun for four hours. It pays okay. You will never fully stop smelling like a leaf blower." },
+      { label: 'OPTION C', text: "Option C — daycare assistant. You manage 14 kids aged 4 to 7 for seven hours a day. They are adorable for about the first fifteen minutes. After that it is chaos." },
+      { label: 'VIP OPTION 👑', text: "VIP — you pitch your parents on doing a summer content creation project instead. You show them a real plan — schedule, topics, goals. They give you the summer. You grow your channel by 500 subscribers and make enough in ad revenue that your parents admit you were right." },
+      { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
+      { label: 'CTA', text: "Comment Option A, B, C, or VIP — which job are you surviving this summer? Drop it below." },
+    ],
+    imagePrompts: {
+      hook:    'Roblox-style cartoon image. Parent Roblox characters at the kitchen table sliding a list of three job options toward the main character. Main character staring at the list with a horrified expression. Summer visible through the window. Blocky Roblox arms and hands, bright cartoon colors, detailed kitchen background.',
+      optionA: 'Roblox-style cartoon image. Main Roblox character in a grocery store uniform behind a register, scanning items with a dead expression. Long line of customers. A broken register light blinking overhead. Blocky Roblox arms and hands, bright cartoon colors, detailed grocery store background.',
+      optionB: 'Roblox-style cartoon image. Main Roblox character pushing a lawnmower in the blazing sun, squinting. Sweat visible. Enormous yard ahead still to mow. Blocky Roblox arms and hands, bright summer outdoor lighting, bright cartoon colors.',
+      optionC: 'Roblox-style cartoon image. Main Roblox character surrounded by tiny chaotic kid Roblox characters running everywhere. Character looks completely overwhelmed with arms out trying to manage the situation. Daycare setting. Blocky Roblox arms and hands, bright cartoon colors, colorful playroom background.',
+      vip:     'Roblox-style cartoon image. Main Roblox character presenting a content plan on a tablet to their parents, who look impressed. Screen shows a channel growth graph going up. Gold crown above main character. Both parents nodding. Blocky Roblox arms and hands, warm home lighting, bright cartoon colors.',
+    },
+    footage: '📹 Roblox town or work map. Job uniforms per option. VIP reveal with channel growth graphic animation.',
+    thumb: { bg: '🎮 Roblox town with work settings visible', text: '📝 "YOU HAVE TO GET A JOB 💀😭" bold white', reaction: '😭 Character staring at job list, completely defeated, drop shadow' },
+  },
+  // ── SCENARIO #15 ──────────────────────────────────────────────────────
+  {
+    title: "Your Group Project Partner Did Absolutely Nothing 💀",
+    tags: ['School Drama', 'Scenario Choice', 'VIP Unlock'],
+    sections: [
+      { label: 'HOOK', text: "WAIT! The group project is due tomorrow. You just realized your partner has contributed absolutely zero. Their slides are blank. Their section is empty. You are doing this alone." },
+      { label: 'SETUP', text: "What do you do?" },
+      { label: 'OPTION A', text: "Option A — you do the entire thing yourself. You pull an all-nighter, finish every slide, and submit it under both your names. You get a good grade but you are furious the entire time." },
+      { label: 'OPTION B', text: "Option B — you email the teacher tonight to explain exactly what happened. You send screenshots of the empty shared doc. You ask to be graded separately. You don't know how the teacher will react." },
+      { label: 'OPTION C', text: "Option C — you only finish your section. You submit what you have. Their section stays empty. The project is incomplete but at least your work is in there." },
+      { label: 'VIP OPTION 👑', text: "VIP — the teacher already noticed the edit history in the shared document showing only your contributions. She calls your partner in before class. You are graded individually. You get full marks. Your partner has to redo the project alone over the weekend." },
+      { label: 'VIP TEASE', text: "But there's a catch — to unlock this option you have to like and subscribe." },
+      { label: 'CTA', text: "Comment Option A, B, C, or VIP — what are you doing tonight? And if you have had a useless group partner before, tell me the worst one in the comments." },
+    ],
+    imagePrompts: {
+      hook:    'Roblox-style cartoon image. Main Roblox character staring at a laptop screen showing a shared document where their partner section is completely blank. Clock on the wall shows late at night. Partner character visible in the background doing something unrelated. Blocky Roblox arms and hands, dark bedroom lighting, bright cartoon colors.',
+      optionA: 'Roblox-style cartoon image. Main Roblox character at a desk late at night, typing furiously, surrounded by empty energy drink cans and crumpled paper. Clock shows 2AM. Determined but exhausted expression. Blocky Roblox arms and hands, dim desk lamp lighting, bright cartoon colors.',
+      optionB: 'Roblox-style cartoon image. Main Roblox character typing an email on a laptop, screenshot of the empty document visible on screen. Serious focused expression. Bedroom setting late at night. Blocky Roblox arms and hands, bright cartoon colors, detailed bedroom background.',
+      optionC: 'Roblox-style cartoon image. Main Roblox character submitting their section of a project document online, other half visibly empty. Character looks resigned but done. Deadline timer visible on screen. Blocky Roblox arms and hands, bright cartoon colors, detailed bedroom background.',
+      vip:     'Roblox-style cartoon image. Teacher Roblox character at their desk with an edit history log open, pointing to timestamps showing only the main character contributed. Partner character called in looking nervous. Main character at their desk getting a perfect grade notification. Gold crown above. Blocky Roblox arms and hands, bright classroom lighting, bright cartoon colors.',
+    },
+    footage: '📹 Roblox school or bedroom map. Shared doc graphic overlay. Late-night study cutaways per option. VIP teacher reveal with gold shimmer.',
+    thumb: { bg: '🎮 Roblox bedroom or school, late night energy', text: '📝 "PARTNER DID NOTHING 💀" bold white/red', reaction: '😤 Character staring at blank slides on laptop, furious, drop shadow' },
+  },
 ];
 
 // ══════════════════════════════════════════════
@@ -606,6 +774,10 @@ const DOW_ACTIONS = [
 //  RENDER FUNCTIONS
 // ══════════════════════════════════════════════
 
+// Set greeting and date
+document.getElementById('header-greeting').innerHTML = `<strong>${GREETING}</strong>`;
+document.getElementById('header-date').textContent = `${DAYS_OF_WEEK[DOW]}, ${DATE_STR}`;
+
 function renderVideos() {
   const setIdx = D % 4;
   const videos = VIDEO_SETS[setIdx];
@@ -713,8 +885,8 @@ function chunkText(text, maxChars) {
 }
 
 function renderScripts() {
-  const si = D % 3;
-  const todayScripts = [SCRIPTS[si], SCRIPTS[si + 3], SCRIPTS[si + 6]];
+  const si = D % 5;
+  const todayScripts = [SCRIPTS[si], SCRIPTS[si + 5], SCRIPTS[si + 10]];
 
   document.getElementById('scripts-sub').textContent = `${DATE_STR} · Scenario Choice · 480-char TTS chunks`;
 
@@ -773,7 +945,7 @@ function renderScripts() {
 
     html += `
     <div class="script-card" style="border-top:3px solid #22c55e;">
-      <div class="script-header" style="background:linear-gradient(135deg,#1a1430 0%,#0f1525 100%);border-bottom:1px solid var(--border);">
+      <div class="script-header" style="background:linear-gradient(135deg,#1a0000 0%,#0d0d0d 100%);border-bottom:1px solid var(--border);">
         <div class="script-num" style="color:#22c55e;">Script 0${n} · Scenario Choice</div>
         <div class="script-title">${s.title}</div>
         <div class="script-meta">${s.tags.map(t => `<span class="script-tag">${t}</span>`).join('')}</div>
@@ -1189,8 +1361,7 @@ function copyBuilderScript() {
 //  INIT
 // ══════════════════════════════════════════════
 (function init() {
-  // Set date in header
-  document.getElementById('header-date').textContent = `Roblox Shorts · ${DATE_STR}`;
+  // Header greeting and date are set above (before renderVideos)
 
   renderVideos();
   renderPatterns();
