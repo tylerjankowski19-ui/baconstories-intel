@@ -731,7 +731,7 @@ function renderScripts() {
       chunks.forEach(function(ch, pi) {
         var cid = 's'+n+'c'+ci;
         var lbl = chunks.length > 1 ? sec.label+' '+(pi+1)+'/'+chunks.length : sec.label;
-        var imgRow = (pt && pi===chunks.length-1) ? '<div class="img-row"><div class="img-txt">🎨 '+esc(pt)+'</div><button class="img-cp" onclick="cpImg(this,\''+esc(pt).replace(/'/g,"&#39;")+'\')">'+'Copy Prompt</button></div>' : '';
+        var imgRow = (pt && pi===chunks.length-1) ? '<div class="img-row"><div class="img-txt">🎨 '+esc(pt)+'</div><button class="img-cp" data-pt="'+esc(pt)+'" onclick="cpImg(this)">Copy Prompt</button></div>' : '';
         blocks += '<div class="sc-block"><div class="sc-block-hdr" onclick="toggleBlock(this.closest(\'.sc-block\'))"><div class="sc-block-l"><span class="chev">▾</span><span class="sc-block-lbl" style="color:'+COL(sec.label)+'">'+lbl+'</span><span class="sc-block-chars">'+ch.length+' chars</span></div><div class="sc-block-r"><button class="cp-btn" onclick="event.stopPropagation();cpBlock(this,\''+cid+'\')">Copy</button></div></div><div class="sc-text" id="'+cid+'">'+ch+'</div>'+imgRow+'</div>';
         ci++;
       });
@@ -747,8 +747,9 @@ function cpBlock(btn, id) {
   if (el) doCopy(el.innerText, btn, 'Copy');
 }
 
-function cpImg(btn, pt) {
-  doCopy(pt, btn, 'Copy Prompt');
+function cpImg(btn) {
+  var pt = btn.getAttribute('data-pt');
+  if (pt) doCopy(pt, btn, 'Copy Prompt');
 }
 
 function cpAll(n) {
