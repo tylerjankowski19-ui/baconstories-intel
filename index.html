@@ -269,6 +269,10 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 const YT_API_KEY = 'AIzaSyC6HEmmS9Oarggd4w2-D6bSCN__HdLCUTE';
 const CHANNEL_ID = 'UChk75M5fF05NcsSetknU4dg';
 
+// ── CHARACTER DESCRIPTION ─────────────────────────────
+// Appended to every image prompt automatically
+var CHAR = 'The main character is a Roblox-style blocky avatar: brown swept hair (medium length, slightly messy), light skin, wearing a blue graphic t-shirt with a dark creature design on it, layered with a black vest, and dark grey/black jeans. Standard Roblox smile face. Family members share the same Roblox blocky art style with similar facial features — parents wear more adult clothing, siblings wear casual clothes. All in 16:9 horizontal wide-shot format, bright cartoon colors, detailed background.';
+
 // ── DATE ──────────────────────────────────────────────
 const TODAY  = new Date();
 const DOY    = Math.floor((TODAY - new Date(TODAY.getFullYear(),0,0)) / 86400000);
@@ -749,7 +753,7 @@ function cpBlock(btn, id) {
 
 function cpImg(btn) {
   var pt = btn.getAttribute('data-pt');
-  if (pt) doCopy(pt, btn, 'Copy Prompt');
+  if (pt) doCopy(pt + '\n\n' + CHAR, btn, 'Copy Prompt');
 }
 
 function cpAll(n) {
