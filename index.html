@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Scripting v2</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon.png" type="image/png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Scripting">
+<meta name="theme-color" content="#0a0a0a">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--s1:#141414;--s2:#1c1c1c;--s3:#242424;
+  --bd:rgba(255,255,255,.08);--bd2:rgba(255,255,255,.14);
+  --tx:#fff;--mu:#666;--mu2:#999;
+  --red:#ff0000;--red10:rgba(255,0,0,.1);--red20:rgba(255,0,0,.2);
+  --grn:#22c55e;--grn10:rgba(34,197,94,.1);
+  --org:#f97316;--org10:rgba(249,115,22,.1);
+  --gld:#ffd700;--nav:80px;
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --ease-out:cubic-bezier(.22,1,.36,1)
+}
+html,body{height:100%;overscroll-behavior:none}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--tx);padding-bottom:var(--nav);-webkit-font-smoothing:antialiased}
+
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:99;background:rgba(10,10,10,.95);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--bd);height:56px;display:flex;align-items:center;padding:0 18px}
+.hdr-logo{display:flex;align-items:center;gap:9px}
+.hdr-play{width:30px;height:30px;background:var(--red);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 14px rgba(255,0,0,.45),0 0 28px rgba(255,0,0,.18);animation:logo-pulse 3s ease-in-out infinite}
+@keyframes logo-pulse{0%,100%{box-shadow:0 0 14px rgba(255,0,0,.45),0 0 28px rgba(255,0,0,.18)}50%{box-shadow:0 0 22px rgba(255,0,0,.7),0 0 44px rgba(255,0,0,.32)}}
+.hdr-play svg{width:14px;height:14px;fill:#fff;margin-left:2px}
+.hdr-name{font-size:17px;font-weight:800;letter-spacing:-.4px}
+.hdr-sep{font-size:15px;color:var(--mu);margin:0 7px;font-weight:300;opacity:.6}
+#hdr-page{font-size:14px;font-weight:600;color:var(--mu2);letter-spacing:-.1px;transition:opacity .2s}
+
+/* shader canvas — fixed backdrop, home page only */
+#shader-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.82;pointer-events:none}
+
+/* ── PAGE TRANSITIONS (scale + fade, cinematic) ── */
+.page{display:none;padding:18px 16px 24px;position:relative;z-index:1;transform-origin:top center}
+.page.on{display:block}
+
+/* entrance — scales up from 95%, fades in, slight directional nudge */
+.page.on.enter-r{animation:pg-in-r 420ms var(--ease-out) both}
+.page.on.enter-l{animation:pg-in-l 420ms var(--ease-out) both}
+
+/* exit — keeps page visible while it shrinks + fades out */
+.page.exiting{display:block;pointer-events:none;position:relative;z-index:0}
+.page.exiting.exit-r,.page.exiting.exit-l{animation:pg-out 260ms cubic-bezier(.4,0,1,1) both}
+
+@keyframes pg-in-r{
+  from{opacity:0;transform:scale(.95) translateX(12px)}
+  to  {opacity:1;transform:scale(1)   translateX(0)}
+}
+@keyframes pg-in-l{
+  from{opacity:0;transform:scale(.95) translateX(-12px)}
+  to  {opacity:1;transform:scale(1)   translateX(0)}
+}
+@keyframes pg-out{
+  from{opacity:1;transform:scale(1)}
+  to  {opacity:0;transform:scale(.93)}
+}
+
+/* ── TUBELIGHT NAV ── */
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:99;display:flex;justify-content:center;align-items:flex-end;padding:8px 16px calc(env(safe-area-inset-bottom,0px) + 14px);pointer-events:none}
+.nav-inner{display:flex;align-items:center;background:rgba(12,12,12,.88);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);padding:4px;border-radius:100px;box-shadow:0 4px 32px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.05) inset;position:relative;pointer-events:all}
+/* sliding active pill + lamp */
+.nav-lamp{position:absolute;top:4px;height:calc(100% - 8px);background:rgba(255,0,0,.12);border:1px solid rgba(255,0,0,.22);border-radius:100px;transition:left .34s var(--spring),width .34s var(--spring);pointer-events:none;z-index:0;overflow:visible}
+/* tube bar at the crown */
+.nav-lamp::before{content:'';position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:26px;height:3px;background:var(--red);border-radius:0 0 3px 3px;box-shadow:0 0 8px var(--red),0 0 16px rgba(255,0,0,.6)}
+/* glow cone downward */
+.nav-lamp::after{content:'';position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:60px;height:22px;background:radial-gradient(ellipse at 50% 0%,rgba(255,0,0,.38),transparent 68%);filter:blur(5px);pointer-events:none}
+.ni{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;padding:7px 18px;border-radius:100px;position:relative;z-index:1;transition:transform .15s var(--spring)}
+.ni:active{transform:scale(.86)}
+.ni svg{width:22px;height:22px;stroke:var(--mu);transition:stroke .22s,transform .22s var(--spring);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ni span{font-size:10px;font-weight:700;color:var(--mu);transition:color .22s;letter-spacing:.3px}
+.ni.on svg{stroke:var(--red);transform:scale(1.08)}
+.ni.on span{color:var(--red)}
+
+/* ── HOME ── */
+.ch-card{background:linear-gradient(135deg,#1a0000,#141414);border:1px solid var(--bd2);border-radius:22px;padding:26px 22px;margin-bottom:18px;position:relative;overflow:hidden}
+.ch-card::after{content:'';position:absolute;top:-30px;right:-30px;width:140px;height:140px;background:radial-gradient(circle,rgba(255,0,0,.22),transparent 70%);pointer-events:none;animation:glow-drift 4s ease-in-out infinite}
+@keyframes glow-drift{0%,100%{opacity:.7;transform:scale(1) translate(0,0)}50%{opacity:1;transform:scale(1.18) translate(-5px,5px)}}
+.ch-lbl{font-size:11px;font-weight:700;color:var(--mu2);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px}
+.ch-subs{font-size:52px;font-weight:900;letter-spacing:-3px;line-height:1;margin-bottom:6px;min-height:56px}
+.ch-subs.dim{opacity:.25}
+.ch-unit{font-size:16px;font-weight:400;color:var(--mu2);letter-spacing:0;margin-left:2px}
+.ch-gain{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700;margin-top:4px}
+.ch-gain.pos{background:var(--grn10);border:1px solid rgba(34,197,94,.25);color:var(--grn)}
+.ch-gain.neg{background:var(--red10);border:1px solid var(--red20);color:var(--red)}
+.ch-gain.neu{background:var(--s2);border:1px solid var(--bd2);color:var(--mu2)}
+/* PAGE TITLES — hidden, now shown in header */
+.page-ttl{display:none}
+
+/* ── SCRIPT QUICK-NAV ── */
+.sc-nav{background:var(--s1);border:1px solid var(--bd);border-radius:16px;margin-bottom:18px;overflow:hidden}
+.sc-nav-hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.sc-nav-hdr-l{display:flex;align-items:center;gap:8px}
+.sc-nav-icon{font-size:14px}
+.sc-nav-lbl{font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu2)}
+.sc-nav-chev{font-size:11px;color:var(--mu);transition:transform .28s var(--ease-out);display:inline-block}
+.sc-nav.open .sc-nav-chev{transform:rotate(180deg)}
+.sc-nav-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s var(--ease-out)}
+.sc-nav.open .sc-nav-body{grid-template-rows:1fr}
+.sc-nav-inner{overflow:hidden}
+.sc-nav-items{padding:0 10px 10px;display:flex;flex-direction:column;gap:7px}
+.sc-nav-btn{display:block;width:100%;text-align:left;padding:11px 14px;background:var(--s2);border:1px solid var(--bd2);border-radius:11px;color:var(--tx);cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:background .18s,border-color .18s,transform .16s var(--spring);opacity:0;transform:translateY(6px)}
+.sc-nav.open .sc-nav-btn{opacity:1;transform:translateY(0)}
+.sc-nav.open .sc-nav-btn:nth-child(1){transition-delay:.04s}
+.sc-nav.open .sc-nav-btn:nth-child(2){transition-delay:.09s}
+.sc-nav.open .sc-nav-btn:nth-child(3){transition-delay:.14s}
+.sc-nav-btn:active{background:rgba(255,0,0,.08);border-color:rgba(255,0,0,.3);transform:scale(.97)!important}
+.sc-nav-num{font-size:10px;font-weight:800;color:var(--red);letter-spacing:1.4px;text-transform:uppercase;display:block;margin-bottom:3px}
+.sc-nav-title{font-size:13px;font-weight:600;line-height:1.3;color:var(--tx);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.ch-handle{font-size:12px;color:var(--mu);margin-top:12px}
+
+/* ── GROWTH GRAPH ── */
+.graph-card{background:var(--s1);border:1px solid var(--bd);border-radius:18px;padding:16px 14px 10px;margin-bottom:18px;overflow:hidden}
+.graph-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.graph-ttdate{font-size:11px;color:var(--mu);margin-top:2px}
+.graph-ttval{font-size:24px;font-weight:800;letter-spacing:-1.2px;color:var(--tx)}
+.graph-footer{display:flex;justify-content:space-between;padding:0 2px;margin-top:5px}
+.graph-fl{font-size:9px;color:var(--mu);letter-spacing:.2px}
+
+/* video card scroll-reveal (mirrors sc-card 3D reveal) */
+#recent-vids{perspective:800px;perspective-origin:50% 0%}
+
+.sec-lbl{font-size:10px;font-weight:700;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+
+.vc{background:var(--s1);border:2px solid var(--bd);border-radius:16px;margin-bottom:12px;overflow:hidden;display:block;text-decoration:none;color:var(--tx);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:box-shadow .18s;transform-origin:top center;will-change:transform,opacity}
+.vc:active{transform:scale(.965);box-shadow:0 8px 28px rgba(0,0,0,.5)}
+.vc.g{border-color:var(--grn)}
+.vc.o{border-color:var(--org)}
+.vc.r{border-color:var(--red)}
+.vc-thumb{width:100%;height:172px;background:linear-gradient(135deg,#1a0000,#1c1c1c);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.vc-thumb img{width:100%;height:100%;object-fit:cover}
+.vc-thumb-fb{font-size:36px;opacity:.2}
+.vc-badge{position:absolute;top:10px;left:10px;border-radius:20px;padding:4px 10px;font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+.vc-badge.g{background:var(--grn10);color:var(--grn);border:1px solid rgba(34,197,94,.3)}
+.vc-badge.o{background:var(--org10);color:var(--org);border:1px solid rgba(249,115,22,.3)}
+.vc-badge.r{background:var(--red10);color:var(--red);border:1px solid var(--red20)}
+.vc-views{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700}
+.vc-body{padding:13px 15px}
+.vc-title{font-size:14px;font-weight:700;line-height:1.35;letter-spacing:-.1px;margin-bottom:5px}
+.vc-meta{font-size:12px;color:var(--mu2);display:flex;gap:10px}
+.api-note{background:var(--s2);border:1px dashed var(--bd2);border-radius:14px;padding:18px;text-align:center;margin-bottom:14px}
+.api-note p{font-size:13px;color:var(--mu2);line-height:1.65}
+.api-note code{font-size:11px;background:var(--s3);padding:2px 6px;border-radius:4px;color:var(--red)}
+
+/* ── SCRIPTS ── */
+.sc-date{font-size:12px;color:var(--mu);margin-bottom:18px}
+/* scroll-driven 3D reveal — framer-motion ContainerScroll port */
+#sc-container{perspective:900px;perspective-origin:50% -5%}
+.sc-card{background:var(--s1);border:1px solid var(--bd);border-radius:18px;margin-bottom:18px;overflow:hidden;transform-origin:top center;will-change:transform,opacity;box-shadow:0 0 #0000004d,0 9px 20px #0000004a,0 37px 37px #00000042,0 84px 50px #00000026}
+.sc-hdr{padding:18px;background:linear-gradient(135deg,#1a0000,#0d0d0d);border-bottom:1px solid var(--bd)}
+.sc-num{font-size:10px;color:var(--grn);font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.sc-title{font-size:17px;font-weight:800;line-height:1.25;letter-spacing:-.4px;margin-bottom:10px}
+.sc-tags{display:flex;gap:6px;flex-wrap:wrap}
+.sc-tag{font-size:10px;padding:3px 9px;border-radius:20px;border:1px solid var(--bd2);color:var(--mu2);background:var(--s3)}
+/* smooth block collapse via css grid */
+.sc-block{border-bottom:1px solid var(--bd)}
+.sc-block-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 15px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sc-block-l{display:flex;align-items:center;gap:7px}
+.sc-block-r{display:flex;align-items:center;gap:7px}
+.sc-block-lbl{font-size:10px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase}
+.sc-block-chars{font-size:10px;color:var(--mu);font-weight:600}
+.chev{font-size:12px;color:var(--mu);transition:transform .22s var(--ease-out);display:inline-block}
+.sc-block.col .chev{transform:rotate(-90deg)}
+.sc-block-body{display:grid;grid-template-rows:1fr;transition:grid-template-rows .26s var(--ease-out)}
+.sc-block.col .sc-block-body{grid-template-rows:0fr}
+.sc-block-inner{overflow:hidden}
+/* text-decoration-color animates the line-through on EVERY line of text */
+.sc-text{font-size:14.5px;line-height:1.8;padding:2px 15px 15px;white-space:pre-wrap;
+  text-decoration:line-through;
+  text-decoration-color:transparent;
+  text-decoration-thickness:1.5px;
+  transition:text-decoration-color .5s ease, opacity .35s ease}
+/* copied state — line appears through every word, text dims */
+.sc-block.copied .sc-text{opacity:.33;text-decoration-color:rgba(255,255,255,.45)}
+.sc-block.copied .sc-block-lbl{opacity:.45;transition:opacity .3s}
+.cp-btn{font-size:11px;padding:4px 11px;border-radius:20px;background:var(--s3);border:1px solid var(--bd2);color:var(--mu2);cursor:pointer;font-weight:600;-webkit-tap-highlight-color:transparent;transition:all .18s var(--spring);font-family:inherit;white-space:nowrap}
+.cp-btn:active{transform:scale(.87)}
+.cp-btn.done{background:var(--grn10);border-color:var(--grn);color:var(--grn)}
+.img-row{display:flex;align-items:flex-start;gap:9px;padding:7px 15px 13px;background:rgba(255,0,0,.05);border-top:1px dashed rgba(255,0,0,.2)}
+.img-txt{font-size:12px;color:var(--mu);line-height:1.5;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.img-cp{font-size:11px;padding:4px 11px;border-radius:20px;background:rgba(255,0,0,.10);border:1px solid rgba(255,0,0,.3);color:var(--red);cursor:pointer;font-weight:600;white-space:nowrap;flex-shrink:0;transition:all .18s var(--spring);font-family:inherit}
+.img-cp:active{transform:scale(.87)}
+.img-cp.done{background:var(--grn10);border-color:var(--grn);color:var(--grn)}
+.sc-note{font-size:12px;color:var(--mu);font-style:italic;background:var(--s2);border-radius:9px;padding:9px 13px;margin:0 15px 14px;line-height:1.6}
+.thumb-sec{padding:14px;border-top:1px solid var(--bd);background:var(--s2)}
+.thumb-lbl{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:10px}
+.thumb-layer{font-size:13px;color:var(--mu2);margin-bottom:7px;line-height:1.55}
+.copy-all{width:calc(100% - 28px);margin:14px;padding:14px;background:var(--red);color:#fff;border:none;border-radius:13px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;-webkit-tap-highlight-color:transparent;font-family:inherit;transition:opacity .15s,transform .18s var(--spring);box-shadow:0 4px 18px rgba(255,0,0,.28)}
+.copy-all:active{opacity:.85;transform:scale(.97)}
+.copy-all.done{background:var(--grn);box-shadow:0 4px 18px rgba(34,197,94,.28)}
+/* VIP shimmer */
+.vip-lbl{background:linear-gradient(90deg,#ffd700,#fff5a0,#ffd700,#ffe566,#ffd700);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 2.4s linear infinite}
+@keyframes shimmer{to{background-position:200% center}}
+
+/* ── BUILDER ── */
+.bld-form{background:var(--s1);border:1px solid var(--bd);border-radius:18px;padding:18px;margin-bottom:14px}
+.bld-lbl{font-size:10px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--mu);margin-bottom:8px;display:block}
+.bld-input,.bld-sel{width:100%;background:var(--s2);border:1px solid var(--bd2);color:var(--tx);font-size:14px;padding:11px 13px;border-radius:11px;margin-bottom:13px;-webkit-appearance:none;font-family:inherit;transition:border-color .18s,box-shadow .18s}
+.bld-input:focus,.bld-sel:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(255,0,0,.12)}
+.bld-sel option{background:#1c1c1c}
+.bld-btn{width:100%;padding:14px;background:var(--red);color:#fff;border:none;border-radius:13px;font-size:15px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;font-family:inherit;transition:opacity .15s,transform .18s var(--spring);box-shadow:0 4px 18px rgba(255,0,0,.28)}
+.bld-btn:active{opacity:.85;transform:scale(.97)}
+.bld-out{display:none;margin-top:14px}
+.bld-out.on{display:block;animation:pg-in-r .22s var(--ease-out) both}
+.bld-section{background:var(--s1);border:1px solid var(--bd);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.bld-sec-lbl{font-size:10px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--red);padding:11px 14px 4px}
+.bld-tip{font-size:12px;color:var(--mu2);background:rgba(255,0,0,.06);border-left:3px solid var(--red);padding:8px 11px;border-radius:0 7px 7px 0;margin:0 14px 8px;line-height:1.6}
+.bld-ta{width:100%;background:var(--s2);border:none;border-top:1px solid var(--bd);color:var(--tx);font-size:14px;line-height:1.75;padding:11px 14px;resize:vertical;min-height:85px;font-family:inherit;transition:background .18s}
+.bld-ta:focus{outline:none;background:#160000}
+.bld-cp{width:100%;padding:14px;background:var(--red);color:#fff;border:none;border-radius:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:7px;-webkit-tap-highlight-color:transparent;font-family:inherit;transition:opacity .15s,transform .18s var(--spring);box-shadow:0 4px 18px rgba(255,0,0,.28)}
+.bld-cp:active{opacity:.85;transform:scale(.97)}
+.bld-cp.done{background:var(--grn);box-shadow:0 4px 18px rgba(34,197,94,.28)}
+
+/* ── DEBRIEF ── */
+.dbr-card{background:var(--s1);border:1px solid var(--bd);border-radius:18px;padding:18px;margin-bottom:13px;opacity:0;animation:card-in .32s var(--ease-out) forwards}
+@keyframes card-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.dbr-card:nth-child(1){animation-delay:.04s}
+.dbr-card:nth-child(2){animation-delay:.11s}
+.dbr-card:nth-child(3){animation-delay:.18s}
+.dbr-card-lbl{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.dbr-card-lbl.g{color:var(--grn)}
+.dbr-card-lbl.r{color:var(--red)}
+.dbr-card-lbl.gold{color:var(--gld)}
+.dbr-item{display:flex;gap:11px;margin-bottom:13px}
+.dbr-item:last-child{margin-bottom:0}
+.dbr-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:8px}
+.dbr-dot.g{background:var(--grn)}
+.dbr-dot.r{background:var(--red)}
+.dbr-dot.gold{background:var(--gld)}
+.dbr-txt{font-size:14px;line-height:1.7;color:var(--mu2)}
+.dbr-txt strong{color:var(--tx);font-weight:700}
+
+/* ── AI LOADING STATE ── */
+.ai-loading{text-align:center;padding:52px 20px}
+.ai-loading-icon{font-size:38px;margin-bottom:14px;display:inline-block;animation:ai-pulse 1.6s ease-in-out infinite}
+@keyframes ai-pulse{0%,100%{opacity:.45;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
+.ai-loading-txt{font-size:15px;font-weight:700;color:var(--mu2);margin-bottom:5px}
+.ai-loading-sub{font-size:12px;color:var(--mu)}
+/* debrief refresh + notes */
+.dbr-refresh{width:100%;padding:13px;background:var(--s2);border:1px solid var(--bd2);border-radius:13px;color:var(--mu2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;transition:all .18s var(--spring)}
+.dbr-refresh:active{transform:scale(.97)}
+.dbr-notes{width:100%;background:var(--s2);border:1px solid var(--bd2);border-radius:11px;color:var(--tx);font-size:14px;line-height:1.75;padding:12px 14px;resize:vertical;min-height:120px;font-family:inherit;transition:border-color .18s,box-shadow .18s}
+.dbr-notes:focus{outline:none;border-color:rgba(255,255,255,.28);box-shadow:0 0 0 3px rgba(255,255,255,.06)}
+.dbr-notes-footer{display:flex;justify-content:flex-end;margin-top:7px;min-height:16px}
+.dbr-notes-saved{font-size:11px;font-weight:700;color:var(--grn);opacity:0;transition:opacity .3s}
+.dbr-notes-saved.on{opacity:1}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--nav) + 14px);left:50%;transform:translateX(-50%) translateY(140%) scale(.85);background:var(--grn);color:#fff;padding:9px 22px;border-radius:28px;font-size:13px;font-weight:700;transition:transform .34s var(--spring),opacity .24s;z-index:999;white-space:nowrap;font-family:inherit;opacity:0}
+.toast.on{transform:translateX(-50%) translateY(0) scale(1);opacity:1}
+</style>
+</head>
+<body>
+
+<canvas id="shader-canvas"></canvas>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-logo">
+    <div class="hdr-play"><svg viewBox="0 0 10 12"><path d="M0 0l10 6L0 12z"/></svg></div>
+    <div class="hdr-name">Scripting</div>
+    <span class="hdr-sep">·</span>
+    <span id="hdr-page">Dashboard</span>
+  </div>
+</div>
+
+<!-- PAGES -->
+<div class="page on" id="page-home">
+  <div class="page-ttl">Dashboard</div>
+  <div class="ch-card">
+    <div class="ch-lbl" id="ch-lbl">BaconStories</div>
+    <div class="ch-subs dim" id="ch-subs">—<span class="ch-unit">subscribers</span></div>
+    <div id="ch-gain-wrap" style="display:none"><div class="ch-gain" id="ch-gain"></div></div>
+    <div class="ch-handle">@BaconStoriesOnline</div>
+  </div>
+  <!-- subscriber growth graph -->
+  <div class="graph-card" id="graph-card">
+    <div class="graph-hdr">
+      <div>
+        <div class="sec-lbl" style="margin-bottom:3px">Subscriber Growth</div>
+        <div class="graph-ttdate" id="graph-ttdate">—</div>
+      </div>
+      <div class="graph-ttval" id="graph-ttval">—</div>
+    </div>
+    <svg id="sub-graph" viewBox="0 0 340 110" preserveAspectRatio="none" style="width:100%;height:110px;display:block;cursor:crosshair;touch-action:pan-y"></svg>
+    <div class="graph-footer" id="graph-footer"></div>
+  </div>
+
+  <div id="api-note" style="display:none" class="api-note">
+    <p>To show live data, set <code>YT_API_KEY</code> at the top of the script in <code>index.html</code>.</p>
+  </div>
+  <div class="sec-lbl">Recent Shorts</div>
+  <div id="recent-vids"><div style="text-align:center;padding:32px 0;color:var(--mu);font-size:14px">Loading…</div></div>
+</div>
+
+<div class="page" id="page-scripts">
+  <div class="page-ttl">Scripts</div>
+  <div class="sc-nav" id="sc-nav">
+    <div class="sc-nav-hdr" onclick="toggleScNav()">
+      <div class="sc-nav-hdr-l">
+        <span class="sc-nav-icon">📋</span>
+        <span class="sc-nav-lbl">Jump to Script</span>
+      </div>
+      <span class="sc-nav-chev">▾</span>
+    </div>
+    <div class="sc-nav-body">
+      <div class="sc-nav-inner">
+        <div class="sc-nav-items" id="sc-nav-items"></div>
+      </div>
+    </div>
+  </div>
+  <div class="sc-date" id="sc-date"></div>
+  <div id="sc-container"></div>
+</div>
+
+<div class="page" id="page-builder">
+  <div class="page-ttl">Builder</div>
+  <div class="bld-form">
+    <label class="bld-lbl">Your Topic or Idea</label>
+    <input class="bld-input" id="bld-topic" placeholder="e.g. your parents caught you up at 3AM on Roblox…">
+    <label class="bld-lbl">Archetype</label>
+    <select class="bld-sel" id="bld-arch">
+      <option value="sc">😭 Scenario Choice</option>
+      <option value="rb">🎮 Relatable Behavior</option>
+      <option value="pd">🔥 Platform Drama</option>
+      <option value="rq">😈 Rarity Quiz</option>
+      <option value="sf">💀 Shocking Facts</option>
+    </select>
+    <button class="bld-btn" onclick="buildScript()">⚡ Generate Script</button>
+  </div>
+  <div class="bld-out" id="bld-out">
+    <div class="bld-section">
+      <div class="bld-sec-lbl">HOOK</div>
+      <div class="bld-tip" id="bld-hook-tip"></div>
+      <textarea class="bld-ta" id="bld-hook" rows="3"></textarea>
+    </div>
+    <div class="bld-section">
+      <div class="bld-sec-lbl">BUILD</div>
+      <div class="bld-tip" id="bld-build-tip"></div>
+      <textarea class="bld-ta" id="bld-build" rows="3"></textarea>
+    </div>
+    <div class="bld-section">
+      <div class="bld-sec-lbl">PAYLOAD</div>
+      <div class="bld-tip" id="bld-payload-tip"></div>
+      <textarea class="bld-ta" id="bld-payload" rows="6"></textarea>
+    </div>
+    <div class="bld-section">
+      <div class="bld-sec-lbl">CTA</div>
+      <div class="bld-tip" id="bld-cta-tip"></div>
+      <textarea class="bld-ta" id="bld-cta" rows="2"></textarea>
+    </div>
+    <button class="bld-cp" id="bld-cp-btn" onclick="copyBuilt()">📋 Copy Full Script</button>
+  </div>
+</div>
+
+<div class="page" id="page-debrief">
+  <div class="page-ttl">Debrief</div>
+  <div id="dbr-analysis"></div>
+  <div class="dbr-card" style="margin-top:6px">
+    <div class="dbr-card-lbl" style="color:var(--mu2);margin-bottom:12px">&#9998; My Notes</div>
+    <textarea class="dbr-notes" id="dbr-notes-ta" placeholder="Write your thoughts here — what you filmed today, ideas for next scripts, what worked, what did not work..."></textarea>
+    <div class="dbr-notes-footer"><span class="dbr-notes-saved" id="dbr-notes-saved">Saved &#10003;</span></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="nav">
+  <div class="nav-inner">
+    <div class="nav-lamp" id="nav-lamp"></div>
+    <div class="ni on" id="nav-home" onclick="go('home')">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Home</span>
+    </div>
+    <div class="ni" id="nav-scripts" onclick="go('scripts')">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Scripts</span>
+    </div>
+    <div class="ni" id="nav-builder" onclick="go('builder')">
+      <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span>Builder</span>
+    </div>
+    <div class="ni" id="nav-debrief" onclick="go('debrief')">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span>Debrief</span>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copied ✓</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────
+const YT_API_KEY    = 'AIzaSyC6HEmmS9Oarggd4w2-D6bSCN__HdLCUTE';
+const CHANNEL_ID    = 'UChk75M5fF05NcsSetknU4dg';
+const CLAUDE_API_KEY = ''; // Get yours at console.anthropic.com → API Keys
+
+// ── SHADER BACKGROUND (raw WebGL2 — no CDN, no deps) ──
+var _gl=null,_glProg=null,_glAnimId=null,_glTime=0,_glTimeLoc=null,_glResLoc=null;
+
+// WebGL2 / GLSL ES 3.0 — tanh is built-in, proper in/out syntax
+var _VS=`#version 300 es
+in vec2 position;
+void main(){gl_Position=vec4(position,0.0,1.0);}`;
+
+var _FS=`#version 300 es
+precision mediump float;
+uniform float iTime;
+uniform vec2  iResolution;
+out vec4 fragColor;
+#define NUM_OCTAVES 3
+float rand(vec2 n){return fract(sin(dot(n,vec2(12.9898,4.1414)))*43758.5453);}
+float noise(vec2 p){
+  vec2 ip=floor(p),u=fract(p);
+  u=u*u*(3.0-2.0*u);
+  return mix(mix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),
+             mix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),u.y);
+}
+float fbm(vec2 x){
+  float v=0.0,a=0.3;
+  vec2 s=vec2(100.0);
+  mat2 rot=mat2(cos(0.5),sin(0.5),-sin(0.5),cos(0.5));
+  for(int i=0;i<NUM_OCTAVES;i++){v+=a*noise(x);x=rot*x*2.0+s;a*=0.4;}
+  return v;
+}
+void main(){
+  vec2 shake=vec2(sin(iTime*1.2)*0.004,cos(iTime*2.1)*0.004);
+  vec2 p=((gl_FragCoord.xy+shake*iResolution.xy)-iResolution.xy*0.5)
+         /iResolution.y*mat2(6.0,-4.0,4.0,6.0);
+  vec2 v;vec4 o=vec4(0.0);
+  float f=2.0+fbm(p+vec2(iTime*5.0,0.0))*0.5;
+  for(float i=0.0;i<24.0;i++){
+    v=p+cos(i*i+(iTime+p.x*0.08)*0.025+i*vec2(13.0,11.0))*3.5
+      +vec2(sin(iTime*3.0+i)*0.003,cos(iTime*3.5-i)*0.003);
+    float tail=fbm(v+vec2(iTime*0.5,i))*0.3*(1.0-i/24.0);
+    vec4 col=vec4(
+      0.5+0.5*abs(sin(i*0.2+iTime*0.4)),
+      0.02*abs(cos(i*0.5+iTime*0.6)),
+      0.01*abs(sin(i*0.4+iTime*0.3)),
+      1.0
+    );
+    vec4 c=col*exp(sin(i*i+iTime*0.8))
+           /length(max(v,vec2(v.x*f*0.015,v.y*1.5)));
+    o+=c*(1.0+tail*0.8)*smoothstep(0.0,1.0,i/24.0)*0.6;
+  }
+  o=tanh(pow(o/80.0,vec4(1.4)));
+  fragColor=o*1.3;
+}`;
+
+function initShaderBg(){
+  if(_gl)return;
+  var cv=document.getElementById('shader-canvas');
+  if(!cv)return;
+  var gl=cv.getContext('webgl2');
+  if(!gl){console.warn('WebGL2 not supported — shader bg disabled');return;}
+  _gl=gl;
+
+  function mkShader(type,src){
+    var s=gl.createShader(type);
+    gl.shaderSource(s,src);
+    gl.compileShader(s);
+    if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){
+      console.warn('Shader compile error:',gl.getShaderInfoLog(s));
+      return null;
+    }
+    return s;
+  }
+  var vs=mkShader(gl.VERTEX_SHADER,_VS);
+  var fs=mkShader(gl.FRAGMENT_SHADER,_FS);
+  if(!vs||!fs)return;
+
+  _glProg=gl.createProgram();
+  gl.attachShader(_glProg,vs);gl.attachShader(_glProg,fs);
+  gl.linkProgram(_glProg);
+  if(!gl.getProgramParameter(_glProg,gl.LINK_STATUS)){
+    console.warn('Shader link error:',gl.getProgramInfoLog(_glProg));
+    return;
+  }
+  gl.useProgram(_glProg);
+
+  var buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,
+    new Float32Array([-1,-1, 1,-1, -1,1, 1,1]),gl.STATIC_DRAW);
+  var pos=gl.getAttribLocation(_glProg,'position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+
+  _glTimeLoc=gl.getUniformLocation(_glProg,'iTime');
+  _glResLoc =gl.getUniformLocation(_glProg,'iResolution');
+
+  cv.width=window.innerWidth; cv.height=window.innerHeight;
+  gl.viewport(0,0,cv.width,cv.height);
+  gl.uniform2f(_glResLoc,cv.width,cv.height);
+
+  window.addEventListener('resize',function(){
+    var c=document.getElementById('shader-canvas');
+    if(!c||!_gl)return;
+    c.width=window.innerWidth; c.height=window.innerHeight;
+    _gl.viewport(0,0,c.width,c.height);
+    _gl.uniform2f(_glResLoc,c.width,c.height);
+  },{passive:true});
+}
+
+function startShaderBg(){
+  if(!_gl)initShaderBg();
+  if(!_gl||_glAnimId)return;
+  var cv=document.getElementById('shader-canvas');
+  if(cv)cv.style.opacity='0.88';
+  (function loop(){
+    _glTime+=0.016;
+    _gl.uniform1f(_glTimeLoc,_glTime);
+    _gl.drawArrays(_gl.TRIANGLE_STRIP,0,4);
+    _glAnimId=requestAnimationFrame(loop);
+  })();
+}
+
+function stopShaderBg(){
+  if(_glAnimId){cancelAnimationFrame(_glAnimId);_glAnimId=null;}
+  var cv=document.getElementById('shader-canvas');
+  if(cv)cv.style.opacity='0';
+}
+
+// ── CHARACTER DESCRIPTION ─────────────────────────────
+// Appended to every image prompt automatically
+var CHAR = 'The main character is a Roblox-style blocky avatar: brown swept hair (medium length, slightly messy), light skin, wearing a blue graphic t-shirt with a dark creature design on it, layered with a black vest, and dark grey/black jeans. Standard Roblox smile face. Family members share the same Roblox blocky art style with similar facial features — parents wear more adult clothing, siblings wear casual clothes. All in 16:9 horizontal wide-shot format, bright cartoon colors, detailed background.';
+
+// ── DATE ──────────────────────────────────────────────
+const TODAY  = new Date();
+const DOY    = Math.floor((TODAY - new Date(TODAY.getFullYear(),0,0)) / 86400000);
+const D      = ((DOY - 155) % 100 + 100) % 100;
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DATE_STR = MONTHS[TODAY.getMonth()] + ' ' + TODAY.getDate() + ', ' + TODAY.getFullYear();
+
+// ── NAV ───────────────────────────────────────────────
+var _curPage = 'home';
+var _inTransition = false;
+var PAGE_NAMES = {home:'Dashboard', scripts:'Scripts', builder:'Builder', debrief:'Debrief'};
+
+function go(id) {
+  if (id === _curPage) return;
+
+  // Update header page name
+  var hdrPage = document.getElementById('hdr-page');
+  if (hdrPage) hdrPage.textContent = PAGE_NAMES[id] || id;
+
+  // Shader runs on all tabs — no stop needed
+
+  var pages = ['home','scripts','builder','debrief'];
+  var dir   = pages.indexOf(id) > pages.indexOf(_curPage) ? 'r' : 'l';
+
+  var oldPage  = document.getElementById('page-' + _curPage);
+  var nextPage = document.getElementById('page-' + id);
+
+  oldPage.className  = 'page exiting exit-' + dir;
+  nextPage.className = 'page on enter-' + dir;
+
+  setTimeout(function() { oldPage.className = 'page'; }, 270);
+  setTimeout(function() { nextPage.className = 'page on'; }, 440);
+
+  pages.forEach(function(p) {
+    document.getElementById('nav-' + p).className = 'ni' + (p === id ? ' on' : '');
+  });
+
+  updateLamp(id);
+  _curPage = id;
+  window.scrollTo(0, 0);
+
+  // shader stays on all tabs
+
+  if (id === 'debrief') loadDebrief();
+
+  if (id === 'scripts') {
+    // Defer pre-tilt to next rAF — lets the browser commit the transition's first paint
+    // before we touch the script cards, preventing a blocked/choppy first frame
+    requestAnimationFrame(function() {
+      document.querySelectorAll('#sc-container .sc-card').forEach(function(c) {
+        c.style.transition = 'none';
+        c.style.transform  = 'rotateX(14deg) scale(1.02)';
+        c.style.opacity    = '0.4';
+      });
+      setTimeout(revealScriptCards, 200);
+    });
+  }
+}
+
+// moves the lamp pill to sit under the active nav item
+function updateLamp(id) {
+  var ni   = document.getElementById('nav-' + id);
+  var lamp = document.getElementById('nav-lamp');
+  if (!ni || !lamp) return;
+  lamp.style.left  = ni.offsetLeft + 'px';
+  lamp.style.width = ni.offsetWidth + 'px';
+}
+
+// ── UTILS ─────────────────────────────────────────────
+function fmtN(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000)    return (n/1000).toFixed(1) + 'K';
+  return '' + n;
+}
+
+function toast() {
+  var t = document.getElementById('toast');
+  t.className = 'toast on';
+  setTimeout(function(){ t.className = 'toast'; }, 2000);
+}
+
+function doCopy(text, btn, orig) {
+  var done = function() {
+    toast();
+    if (btn) { btn.textContent = 'Copied ✓'; btn.classList.add('done'); }
+    setTimeout(function(){ if(btn){ btn.textContent = orig; btn.classList.remove('done'); } }, 2000);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function(){
+      fbCopy(text); done();
+    });
+  } else { fbCopy(text); done(); }
+}
+
+function fbCopy(t) {
+  var el = document.createElement('textarea');
+  el.value = t; el.style.cssText = 'position:fixed;opacity:0';
+  document.body.appendChild(el); el.select();
+  try { document.execCommand('copy'); } catch(e){}
+  document.body.removeChild(el);
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function chunk(text, max) {
+  if (text.length <= max) return [text];
+  var out = [], rem = text;
+  while (rem.length > max) {
+    var cut = Math.max(rem.lastIndexOf('. ',max), rem.lastIndexOf('! ',max), rem.lastIndexOf('? ',max), rem.lastIndexOf(' ',max));
+    if (cut <= 0) cut = max;
+    else cut += 1;
+    out.push(rem.slice(0, cut).trim());
+    rem = rem.slice(cut).trim();
+  }
+  if (rem) out.push(rem);
+  return out;
+}
+
+function toggleBlock(el) {
+  el.classList.toggle('col');
+}
+
+// ── SCRIPTS ───────────────────────────────────────────
+const SCRIPTS = [
+  {title:"Your Parents Just Found Your Hidden Snack Stash 💀😭",tags:['Home Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"HEY GUYS! Your parents just found the snack stash you've been hiding under your bed for three months. Chips, candy, juice boxes. All of it."},{label:'SETUP',text:"Which punishment are you taking?"},{label:'OPTION A',text:"Option A — you lose all food privileges for two weeks. Your parents control every meal. No treats, no extras, nothing you actually want."},{label:'OPTION B',text:"Option B — they donate every item in your stash to a neighbor's kid. You watch every snack you bought with your own money get handed away."},{label:'OPTION C',text:"Option C — you have to write a formal letter explaining why you hid food and read it aloud at dinner in front of the whole family."},{label:'VIP OPTION 👑',text:"VIP — your parent laughs so hard they can't stay mad. They sit down, help you eat some of the stash, and make a deal: you get one shelf in the pantry that's officially yours forever."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — which punishment are you surviving? Drop it below."}],imagePrompts:{hook:'Roblox-style cartoon image. Parent Roblox character lifting a bed skirt revealing a massive hidden snack stash. Main character frozen in horror. Bright bedroom. Blocky Roblox characters, bright cartoon colors, detailed bedroom background.',optionA:'Roblox-style cartoon image. Main Roblox character at a plain table with only vegetables in front of them. Looking at a locked cabinet. Parent watching. Blocky Roblox characters, bright cartoon colors, detailed kitchen background.',optionB:'Roblox-style cartoon image. Main character watching parent hand their snacks to a happy neighbor kid. Main character devastated, one tear. Blocky Roblox characters, bright cartoon colors, detailed porch background.',optionC:'Roblox-style cartoon image. Main Roblox character at dinner table reading from a paper with maximum embarrassment. Whole family watching. Blocky Roblox characters, bright cartoon colors, detailed dining room background.',vip:'Roblox-style cartoon image. Parent and main character sitting on bed together laughing and eating chips. Pantry shelf visible with a MINE sign. Gold crown above main character. Blocky Roblox characters, warm lighting.'},footage:'📹 Roblox bedroom map. Snack stash reveal graphic. VIP golden glow.',thumb:{bg:'🎮 Roblox bedroom, bed lifted revealing hidden snacks',text:'📝 "SNACK STASH FOUND 💀😭" bold white/red',reaction:'😱 Horrified character caught red-handed, drop shadow'}},
+  {title:"You Accidentally Broke Your Parent's Expensive Watch 💀",tags:['Home Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"WAIT! You knocked your parent's expensive watch off the counter and it shattered on the floor. They're coming home in twenty minutes."},{label:'SETUP',text:"What do you do right now?"},{label:'OPTION A',text:"Option A — you confess the second they walk in. Full honesty. You show them the broken watch immediately. You have no idea how they'll react."},{label:'OPTION B',text:"Option B — you hide it. You put the pieces in a drawer and pretend nothing happened. You spend the next three days waiting for them to notice."},{label:'OPTION C',text:"Option C — you try to fix it with super glue before they get home. It doesn't look right. You're running out of time and it's getting worse."},{label:'VIP OPTION 👑',text:"VIP — you confess calmly, they check the warranty and it's still covered. The manufacturer replaces it for free. Your parent calls you brave for telling the truth and takes you out to dinner."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? Drop it below."}],imagePrompts:{hook:'Roblox-style cartoon image. Main Roblox character staring at a shattered expensive watch on the floor. Clock shows 20 minutes left. Blocky Roblox characters, bright cartoon colors, detailed living room background.',optionA:'Roblox-style cartoon image. Main character holding broken watch pieces out to parent at the door. Parent expression unreadable. Character nervous but honest. Blocky Roblox characters, bright cartoon colors, home entryway background.',optionB:'Roblox-style cartoon image. Main Roblox character quietly sliding broken watch into a drawer, looking over shoulder. Guilty expression. Blocky Roblox characters, bright cartoon colors, detailed living room.',optionC:'Roblox-style cartoon image. Main character hunched over watch with super glue, clock ticking down, watch looking worse than before. Panic on face. Blocky Roblox characters, bright cartoon colors, kitchen background.',vip:'Roblox-style cartoon image. Parent on phone with warranty company smiling. New watch in a box. Main character with gold crown. Both heading to dinner. Blocky Roblox characters, warm happy lighting.'},footage:"📹 Roblox home map. Slow-motion watch drop graphic. Countdown timer overlay. VIP reveal with gold shimmer.",thumb:{bg:'🎮 Roblox living room, shattered watch on floor',text:'📝 "I BROKE IT 💀" bold white/red',reaction:'😱 Character staring at broken watch, shaking, drop shadow'}},
+  {title:"You're Grounded But Your Best Friend's Birthday Is Tonight 💀😭",tags:['Home Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"GUYS! You got grounded three days ago. Your best friend's birthday party is tonight. You just got a text saying the whole grade is going to be there."},{label:'SETUP',text:"What do you do?"},{label:'OPTION A',text:"Option A — you stay home. You respect the punishment. You watch everyone's stories from your bed for four hours. Your friend is hurt you weren't there."},{label:'OPTION B',text:"Option B — you sneak out. You make it to the party and have a great time. You come home and your parents are sitting in the living room with the lights on waiting for you."},{label:'OPTION C',text:"Option C — you negotiate. You make a case for why this is a special exception. They say no. You ask again. They extend the grounding by three more days."},{label:'VIP OPTION 👑',text:"VIP — your parents call your friend's parents to check in and end up talking for an hour. They feel bad, unground you for the night, and even drop you off. Your friend says it was the best surprise of the party."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing tonight? Drop it below."}],imagePrompts:{hook:'Roblox-style cartoon image. Main Roblox character in bed at night staring at phone showing party photos being posted live. Window shows a taxi going by. Blocky Roblox characters, dim bedroom lighting, bright cartoon colors.',optionA:'Roblox-style cartoon image. Main Roblox character watching party story after story getting more fun. Looking completely miserable in bed. Blocky Roblox characters, dark bedroom lighting, bright cartoon colors.',optionB:'Roblox-style cartoon image. Main Roblox character sneaking down stairs in the dark, shoes in hand. Both parents sitting in the living room with lights on staring at them. Blocky Roblox characters, dramatic lighting.',optionC:'Roblox-style cartoon image. Main character making a very serious case to parents with arms crossed. Calendar on the wall shows grounding extended. Blocky Roblox characters, bright cartoon colors, detailed living room.',vip:'Roblox-style cartoon image. Parents dropping main character off at party, waving from car. Main character running to surprise the birthday friend. Gold crown above main character. Blocky Roblox characters, warm celebration lighting.'},footage:'📹 Roblox house map at night. Party sounds in background. VIP reveal with confetti.',thumb:{bg:'🎮 Roblox bedroom at night, party vibes visible outside window',text:'📝 "GROUNDED ON PARTY NIGHT 💀😭" bold white',reaction:'😭 Character watching party stories from bed, devastated, drop shadow'}},
+  {title:"The Whole Class Voted On Your Punishment 💀",tags:['School Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"WAIT! Your teacher just announced that because someone disrupted class three times this week, the whole class is voting on their consequence. Everyone is looking at you."},{label:'SETUP',text:"Which consequence does the class vote in?"},{label:'OPTION A',text:"Option A — you have to present a five-minute apology speech to the class on Friday while everyone watches."},{label:'OPTION B',text:"Option B — you stay after school every day for a week to clean the classroom. No exceptions for sports or clubs."},{label:'OPTION C',text:"Option C — you write a two-page essay that gets read aloud by the teacher at the next parent meeting."},{label:'VIP OPTION 👑',text:"VIP — one classmate stands up and says the disruptions were actually because the lesson wasn't engaging. The teacher gets flustered, class ends early, and nobody gets any punishment at all."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — which one does your class pick? Drop it below."}],imagePrompts:{hook:'Roblox-style cartoon image. Teacher at the front writing three punishment options on the board. Every student turning to stare at main character in the back row. Character sinking into the chair. Blocky Roblox characters, bright cartoon colors, detailed classroom background.',optionA:'Roblox-style cartoon image. Main Roblox character giving an apology speech at the front of class. Whole class watching. Some smirking, some sympathetic. Character sweating. Blocky Roblox characters, bright cartoon colors, detailed classroom.',optionB:'Roblox-style cartoon image. Main character alone in the empty classroom after school, wiping desks. Looking out the window to see friends playing outside. Blocky Roblox characters, dim after-school lighting.',optionC:'Roblox-style cartoon image. Teacher reading from a printed essay at a parent meeting. Row of parents listening. Main character in the corner trying to disappear. Blocky Roblox characters, bright cartoon colors, conference room.',vip:'Roblox-style cartoon image. One brave student standing up pointing at the teacher while the whole class cheers. Teacher flustered and closing notes. Everyone filing out early. Main character with gold crown. Blocky Roblox characters, bright classroom.'},footage:'📹 Roblox classroom map. Vote graphic overlay. VIP class cheer animation.',thumb:{bg:'🎮 Roblox classroom, whole class turned around staring',text:'📝 "CLASS VOTED ON YOUR PUNISHMENT 💀" bold white',reaction:'😳 Character sinking in chair while class stares, drop shadow'}},
+  {title:"Your Older Sibling Got You Blamed For Something They Did 💀",tags:['Family Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"GUYS! Your older sibling broke the rule and immediately told your parents it was you. Your parents believe them. You're being punished for something you didn't do."},{label:'SETUP',text:"What do you do?"},{label:'OPTION A',text:"Option A — you take the punishment in silence. You say nothing, serve the consequence, and let your sibling feel the weight of what they did over time."},{label:'OPTION B',text:"Option B — you expose them right now. You tell your parents everything. Your sibling panics. It turns into a full family argument lasting two hours."},{label:'OPTION C',text:"Option C — you demand your sibling owes you. You take the fall, but you hold it over them for the next three months."},{label:'VIP OPTION 👑',text:"VIP — there's a security camera in that room. Your dad checks the footage. Your sibling is caught immediately. They get double the punishment. You're fully cleared and get your sibling's chores for a week as compensation."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? Drop the story if this has happened to you."}],imagePrompts:{hook:'Roblox-style cartoon image. Older sibling pointing at main character while parents look stern. Main character standing with arms out in disbelief. Blocky Roblox characters, bright cartoon colors, detailed living room.',optionA:'Roblox-style cartoon image. Main character sitting alone on stairs looking distant while sibling walks past looking guilty. Character silent and composed. Blocky Roblox characters, slightly moody lighting.',optionB:'Roblox-style cartoon image. Main character pointing back at sibling in front of both parents, who look surprised. Sibling in wide-eye panic. Full family argument. Blocky Roblox characters, bright cartoon colors, living room.',optionC:'Roblox-style cartoon image. Main character with a sly look leaning toward sibling who looks uncomfortable. Mental checklist floating above. Blocky Roblox characters, slightly dramatic lighting.',vip:'Roblox-style cartoon image. Dad watching security camera footage on laptop, jaw dropped. Sibling frozen in horror. Main character in background with gold crown smiling. Blocky Roblox characters, warm lighting.'},footage:'📹 Roblox house map. Security camera reveal graphic. VIP footage playback animation.',thumb:{bg:'🎮 Roblox living room, family confrontation energy',text:"📝 \"BLAMED FOR SOMETHING YOU DIDN'T DO 💀\" bold white",reaction:'😤 Character with arms out in disbelief, drop shadow'}},
+  {title:"You Forgot To Study And The Teacher Just Announced A Test 💀😭",tags:['School Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"GUYS! You completely forgot to study. You walk in this morning and your teacher announces there is a test starting in five minutes. You haven't looked at the material once."},{label:'SETUP',text:"What do you do?"},{label:'OPTION A',text:"Option A — you take the test cold. You write what you can remember from class and hope for the best. You finish early. You have no idea how bad it's going to be."},{label:'OPTION B',text:"Option B — you fake being sick. You miss the test and buy yourself one night to study. You still have to take a makeup version alone in the office."},{label:'OPTION C',text:"Option C — you ask the person next to you for help. They say no. The teacher notices you leaning. Now it looks like you were trying to cheat."},{label:'VIP OPTION 👑',text:"VIP — the teacher announces the test is open note. You have every single page of class notes in your bag from the whole semester. You finish in fifteen minutes with confidence and probably get the highest score in class."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — which one are you doing? And if you've taken a test completely unprepared, drop what happened."}],imagePrompts:{hook:'Roblox-style cartoon image. Teacher writing TEST on the board. Every student pulling out pencils. Main character in the back with completely blank notebook. Pure panic. Blocky Roblox characters, bright cartoon colors, detailed classroom.',optionA:'Roblox-style cartoon image. Main character staring at test paper looking completely lost. All questions blank. Clock ticking. Blocky Roblox characters, bright cartoon colors, detailed classroom.',optionB:'Roblox-style cartoon image. Main character walking to the nurse looking slightly sick but glancing back guiltily. Nurse at desk waiting. Blocky Roblox characters, bright cartoon colors, school hallway.',optionC:'Roblox-style cartoon image. Main character leaning toward student next to them who pulls away. Teacher at front starting to turn and look. Main character frozen. Blocky Roblox characters, bright cartoon colors.',vip:'Roblox-style cartoon image. Teacher announcing OPEN NOTE and main character immediately pulling out a massive organized binder. Classmates groaning. Character grinning with gold crown. Blocky Roblox characters, bright cartoon colors.'},footage:'📹 Roblox classroom map. TEST on board graphic. Clock countdown. VIP notes reveal with gold shimmer.',thumb:{bg:'🎮 Roblox classroom, TEST written on board',text:'📝 "FORGOT TO STUDY 💀😭" bold white/red',reaction:'😱 Character staring at test paper in horror, drop shadow'}},
+  {title:"You Accidentally Sent A Private Text To The Class Group Chat 💀",tags:['School Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"WAIT! You meant to text your best friend privately but you just sent it to the entire class group chat. Everyone can see it. It's been two minutes and there are already 47 reactions."},{label:'SETUP',text:"What do you do right now?"},{label:'OPTION A',text:"Option A — you leave the group chat immediately. No explanation. You just vanish. Everyone notices and it makes it worse. People screenshot it before you can do anything."},{label:'OPTION B',text:"Option B — you own it. You send a follow-up calling yourself out and making it a joke before anyone else can. Some people laugh with you. Some don't."},{label:'OPTION C',text:"Option C — you claim you got hacked. You message saying someone had your phone. Nobody fully believes you. The original message is already saved on six different phones."},{label:'VIP OPTION 👑',text:"VIP — someone in the class immediately sends an even more embarrassing accidental message two minutes after yours and the whole group chat forgets about you entirely. You quietly delete yours and nobody ever brings it up again."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And if you've sent the wrong text to the wrong person, drop the story."}],imagePrompts:{hook:'Roblox-style cartoon image. Main Roblox character staring at their phone as notifications keep pinging from the class group chat. Message clearly went to the wrong place. 47 reactions visible. Blocky Roblox characters, bright cartoon colors, detailed bedroom.',optionA:'Roblox-style cartoon image. Main character frantically tapping LEAVE GROUP. Phone showing a screenshot notification right as they exit. Too late expression. Blocky Roblox characters, bright cartoon colors.',optionB:'Roblox-style cartoon image. Main character typing a follow-up in the group chat with a nervous smile. Some laugh emojis, some side-eye emojis. Blocky Roblox characters, bright cartoon colors.',optionC:"Roblox-style cartoon image. Main character typing HACKED looking guilty. Other chat bubbles showing obvious disbelief emojis. Blocky Roblox characters, bright cartoon colors.",vip:'Roblox-style cartoon image. Group chat exploding with reactions to someone else\'s accidental message. Main character quietly deleting theirs, relieved. Gold crown above. Blocky Roblox characters, bright cartoon colors.'},footage:'📹 Phone screen group chat graphic. Notification storm animation. VIP clean delete effect.',thumb:{bg:'🎮 Phone screen with class group chat showing wrong message sent',text:'📝 "WRONG CHAT 💀" bold white/red',reaction:'😱 Character staring at phone in horror, drop shadow'}},
+  {title:"Your Best Friend Started Hanging Out With Your Enemy 💀😭",tags:['Friend Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"GUYS! You just found out your best friend has been hanging out with the person who made your life miserable for two years. They didn't tell you. You found out through someone else."},{label:'SETUP',text:"What do you do?"},{label:'OPTION A',text:"Option A — you confront your best friend directly. You tell them exactly how it makes you feel. They say you're being controlling and it turns into your biggest fight ever."},{label:'OPTION B',text:"Option B — you say nothing. You quietly start pulling away. Less texting, fewer hangouts. You let the friendship slowly cool without ever explaining why."},{label:'OPTION C',text:"Option C — you try to join the group. You act like you're fine with it. You spend three hangouts pretending everything is normal while being completely miserable."},{label:'VIP OPTION 👑',text:"VIP — your friend realized on their own that the person was using them to get information about you. They cut them off, come to you first, and apologize. You never even had to say anything."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And if your best friend has ever done something like this, drop the story."}],imagePrompts:{hook:'Roblox-style cartoon image. Main character seeing a photo on their phone of best friend laughing with their enemy. Expression shifting from confused to hurt. Blocky Roblox characters, bright cartoon colors, detailed bedroom.',optionA:'Roblox-style cartoon image. Main character and best friend face to face in an intense conversation. Both upset. Enemy visible in the background watching from a distance. Blocky Roblox characters, bright cartoon colors, hallway.',optionB:'Roblox-style cartoon image. Main character seen from behind walking away while best friend calls after them. Phone notifications going unanswered. Blocky Roblox characters, slightly moody lighting.',optionC:'Roblox-style cartoon image. Main character sitting in a friend group with their enemy, fake smiling. Thought bubble showing how miserable they actually feel. Blocky Roblox characters, bright cartoon colors, cafeteria.',vip:"Roblox-style cartoon image. Best friend at main character's door looking apologetic. Enemy walking away alone in background. Main character surprised but smiling. Gold crown above. Blocky Roblox characters, warm lighting."},footage:'📹 Roblox school or park map. Dramatic friendship reveal cutaways. VIP reconciliation glow.',thumb:{bg:'🎮 Roblox hallway, best friend and enemy together in background',text:'📝 "YOUR BEST FRIEND DID WHAT 💀😭" bold white',reaction:'😭 Hurt shocked character staring at phone, drop shadow'}},
+  {title:"Two Friend Groups Invited You To Parties On The Same Night 💀",tags:['Friend Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"HEY GUYS! Both of your friend groups invited you to different parties on the exact same night. Both made you personally promise you'd be there. You cannot be in two places at once."},{label:'SETUP',text:"What do you do?"},{label:'OPTION A',text:"Option A — you pick one party. You go, you have fun. The other group finds out and half of them stop inviting you to things for the next month."},{label:'OPTION B',text:"Option B — you try to do both. You show up to party one late, leave early, rush to party two. You arrive as people are already leaving. You enjoyed neither."},{label:'OPTION C',text:"Option C — you cancel both. You give each group a fake excuse. Both groups compare notes two days later and find out you lied to all of them."},{label:'VIP OPTION 👑',text:"VIP — you tell both groups the truth. Both groups find it hilarious, decide to merge the parties into one massive hangout at the same location. Best night of the year and it was technically your fault it happened."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing that night? Drop it below."}],imagePrompts:{hook:'Roblox-style cartoon image. Main character holding two phones, each showing a different party invitation at the exact same time. Total panic expression. Blocky Roblox characters, bright cartoon colors, detailed bedroom.',optionA:'Roblox-style cartoon image. Main character at one party having fun while phone buzzes with messages from the other group asking where they are. Ignoring the phone. Blocky Roblox characters, party lighting.',optionB:'Roblox-style cartoon image. Main character rushing out of party one stressed, calling a ride. Clock showing already late to party two. Blocky Roblox characters, bright cartoon colors.',optionC:'Roblox-style cartoon image. Main character at home alone watching TV while two phones face-down on the table. Guilt visible. Two separate group chats lighting up. Blocky Roblox characters, dim home lighting.',vip:'Roblox-style cartoon image. Two large groups at one massive merged party together. Main character in the middle with gold crown, arms out, everyone having the time of their life. Blocky Roblox characters, bright party lighting.'},footage:'📹 Roblox party or house map. Split-screen two invites graphic. VIP merge reveal with fireworks.',thumb:{bg:'🎮 Roblox house party, two invite cards side by side',text:'📝 "TWO PARTIES ONE NIGHT 💀" bold white',reaction:'😵 Character holding two phones in a panic, drop shadow'}},
+  {title:"Your Friend Has Had Your Game For Two Months And Won't Return It 💀",tags:['Friend Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"WAIT! You lent your friend your game two months ago. You've asked four times. Every time they say they'll bring it tomorrow. Tomorrow never comes. It's your favorite game."},{label:'SETUP',text:"What do you do now?"},{label:'OPTION A',text:"Option A — you give them one final warning. You text them right now saying if they don't bring it tomorrow you're coming over to get it. They leave you on read."},{label:'OPTION B',text:"Option B — you go to their house unannounced. You knock on the door. Their parent answers and now you have to explain the whole situation to an adult."},{label:'OPTION C',text:"Option C — you let it go. You've already mentally written it off. You accept the friendship is now worth less than a game and move on quietly."},{label:'VIP OPTION 👑',text:"VIP — their parent finds the game while cleaning, realizes their kid never mentioned borrowing it, and personally drives it to your house with an apology. Your friend has to apologize in person and offers to buy you the next one."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And if a friend has never returned something of yours, drop the story."}],imagePrompts:{hook:'Roblox-style cartoon image. Main character staring at phone showing four unanswered messages asking for the game back. Calendar showing two months. Blocky Roblox characters, bright cartoon colors, detailed bedroom.',optionA:"Roblox-style cartoon image. Main character typing a serious final warning text. Phone shows delivered but no response. Blocky Roblox characters, bright cartoon colors.",optionB:"Roblox-style cartoon image. Main character at a front door, friend's parent answering confused. Main character explaining awkwardly. Friend peeking from behind parent panicking. Blocky Roblox characters, bright cartoon colors, front porch.",optionC:'Roblox-style cartoon image. Main character staring at an empty game case with resigned expression. Picking up a different game with a heavy sigh. Blocky Roblox characters, slightly moody lighting.',vip:"Roblox-style cartoon image. Parent car pulling up to main character's house. Friend stepping out holding the game sheepishly. Main character at door with gold crown, surprised and pleased. Blocky Roblox characters, warm afternoon lighting."},footage:'📹 Roblox house or neighborhood map. Message log graphic. Calendar countdown. VIP car arrival reveal.',thumb:{bg:'🎮 Roblox neighborhood, empty game case on desk',text:"📝 \"THEY WON'T RETURN IT 💀\" bold white/red",reaction:'😤 Character staring at empty game case, arms crossed, drop shadow'}},
+  {title:"You Accidentally Liked A 3-Year-Old Photo While Stalking Someone's Profile 💀",tags:['Social Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"GUYS! You were scrolling way too deep on someone's profile and your thumb slipped. You just liked a photo from three years ago. They saw it immediately. You unliked it but it's too late."},{label:'SETUP',text:"What do you do right now?"},{label:'OPTION A',text:"Option A — you block them instantly. You figure if they can't see your profile it can't get more embarrassing. You forget they can see the block and now it's ten times worse."},{label:'OPTION B',text:"Option B — you text them first and pretend it was completely on purpose. You say you liked it genuinely. They do not believe you for one second."},{label:'OPTION C',text:"Option C — you do nothing. You don't reply to their three question marks. You avoid eye contact for the next two weeks at school."},{label:'VIP OPTION 👑',text:"VIP — they text you first saying they liked that you liked it and it starts an actual conversation. Somehow the most embarrassing moment of the week turned into you both talking every day after that."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing after that like? Drop the most embarrassing profile-stalking story you have."}],imagePrompts:{hook:"Roblox-style cartoon image. Main character staring at their phone in horror at a liked notification going out on a 3-year-old photo. Crush's three question marks already replied. Blocky Roblox characters, bright cartoon colors, detailed bedroom.",optionA:'Roblox-style cartoon image. Main character frantically tapping BLOCK on a profile. Still panicked. Blocky Roblox characters, bright cartoon colors.',optionB:"Roblox-style cartoon image. Main character typing a forced casual message claiming the like was intentional. Other person's reply showing total disbelief. Blocky Roblox characters, bright cartoon colors.",optionC:'Roblox-style cartoon image. Main character at school walking past the person with exaggerated casualness, not making eye contact. Person watching with a curious expression. Blocky Roblox characters, bright cartoon colors, school hallway.',vip:'Roblox-style cartoon image. Two characters texting back and forth both smiling. Main character on their bed with a huge grin. Gold crown above. Blocky Roblox characters, warm bedroom lighting.'},footage:'📹 Phone screen scroll animation. Like notification graphic. VIP reveal with heart effect.',thumb:{bg:'🎮 Phone screen showing old liked photo notification',text:'📝 "LIKED A 3 YEAR OLD PHOTO 💀" bold white',reaction:'😱 Character staring at phone in absolute horror, drop shadow'}},
+  {title:"Your Friend Told Everyone About Your Crush At School 💀😭",tags:['Friend Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"HEY GUYS! You told your best friend your crush in complete confidence. By third period today, every single person in your grade knows. Including your crush."},{label:'SETUP',text:"What do you do?"},{label:'OPTION A',text:"Option A — you confront your friend in the hallway right now. It gets loud. People stop and watch. Whatever they say, everyone is going to hear every word."},{label:'OPTION B',text:"Option B — you go straight to your crush and address it head on. You own it completely. You have no idea if this just made everything permanently awkward."},{label:'OPTION C',text:"Option C — you deny everything to everyone. You tell people your friend made it up. Your friend finds out you're saying that and now there's a bigger problem."},{label:'VIP OPTION 👑',text:"VIP — your crush texts you first. Turns out they already liked you back and were waiting for a sign. Your friend accidentally did you a favor. Best day of the week."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And if someone has ever spilled your secret, drop what happened."}],imagePrompts:{hook:'Roblox-style cartoon image. Main character walking through a school hallway as every student turns to look at them with knowing expressions. Phone buzzing constantly. Blocky Roblox characters, bright cartoon colors, school hallway.',optionA:'Roblox-style cartoon image. Main character pointing at former best friend in the hallway. Other students stopped to watch. Both mid-confrontation. Blocky Roblox characters, bright cartoon colors, school hallway.',optionB:'Roblox-style cartoon image. Main character nervously approaching their crush in the hallway. Both looking slightly nervous. Other students watching from a distance. Blocky Roblox characters, bright cartoon colors.',optionC:'Roblox-style cartoon image. Main character shaking head convincingly to classmates. In the background the friend hears what is being said and looks hurt and angry. Blocky Roblox characters, bright cartoon colors.',vip:"Roblox-style cartoon image. Main character's phone lighting up with a text from their crush. Expression going from panic to pure joy. Gold crown above. Blocky Roblox characters, warm glowing light."},footage:'📹 Roblox school hallway map. Gossip wave graphic. VIP phone reveal with heart animation.',thumb:{bg:'🎮 Roblox school hallway, everyone staring',text:'📝 "THEY TOLD EVERYONE 💀😭" bold white',reaction:'😭 Character walking through hallway as everyone stares, drop shadow'}},
+  {title:"You Spent All Your Robux On The Wrong Item 💀😭",tags:['Roblox Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"WAIT! You just spent all of your Robux on the wrong item by accident. Wrong color. Wrong version. Not even the right game. The purchase is confirmed and your balance is zero."},{label:'SETUP',text:"What do you do?"},{label:'OPTION A',text:"Option A — you try to contact Roblox support. They respond four days later saying the purchase is final and non-refundable."},{label:'OPTION B',text:"Option B — you keep the wrong item and pretend it was intentional. You use it in every game you play for a week hoping nobody notices it doesn't match anything."},{label:'OPTION C',text:"Option C — you confess to your parents that you wasted the Robux they gave you and ask for more. They say no and remind you of this moment for the next six months."},{label:'VIP OPTION 👑',text:"VIP — it turns out the item you accidentally bought is a limited that just got discontinued that same day. The value triples overnight. You sell it for way more Robux than you started with and buy the original item plus extras."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And if you've ever made an accidental Roblox purchase, drop what it was."}],imagePrompts:{hook:'Roblox-style cartoon image. Main character staring at a purchase confirmation screen. Wrong item shown. Robux balance at zero. Pure devastation. Blocky Roblox characters, bright cartoon colors, detailed bedroom.',optionA:'Roblox-style cartoon image. Main character typing a support ticket. Calendar showing days passing. Response on screen saying FINAL SALE. Character deflated. Blocky Roblox characters, bright cartoon colors.',optionB:'Roblox-style cartoon image. Main character in a Roblox game lobby wearing the obviously wrong item. Other players visibly noticing and staring. Character pretending nothing is wrong. Blocky Roblox characters, bright cartoon colors.',optionC:"Roblox-style cartoon image. Main character approaching parents looking guilty and explaining. Parents exchanging a look. One parent holding up a finger as if to say we told you so. Blocky Roblox characters, bright cartoon colors, kitchen.",vip:'Roblox-style cartoon image. Main character staring at a value chart on a laptop showing the accidentally bought item going way up. Robux counter spinning upward. Gold crown above. Pure shock turning into joy. Blocky Roblox characters, bright cartoon colors.'},footage:'📹 Roblox purchase screen graphic. Robux counter at zero. VIP limited item value spike reveal.',thumb:{bg:'🎮 Roblox purchase screen, zero Robux balance',text:'📝 "WRONG ITEM PURCHASED 💀😭" bold white/red',reaction:'😭 Character staring at wrong item with empty Robux, drop shadow'}},
+  {title:"Your Little Sibling Deleted Your Roblox Account 💀😭",tags:['Roblox Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"GUYS! You just found out your little sibling got into your Roblox account and deleted it. Three years of progress. Your whole inventory. Your friends list. Everything. Gone."},{label:'SETUP',text:"What do you do?"},{label:'OPTION A',text:"Option A — you tell your parents immediately. Your sibling gets in serious trouble. But your account is still gone and no punishment brings it back."},{label:'OPTION B',text:"Option B — you try to recover the account yourself. You go through every recovery option Roblox has. Hours pass. The account shows as permanently deleted."},{label:'OPTION C',text:"Option C — you make your sibling sit down and watch you start from scratch. Every beginner level. Every tutorial. They have to witness exactly what they destroyed."},{label:'VIP OPTION 👑',text:"VIP — Roblox support recovers your full account within 24 hours because the deletion was flagged as unauthorized. Your inventory is fully restored. Your sibling's devices get parental locked indefinitely."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And if a sibling has ever destroyed something of yours, drop what happened."}],imagePrompts:{hook:'Roblox-style cartoon image. Main character staring at a screen showing ACCOUNT DELETED in big red letters. Three years of stats wiped. Little sibling peeking around the door. Blocky Roblox characters, bright cartoon colors, detailed bedroom.',optionA:'Roblox-style cartoon image. Both siblings in front of parents. Little sibling in serious trouble. Main character still devastated even though sibling is punished. Blocky Roblox characters, bright cartoon colors, living room.',optionB:'Roblox-style cartoon image. Main character at laptop going through every recovery option. Screen after screen of dead ends. Clock showing hours passing. Blocky Roblox characters, bright cartoon colors.',optionC:'Roblox-style cartoon image. Main character pointing at beginner tutorial screen making little sibling sit and watch. Sibling looks regretful. Blocky Roblox characters, bright cartoon colors, detailed bedroom.',vip:'Roblox-style cartoon image. Email notification on screen: ACCOUNT FULLY RESTORED with full inventory shown. Main character overwhelmed with relief. Gold crown above. Little sibling in background with parental lock screen on their device. Blocky Roblox characters, bright cartoon colors.'},footage:'📹 Roblox account deleted screen graphic. Recovery screen cutaways. VIP restoration reveal.',thumb:{bg:'🎮 Roblox screen showing account deleted message',text:'📝 "SIBLING DELETED MY ACCOUNT 💀😭" bold white',reaction:'😭 Character staring at deleted account screen in horror, drop shadow'}},
+  {title:"Your Parents Are Making You Spend The Whole Summer At Grandma's 💀",tags:['Summer Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"HEY GUYS! Your parents just announced you're spending the entire summer at your grandma's house. No WiFi. No gaming setup. All your friends are staying home having the summer of their lives."},{label:'SETUP',text:"Which version of this summer are you surviving?"},{label:'OPTION A',text:"Option A — you go quietly. You spend eight weeks at grandma's. Slow mornings, boring afternoons, early bedtimes. You come back and everyone has inside jokes you weren't there for."},{label:'OPTION B',text:"Option B — you negotiate to bring your gaming setup. Grandma agrees but makes you eat every meal with her and tells you stories for two hours every single evening."},{label:'OPTION C',text:"Option C — you pitch a compromise: two weeks at grandma's, rest of summer at home. Your parents say four weeks. You say three. They say five. You're now going for six."},{label:'VIP OPTION 👑',text:"VIP — grandma's house has a finished basement with a full gaming setup your uncle left. She has unlimited fiber internet. The neighborhood kids come over every day. It ends up being one of the best summers of your life."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — which summer are you living? Drop it below."}],imagePrompts:{hook:"Roblox-style cartoon image. Main character in the backseat of a car watching their home and friends get smaller in the rear window. Devastated. Suitcase in the trunk. Blocky Roblox characters, bright cartoon colors, car interior.",optionA:'Roblox-style cartoon image. Main character in a very quiet living room with grandma watching slow TV. Outside window shows summer sun, kids playing. Character staring at a blank wall. Blocky Roblox characters, slightly muted indoor lighting.',optionB:'Roblox-style cartoon image. Main character trying to game while grandma sits beside them telling stories with tea, not stopping. Character trying to focus on both. Blocky Roblox characters, bright cartoon colors, living room.',optionC:"Roblox-style cartoon image. Main character in a negotiation standoff with both parents. Each time they counter, the calendar shows more weeks added. Now at six weeks. Character panicking. Blocky Roblox characters, bright cartoon colors.",vip:"Roblox-style cartoon image. Main character discovering a fully loaded gaming setup in grandma's basement. Fiber router glowing. Neighborhood kids peeking in. Grandma smiling at the door proudly. Gold crown above main character. Blocky Roblox characters, bright cartoon colors."},footage:"📹 Roblox countryside or house map. Summer calendar graphic. VIP basement reveal with golden glow.",thumb:{bg:"🎮 Roblox car driving away, friends waving from the curb",text:"📝 \"WHOLE SUMMER AT GRANDMA'S 💀\" bold white",reaction:'😭 Character looking back sadly from car window, drop shadow'}},
+  {title:"You Lost A Dare And Have To Do Something Embarrassing At School 💀",tags:['School Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"WAIT! You lost a dare fair and square. The terms were clear. Now you have to do it at school tomorrow in front of everyone and you cannot back out without losing your reputation entirely."},{label:'SETUP',text:"Which dare did you lose?"},{label:'OPTION A',text:"Option A — you have to walk into school with every item of clothing on backwards. Shirt, pants, shoes. All day. Teachers notice. The principal calls home."},{label:'OPTION B',text:"Option B — you have to walk up to the most popular person in your grade, compliment them in the most exaggerated way possible, and bow. In the middle of the cafeteria."},{label:'OPTION C',text:"Option C — you have to raise your hand in every single class and answer every question with a made-up word until a teacher calls your parents."},{label:'VIP OPTION 👑',text:"VIP — you do the dare so confidently and hilariously that the whole school is talking about it by lunch. The popular crowd thinks it's the funniest thing they've seen. You end the day more known than you started it."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — which dare did you lose? Drop the most embarrassing dare you've actually had to do."}],imagePrompts:{hook:'Roblox-style cartoon image. Main character shaking hands with friends after clearly losing a bet. The word DARE written on a paper in front of them. Character looking apprehensive. Blocky Roblox characters, bright cartoon colors, detailed bedroom.',optionA:'Roblox-style cartoon image. Main character walking through school hallway with every clothing item on backwards. Other students staring. Teacher in background on the phone. Blocky Roblox characters, bright cartoon colors, school hallway.',optionB:'Roblox-style cartoon image. Main character in the packed cafeteria bowing dramatically to the most popular student who looks confused and amused. Whole cafeteria watching. Blocky Roblox characters, bright cartoon colors, cafeteria.',optionC:'Roblox-style cartoon image. Main character raising their hand in class with extreme confidence saying a completely made-up word. Teacher staring in disbelief. Classmates barely holding in laughter. Blocky Roblox characters, bright cartoon colors.',vip:'Roblox-style cartoon image. Main character finishing the dare with a dramatic bow. Crowd around them cheering and laughing. Popular kids giving thumbs up. Gold crown above main character. Blocky Roblox characters, bright celebratory lighting.'},footage:'📹 Roblox school map. Dare reveal graphic. Crowd reaction cutaways. VIP crowd cheer reveal.',thumb:{bg:'🎮 Roblox school hallway, crowd watching something happen',text:'📝 "LOST THE DARE 💀" bold white/red',reaction:'😳 Character about to do something embarrassing, everyone watching, drop shadow'}},
+  {title:"Your Report Card Got Sent To The Family Group Chat 💀😭",tags:['School Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"GUYS! Your parent accidentally forwarded your report card to the entire family group chat. Grandparents, aunts, uncles, cousins. Everyone. And the grades are not good."},{label:'SETUP',text:"Which reaction are you dealing with?"},{label:'OPTION A',text:"Option A — your grandparents start calling one by one. Each call is twenty minutes of being told how much potential you have and how you're not living up to it. You take six calls."},{label:'OPTION B',text:"Option B — your aunt sends a motivational quote. Your cousin sends a meme about failing. Your uncle asks if you need tutoring. The chat does not stop for three days."},{label:'OPTION C',text:"Option C — your parents are so embarrassed they ground you from everything and sign you up for Saturday study sessions for the rest of the semester. Starting this week."},{label:'VIP OPTION 👑',text:"VIP — your older cousin who everyone respects jumps in the chat and tells everyone to leave you alone, shares their own story of failing and turning it around. The chat shifts immediately and now everyone's rooting for you."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — which reaction are you getting? Drop it below."}],imagePrompts:{hook:'Roblox-style cartoon image. Parent staring at their phone in horror after forwarding a report card to the family group chat. Main character watching the family chat explode with notifications. Blocky Roblox characters, bright cartoon colors, kitchen.',optionA:'Roblox-style cartoon image. Main character sitting on bed holding phone to their ear looking exhausted. Caller ID showing GRANDMA AGAIN. Six missed calls visible. Blocky Roblox characters, bright cartoon colors, bedroom.',optionB:'Roblox-style cartoon image. Phone screen showing the family group chat overflowing. Motivational quotes, memes, tutoring offers all at once. Main character reading it overwhelmed. Blocky Roblox characters, bright cartoon colors.',optionC:'Roblox-style cartoon image. Main character at a Saturday study session completely alone while it is sunny outside. Stack of textbooks in front of them. Parent watching from doorway. Blocky Roblox characters, dim indoor lighting.',vip:'Roblox-style cartoon image. Phone showing older cousin\'s message in the group chat with a gold glow around it. All negative messages going quiet. Family chat shifting to supportive emojis. Main character with gold crown reading it with relief. Blocky Roblox characters, warm lighting.'},footage:'📹 Phone family group chat graphic. Notification storm animation. VIP cousin message reveal with golden glow.',thumb:{bg:'🎮 Phone showing family group chat exploding with notifications',text:'📝 "REPORT CARD IN THE FAMILY CHAT 💀😭" bold white',reaction:'😭 Character reading family chat reactions in horror, drop shadow'}},
+  {title:"You Went Viral For The Most Embarrassing Reason 💀😭",tags:['Social Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"HEY GUYS! Someone filmed you at school without you knowing and posted it online. It went viral overnight. You woke up to 200,000 views and every comment is about you."},{label:'SETUP',text:"How do you handle it?"},{label:'OPTION A',text:"Option A — you try to get the video taken down. You report it on every platform. The person reposts it with a new title every time. It has now been up for five days."},{label:'OPTION B',text:"Option B — you lean into it. You post your own response video owning the moment. It gets a fraction of the views. The original video still gets more attention every day."},{label:'OPTION C',text:"Option C — you go fully offline. You delete all your accounts and tell everyone at school it wasn't you. Nobody believes you because the video is very clearly you."},{label:'VIP OPTION 👑',text:"VIP — a massive creator shares your video but with a caption defending you and calling out the person who posted it without permission. The comment section flips in your favor. You gain 10,000 followers in 48 hours."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And if you've ever had a video of you posted without permission, drop what happened."}],imagePrompts:{hook:'Roblox-style cartoon image. Main character waking up and staring at a phone showing 200K views on a video of them. Hundreds of notifications. Pure shock on face. Blocky Roblox characters, morning bedroom lighting, bright cartoon colors.',optionA:'Roblox-style cartoon image. Main character aggressively hitting REPORT on multiple screens. Each time the video reappears with a new title. View count keeps climbing. Blocky Roblox characters, frustrated expression.',optionB:'Roblox-style cartoon image. Main character filming a response video trying to look confident. Phone shows response has 500 views while original shows 400K. Blocky Roblox characters, bright cartoon colors.',optionC:"Roblox-style cartoon image. Main character at school insisting it's not them to two classmates. Both classmates watching the video on their phone and looking at main character. Blocky Roblox characters, bright cartoon colors, school hallway.",vip:'Roblox-style cartoon image. Main character watching a huge creator\'s post defending them. Comment section exploding with support. Follower count spinning up to 10K. Gold crown above. Main character stunned and overjoyed. Blocky Roblox characters, glowing bright screen.'},footage:'📹 Phone viral video screen graphic. View counter climbing. VIP creator defense reveal with gold glow.',thumb:{bg:'🎮 Phone showing 200K views on embarrassing video',text:'📝 "WENT VIRAL FOR THE WRONG REASON 💀😭" bold white',reaction:'😱 Character staring at viral video with hands on face, drop shadow'}},
+  {title:"You Called Your Teacher 'Mom' In Front Of The Whole Class 💀",tags:['School Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"WAIT! You raised your hand, your teacher called on you, and you started your sentence with MOM. Right in front of everyone. The room went completely silent for three full seconds."},{label:'SETUP',text:"What do you do next?"},{label:'OPTION A',text:"Option A — you freeze. You say absolutely nothing. The silence gets worse. Someone in the back finally laughs and the whole class explodes. You do not recover for the rest of the period."},{label:'OPTION B',text:"Option B — you immediately try to play it off. You say you were thinking about something else. The explanation makes zero sense and somehow makes the class laugh harder."},{label:'OPTION C',text:"Option C — you own it completely. You say it louder on purpose and act like it was intentional. The class goes wild. The teacher is not amused."},{label:'VIP OPTION 👑',text:"VIP — the teacher smiles and says everyone does it. Then she accidentally calls YOU by her own kid's name two minutes later. The class loses it. You are both in the same boat and it becomes the funniest moment of the semester."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And if you've called a teacher mom or dad before, I need the full story."}],imagePrompts:{hook:"Roblox-style cartoon image. Main character standing at their desk with hand raised, mouth open having just said MOM. Teacher frozen at the front of class. Every single student turning slowly to stare. Absolute silence energy. Blocky Roblox characters, bright cartoon colors.",optionA:'Roblox-style cartoon image. Main character sitting completely frozen, face red, while the class erupts in laughter around them. Trying to become invisible. One student in the back pointing. Blocky Roblox characters, bright cartoon colors.',optionB:'Roblox-style cartoon image. Main character explaining something with hands gesturing wildly, clearly making no sense. Class laughing harder at the explanation than the original slip. Blocky Roblox characters, bright cartoon colors.',optionC:'Roblox-style cartoon image. Main character looking directly at the teacher and saying it again with total confidence. Class going completely wild. Teacher staring back with a flat expression. Blocky Roblox characters, bright cartoon colors.',vip:"Roblox-style cartoon image. Teacher accidentally calling main character by her own kid's name. Both teacher and main character making eye contact in shared horror then cracking up. Whole class in stitches. Gold crown above main character. Blocky Roblox characters, bright classroom lighting."},footage:'📹 Roblox classroom map. Slow motion MOM moment graphic. VIP teacher blunder reveal.',thumb:{bg:'🎮 Roblox classroom, entire class turning to stare',text:'📝 "CALLED TEACHER MOM 💀" bold white',reaction:'😳 Character frozen mid-sentence, face red, class staring, drop shadow'}},
+  {title:"The WiFi Goes Down Right Before Your Online Tournament 💀😭",tags:['Roblox Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"GUYS! You've been practicing for this online tournament for three weeks. It starts in four minutes. You just lost all WiFi. The router is completely dead. Your team is waiting."},{label:'SETUP',text:"What do you do?"},{label:'OPTION A',text:"Option A — you use your phone's hotspot. It's slow, laggy, and you drop connection twice in the first round. You lose in the first bracket. Your team is frustrated."},{label:'OPTION B',text:"Option B — you sprint to a neighbor's house and ask to use their WiFi. They let you in and you sit in their living room gaming for two hours while they watch."},{label:'OPTION C',text:"Option C — you message your team that you have to forfeit. They lose their spot in the bracket. Two of them say some things in the group chat that hurt. A lot."},{label:'VIP OPTION 👑',text:"VIP — your parent calls the ISP and gets the router reset in three minutes. You connect back with thirty seconds to spare. You play the best game of your life and your team wins the whole bracket. Adrenaline carried you."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And if you've had tech fail you at the worst moment, drop the story."}],imagePrompts:{hook:'Roblox-style cartoon image. Main character staring at a dead router with zero lights. Computer showing the tournament lobby with a 4-minute countdown timer. Pure panic. Blocky Roblox characters, bright cartoon colors, detailed bedroom.',optionA:'Roblox-style cartoon image. Main character gaming on a tiny phone hotspot, lag spikes visible on screen. Teammates showing frustration emojis. Connection dropping. Blocky Roblox characters, bright cartoon colors.',optionB:"Roblox-style cartoon image. Main character sitting in a neighbor's living room with their laptop. Tournament bracket visible on screen. Neighbor watching curiously from the couch. Blocky Roblox characters, bright cartoon colors, living room.",optionC:'Roblox-style cartoon image. Main character typing FORFEIT in the team group chat. Phone lighting up with very unhappy responses from teammates. Character staring at the ceiling. Blocky Roblox characters, dim bedroom lighting.',vip:'Roblox-style cartoon image. Parent on the phone with ISP giving a thumbs up as the router lights come back on. Main character at the keyboard with 30 seconds left connecting just in time. Gold crown above. Blocky Roblox characters, bright cartoon colors.'},footage:'📹 Roblox gaming setup map. Tournament countdown graphic. Router dead animation. VIP clutch reconnect reveal.',thumb:{bg:'🎮 Roblox gaming setup, dead router, tournament countdown on screen',text:'📝 "WIFI DIED BEFORE THE TOURNAMENT 💀😭" bold white',reaction:'😭 Character staring at dead router in horror, drop shadow'}},
+  {title:"You Got Invited To The Popular Group But There's A Catch 💀",tags:['School Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"HEY GUYS! The popular group at school just invited you to sit with them. You've wanted this for two years. But the catch is they want you to stop hanging out with your current best friend."},{label:'SETUP',text:"What do you do?"},{label:'OPTION A',text:"Option A — you take the deal. You start sitting with the popular group. Your old friend sees it happen in real time from across the cafeteria."},{label:'OPTION B',text:"Option B — you refuse. You tell them no deal and go back to your regular table. The popular group spends the next two weeks making passive comments every time you walk by."},{label:'OPTION C',text:"Option C — you try to bring your friend along. They say no. You're forced to make the decision right there in the hallway."},{label:'VIP OPTION 👑',text:"VIP — you turn them down. Your old best friend saw the whole thing and what you chose. They tell everyone what you did. The respect you get from people who actually matter ends up meaning more than any popular table ever could."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And be honest."}],imagePrompts:{hook:"Roblox-style cartoon image. Main character being pulled aside in the hallway by the popular group explaining the deal. Old best friend visible in background at their usual table, unaware. Blocky Roblox characters, bright cartoon colors, school hallway.",optionA:'Roblox-style cartoon image. Main character sitting at the popular table laughing. Camera angle shows best friend across the cafeteria watching with a hurt expression. Blocky Roblox characters, bright cartoon colors, cafeteria.',optionB:'Roblox-style cartoon image. Main character walking back to their regular table confidently. Popular group making side comments in background. Main character sitting back down with old friend who looks surprised. Blocky Roblox characters, bright cartoon colors, cafeteria.',optionC:'Roblox-style cartoon image. Main character in the hallway gesturing toward their friend who is walking up, while the popular group shakes their heads. Friend arriving just in time to see the rejection. Blocky Roblox characters, bright cartoon colors.',vip:'Roblox-style cartoon image. Main character turning down the popular group while best friend watches from a distance, visibly moved. Students in the hallway noticing and showing respect. Gold crown above main character. Blocky Roblox characters, warm lighting.'},footage:'📹 Roblox school cafeteria map. Two-table split-screen graphic. VIP respect reveal with warm golden glow.',thumb:{bg:'🎮 Roblox cafeteria, popular table on one side, best friend on the other',text:'📝 "POPULAR GROUP INVITED YOU BUT..." bold white',reaction:'😳 Character at crossroads between two groups, drop shadow'}},
+  {title:"You Forgot It Was Picture Day And Wore Your Worst Outfit 💀",tags:['School Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"WAIT! You completely forgot it was picture day. You're wearing your oldest hoodie, yesterday's jeans, and your hair looks like you just woke up. The photographer is already set up in the gym."},{label:'SETUP',text:"What do you do?"},{label:'OPTION A',text:"Option A — you take the photo anyway. It's going in the yearbook forever. Every person in your grade owns a copy. Your parents already ordered the full package without telling you."},{label:'OPTION B',text:"Option B — you try to fake being sick and go home before your class gets called down. The nurse says you look perfectly fine and sends you back. Your class is being called right now."},{label:'OPTION C',text:"Option C — you borrow clothes from three different people and put together the strangest combination outfit anyone has ever seen. The photographer still takes the photo."},{label:'VIP OPTION 👑',text:"VIP — the photographer accidentally deletes your grade's entire session and everyone has to retake on a day you're actually prepared. Your retake photo is so good it gets chosen for the school website cover."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And drop the worst picture day story you have."}],imagePrompts:{hook:'Roblox-style cartoon image. Main character walking into school and seeing the PICTURE DAY banner hanging in the hallway. Looking down at their messy hoodie and old jeans in horror. Students around them dressed nicely. Blocky Roblox characters, bright cartoon colors, school entrance.',optionA:'Roblox-style cartoon image. Main character sitting in front of the school photo backdrop in their raggedy outfit. Classmates dressed up in line behind them. Blocky Roblox characters, bright cartoon colors, photo backdrop setting.',optionB:'Roblox-style cartoon image. Main character lying on a nurse cot looking perfectly healthy while the nurse stares skeptically. Speaker announcing their class being called down. Blocky Roblox characters, bright cartoon colors, nurse office.',optionC:'Roblox-style cartoon image. Main character wearing a combination of borrowed items that clearly do not match. Multiple classmates looking confused. Character trying to look confident at the photo backdrop. Blocky Roblox characters, bright cartoon colors.',vip:"Roblox-style cartoon image. Photographer looking at their camera screen in horror realizing photos are deleted. Whole class in gym being told they'll retake. Main character secretly relieved with a sly smile. Gold crown above. Blocky Roblox characters, bright cartoon colors, gymnasium."},footage:'📹 Roblox school gym or hallway map. Picture day banner graphic. VIP retake reveal with school website mockup.',thumb:{bg:'🎮 Roblox hallway with PICTURE DAY banner, character in wrong outfit',text:'📝 "FORGOT IT WAS PICTURE DAY 💀" bold white',reaction:'😱 Character staring at banner while wearing worst outfit, drop shadow'}},
+  {title:"You Have To Choose Sides Between Your Two Best Friends 💀😭",tags:['Friend Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"GUYS! Your two best friends got into a massive fight with each other. Now they're both coming to you separately demanding you pick a side. If you don't choose, they're both cutting you off."},{label:'SETUP',text:"What do you do?"},{label:'OPTION A',text:"Option A — you pick the one you've been friends with longer. The other one feels completely betrayed and stops talking to you. You feel guilty about it for weeks."},{label:'OPTION B',text:"Option B — you pick the one you think is actually right. The other one says you only picked against them because of jealousy and makes it even more personal."},{label:'OPTION C',text:"Option C — you refuse to pick either side. Both of them cut you off. You spend two weeks completely alone at lunch while they both glare at you from different tables."},{label:'VIP OPTION 👑',text:"VIP — you sit both of them down together and mediate the whole conversation. You point out exactly where they both went wrong. They argue for twenty minutes, then both start laughing. They make up on the spot and you went from the person in the middle to the person who fixed everything."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And if you've ever been forced to pick a side, drop what happened."}],imagePrompts:{hook:'Roblox-style cartoon image. Main character standing in the middle of a hallway with one friend on their left and one on their right, both pointing at them demanding a choice. Main character completely overwhelmed. Blocky Roblox characters, bright cartoon colors, school hallway.',optionA:'Roblox-style cartoon image. Main character standing with one friend, looking back at the other who is walking away alone looking hurt. Main character visibly guilty. Blocky Roblox characters, bright cartoon colors, school hallway.',optionB:'Roblox-style cartoon image. Main character explaining their reasoning to one friend who immediately takes it personally and looks more upset. Blocky Roblox characters, bright cartoon colors.',optionC:'Roblox-style cartoon image. Main character sitting completely alone at a lunch table while both friends sit at opposite ends of the cafeteria glaring. Three separate tables visible. Blocky Roblox characters, bright cartoon colors, cafeteria.',vip:'Roblox-style cartoon image. Main character at a table with both friends brought together, mediating. After a tense moment both friends suddenly start laughing and reconciling. Main character with gold crown watching with relief. Blocky Roblox characters, warm lighting.'},footage:'📹 Roblox school map. Split-screen two friend groups graphic. VIP mediation reveal with reconciliation glow.',thumb:{bg:'🎮 Roblox hallway, main character between two friends demanding a choice',text:'📝 "CHOOSE A SIDE 💀😭" bold white',reaction:'😭 Character caught between two friends pulling them apart, drop shadow'}},
+  {title:"A Rumor About You Spread Through The Whole School Overnight 💀",tags:['School Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"HEY GUYS! You wake up and there are 30 texts from people at school. A rumor about you spread to every single person overnight. It is completely false. But everyone believes it."},{label:'SETUP',text:"How do you handle it?"},{label:'OPTION A',text:"Option A — you go into school and address it publicly. You post something setting the record straight. Half the school moves on. The other half still believes the rumor and says you're just covering."},{label:'OPTION B',text:"Option B — you stay home and say you're sick. You think the rumor will die on its own. It doesn't. By the time you come back it has evolved into two more rumors built on top of the first one."},{label:'OPTION C',text:"Option C — you track down who started it. It takes three days. When you find out who it was, you're not ready for who it actually is."},{label:'VIP OPTION 👑',text:"VIP — someone who was actually there for the real version of events speaks up on their own. They post the truth publicly. The rumor collapses immediately. The person who started it has to explain themselves instead. Your reputation comes out stronger than before it started."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And if a rumor has ever gone around about you, drop what it was."}],imagePrompts:{hook:'Roblox-style cartoon image. Main character waking up to a phone full of notifications. Message previews visible. Expression going from sleepy to alarmed. Blocky Roblox characters, morning bedroom lighting, bright cartoon colors.',optionA:'Roblox-style cartoon image. Main character posting a response online at their desk. Phone shows half the school with support emojis, other half with skeptical emojis. Character frustrated. Blocky Roblox characters, bright cartoon colors.',optionB:'Roblox-style cartoon image. Main character under the covers at home while the rumor visually multiplies on a phone screen. They return to school and it is even worse. Blocky Roblox characters, slightly dim bedroom lighting.',optionC:'Roblox-style cartoon image. Main character pointing at a revealed name on their phone — the person who started the rumor. Character face going from determined to shocked at who it is. Blocky Roblox characters, dramatic reveal lighting.',vip:'Roblox-style cartoon image. Another student posting the truth publicly, phone showing their post getting massive support. Main character watching their name get cleared in real time. Gold crown above. Rumor originator visible in background looking cornered. Blocky Roblox characters, bright cartoon colors.'},footage:'📹 Roblox school or town map. Rumor spread graphic animation. VIP truth reveal with gold shimmer.',thumb:{bg:'🎮 Roblox school hallway, everyone whispering and looking at main character',text:'📝 "RUMOR SPREAD ABOUT YOU 💀" bold white',reaction:'😤 Character walking through hallway as everyone stares and whispers, drop shadow'}},
+  {title:"Your Phone Autocorrected A Text To Your Crush In The Worst Way 💀",tags:['Social Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"WAIT! You were trying to send a normal casual text to your crush and autocorrect changed three words at the last second. You hit send before you saw it. They already replied with three question marks."},{label:'SETUP',text:"What do you do?"},{label:'OPTION A',text:"Option A — you immediately explain it was autocorrect. You screenshot the original version you meant to send. They say they believe you but the vibe has completely shifted and they respond less after that."},{label:'OPTION B',text:"Option B — you double down. You claim you meant to send it. You have no idea what you're going to say next to make this make sense. Every response digs a deeper hole."},{label:'OPTION C',text:"Option C — you go fully silent. You don't reply to their three question marks. You leave them on read. Two days pass. They bring it up in person at school."},{label:'VIP OPTION 👑',text:"VIP — they text back saying their phone did the exact same thing to them last week when they texted you and they were too embarrassed to explain it. You both start laughing over text. It ends up being the most natural conversation you've ever had with them."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And drop the worst autocorrect you've ever accidentally sent."}],imagePrompts:{hook:"Roblox-style cartoon image. Main character staring at their phone in horror at the sent message. Autocorrected words clearly showing something unintended. Crush's three question marks already replied. Blocky Roblox characters, bright cartoon colors, detailed bedroom.",optionA:"Roblox-style cartoon image. Main character typing a desperate explanation with a screenshot attached. The crush responding but visibly less enthusiastically. Chat bubble response energy clearly different. Blocky Roblox characters, bright cartoon colors.",optionB:'Roblox-style cartoon image. Main character typing a response that makes zero sense trying to cover for the autocorrect. Each message getting more confusing. Chat history showing increasingly awkward exchange. Blocky Roblox characters, bright cartoon colors.',optionC:"Roblox-style cartoon image. Main character at school being approached by crush who says so about that text. Main character frozen mid-step. Two days of silence clearly made it worse. Blocky Roblox characters, bright cartoon colors, school hallway.",vip:'Roblox-style cartoon image. Two characters texting back and forth laughing about matching autocorrect disasters. Both lying on their beds smiling. Main character with gold crown, the best conversation they have had. Chat bubbles showing laugh emojis. Blocky Roblox characters, warm lighting.'},footage:'📹 Phone text screen close-up graphic. Autocorrect error animation. VIP matching moment reveal with heart effect.',thumb:{bg:'🎮 Phone text screen showing autocorrect disaster sent to crush',text:'📝 "AUTOCORRECT RUINED ME 💀" bold white',reaction:'😱 Character staring at accidentally sent text in horror, drop shadow'}},
+  {title:"Your Little Sibling Followed You To School Without You Knowing 💀😭",tags:['Family Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"GUYS! You're sitting in second period and you get a call from the office. Your little sibling followed you to school this morning. They've been sitting in the lobby for an hour. Nobody at home noticed they left."},{label:'SETUP',text:"What happens next?"},{label:'OPTION A',text:"Option A — you get pulled out of class to deal with it. Everyone in class knows why. Your sibling waves at your friends on the way out. Your teacher remembers this moment forever."},{label:'OPTION B',text:"Option B — you leave them in the lobby, go back to class, and pretend it isn't happening. The principal calls your parents. It becomes an entirely different problem."},{label:'OPTION C',text:"Option C — your sibling somehow ends up sitting in on your lunch period. They tell every single one of your friends something embarrassing about you that they should not know."},{label:'VIP OPTION 👑',text:"VIP — your sibling tells your friends they followed you because you're their favorite person in the world and they just wanted to see where you go every day. Your whole friend group thinks it's the most wholesome thing they've ever heard. You leave school that day actually feeling good about it."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — which version are you getting? Drop the most embarrassing sibling moment you have."}],imagePrompts:{hook:"Roblox-style cartoon image. Main character sitting in class getting a note saying COME TO THE OFFICE. In the school lobby, little sibling sitting in a chair waving happily. Blocky Roblox characters, bright cartoon colors.",optionA:'Roblox-style cartoon image. Main character walking through class to leave while little sibling waves at all the classmates from the doorway. Whole class watching and amused. Main character mortified. Blocky Roblox characters, bright cartoon colors, classroom.',optionB:'Roblox-style cartoon image. Main character back in class trying to focus while in the background the principal is on the phone. The situation clearly escalating. Character checking their phone nervously. Blocky Roblox characters, bright cartoon colors, classroom.',optionC:"Roblox-style cartoon image. Little sibling sitting at the lunch table telling the friend group a very specific embarrassing story while main character rushes over trying to stop them. Friends already laughing. Blocky Roblox characters, bright cartoon colors, cafeteria.",vip:"Roblox-style cartoon image. Little sibling smiling and telling the friend group they followed because main character is their favorite person. Friend group visibly touched. Main character surprised, gold crown above, smiling despite themselves. Blocky Roblox characters, warm cafeteria lighting."},footage:'📹 Roblox school map. Office phone call graphic. Cafeteria sibling reveal. VIP wholesome reveal with soft golden glow.',thumb:{bg:'🎮 Roblox school office, little sibling sitting in waiting chair waving',text:'📝 "SIBLING FOLLOWED ME TO SCHOOL 💀😭" bold white',reaction:'😭 Character getting called to the office in shock, drop shadow'}},
+  {title:"Your Little Sibling Started A YouTube Channel And Already Has More Views Than You 💀",tags:['Family Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"HEY GUYS! Your little sibling started a YouTube channel two weeks ago as a joke. They already have more views on one video than you do on your entire channel combined. They are six years old."},{label:'SETUP',text:"How do you respond?"},{label:'OPTION A',text:"Option A — you try to coach them. You give them tips, help with thumbnails, write their titles. They take all your advice and gain another thousand views. They thank everyone except you."},{label:'OPTION B',text:"Option B — you compete directly. You post the same day they post, same type of video. Their version gets triple the views. Your parents find both channels and start comparing them out loud at dinner."},{label:'OPTION C',text:"Option C — you quit posting for a week to figure things out. Your channel starts losing subscribers during the break. Your sibling posts every day and grows the entire time you're silent."},{label:'VIP OPTION 👑',text:"VIP — you collab. You put your sibling in one of your videos. Their audience discovers your channel through them. You gain two thousand subscribers in a week. Parents film the whole moment for their own channel and that goes viral too."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And if a younger sibling has ever outperformed you at something, I need the story."}],imagePrompts:{hook:"Roblox-style cartoon image. Main character on their laptop seeing sibling's YouTube channel with a huge view count, way higher than their own. Sibling playing happily in background with no idea what they've done. Blocky Roblox characters, bright cartoon colors, detailed bedroom.",optionA:"Roblox-style cartoon image. Main character showing sibling how to make thumbnails and write titles. Sibling's channel view counter going up. Sibling's video thanking everyone except main character. Main character watching with a complicated expression. Blocky Roblox characters, bright cartoon colors.",optionB:"Roblox-style cartoon image. Dinner table scene with parents looking at both channels on their phones, comparing view counts out loud. Main character and sibling both at the table reacting differently. Blocky Roblox characters, bright cartoon colors, kitchen.",optionC:"Roblox-style cartoon image. Main character lying on their bed not posting while sibling films a new video in background. Main character's sub count slowly dropping on one side, sibling's growing on the other. Blocky Roblox characters, bright cartoon colors.",vip:"Roblox-style cartoon image. Main character and sibling filming a collab video together. Both channels growing on screen. Parents filming the whole thing. Sub counter on main channel going up fast. Gold crown above main character. Blocky Roblox characters, bright celebratory lighting."},footage:"📹 Roblox YouTube-style setup map. View count comparison graphic. VIP collab reveal with sub counter animation.",thumb:{bg:"🎮 Roblox bedroom, sibling's channel with massive view count on screen",text:'📝 "SIBLING HAS MORE VIEWS THAN ME 💀" bold white',reaction:"😭 Character staring at sibling's view count higher than theirs, drop shadow"}},
+  {title:"You Got Kicked From Your Own Roblox Game By Your Own Admin 💀",tags:['Roblox Drama','Scenario Choice','VIP Unlock'],sections:[{label:'HOOK',text:"GUYS! You gave your friend admin access in your own Roblox game. You just got kicked from your own server by your own admin. Your own game. They changed the welcome message to something embarrassing."},{label:'SETUP',text:"What do you do?"},{label:'OPTION A',text:"Option A — you log into account settings and revoke their admin immediately. They had already invited 30 people to your server while you were locked out. All 30 people saw the welcome message."},{label:'OPTION B',text:"Option B — you message them asking what is happening. They treat it like a joke. You take it personally. It turns into a real argument and the friendship gets a lot more complicated."},{label:'OPTION C',text:"Option C — you make a whole new server, rebuild everything from scratch, and never give anyone admin access again. It takes four hours. The original game still exists with the embarrassing message."},{label:'VIP OPTION 👑',text:"VIP — Roblox detects the unauthorized change and automatically rolls back the server to your last saved version. Your friend loses admin, the message disappears, and Roblox logs the incident. Zero effort required from you."},{label:'VIP TEASE',text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:'CTA',text:"Comment A, B, C, or VIP — what are you doing? And if you've ever been betrayed in a Roblox game, drop the story."}],imagePrompts:{hook:"Roblox-style cartoon image. Main character staring at a KICKED FROM SERVER notification. Their own game name visible at the top. Welcome message changed to something embarrassing. Friend avatar visible in the server. Blocky Roblox characters, bright cartoon colors, bedroom.",optionA:'Roblox-style cartoon image. Main character frantically navigating admin settings to revoke access. Server log showing 30 players joined while locked out. Character racing against time. Blocky Roblox characters, bright cartoon colors.',optionB:'Roblox-style cartoon image. Main character and friend having a tense text exchange that started as jokes and turned very real. Chat history showing it escalating. Blocky Roblox characters, bright cartoon colors.',optionC:'Roblox-style cartoon image. Main character building a whole new game from scratch late at night. Four hours of progress visible. Old server with embarrassing message still exists in a separate tab. Blocky Roblox characters, dim late-night lighting.',vip:'Roblox-style cartoon image. Roblox automated rollback notification on screen. Server restored to original version. Friend admin access removed automatically. Main character reading the message with gold crown above, relieved and impressed. Blocky Roblox characters, bright cartoon colors.'},footage:"📹 Roblox server screen graphic. Admin kick animation. VIP rollback reveal with system notification effect.",thumb:{bg:'🎮 Roblox server screen showing KICKED message in own game',text:'📝 "KICKED FROM MY OWN GAME 💀" bold white/red',reaction:'😤 Character staring at kicked notification in their own game, drop shadow'}},
+,
+  {title:"Your Parents Just Found Your YouTube Watch History 💀😭",tags:["Home Drama","Scenario Choice","VIP Unlock"],sections:[{label:"HOOK",text:"HEY GUYS! Your parents just sat you down with the family laptop open. They found your entire YouTube watch history. Every single video you have watched for the past six months is right there on the screen."},{label:"SETUP",text:"Which reaction are you getting?"},{label:"OPTION A",text:"Option A — your parents ban YouTube entirely for the rest of the month. Every device. They set up parental controls that night and you can not override them without a password only they know."},{label:"OPTION B",text:"Option B — they sit you down for a two-hour conversation about every video category they saw. They have opinions about all of it. You cannot leave the table until they finish."},{label:"OPTION C",text:"Option C — they make you curate a family watch list of only videos you would be comfortable watching together. It has to be at least fifty videos. They review each one before approving it."},{label:"VIP OPTION 👑",text:"VIP — your parents see your Roblox tutorial videos, your scripting research, and your content creation research and realize you have been studying how to build a real channel. They get genuinely impressed. Your dad asks if he can watch with you and actually thinks it is cool."},{label:"VIP TEASE",text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:"CTA",text:"Comment A, B, C, or VIP — which reaction are you getting? Drop it below."}],imagePrompts:{hook:"Roblox-style cartoon image. Parent Roblox character sitting at a laptop with the watch history open showing hundreds of video thumbnails. Main character standing behind them wide-eyed. Blocky Roblox characters, bright cartoon colors, detailed living room background.",optionA:"Roblox-style cartoon image. Main character staring at a locked screen on every device in the house. Parental controls visible on each one. Parent in background typing in the password with a satisfied expression. Blocky Roblox characters, bright cartoon colors.",optionB:"Roblox-style cartoon image. Main character trapped at a dining table while both parents have notes and opinions about every video they saw. Clock on the wall showing two hours have passed. Character looking exhausted. Blocky Roblox characters, bright cartoon colors.",optionC:"Roblox-style cartoon image. Main character at a laptop carefully curating a watch list, crossing off videos that would not get approved. Parents visible in background ready to review. Blocky Roblox characters, bright cartoon colors.",vip:"Roblox-style cartoon image. Parent leaning in toward the screen looking genuinely impressed at the research and scripting videos. Main character surprised by the positive reaction. Gold crown above main character. Both watching a video together. Blocky Roblox characters, warm lighting."},footage:"📹 Roblox home map. Watch history screen graphic. VIP reveal with warm golden glow.",thumb:{bg:"🎮 Roblox living room, laptop open showing watch history",text:'📝 "THEY FOUND MY WATCH HISTORY 💀😭" bold white',reaction:"😱 Character frozen as parents scroll through their entire history, drop shadow"}},
+  {title:"You Did Something Embarrassing At The School Assembly In Front Of Everyone 💀",tags:["School Drama","Scenario Choice","VIP Unlock"],sections:[{label:"HOOK",text:"WAIT! You were called up to the front at the school assembly in front of the entire school. Something went wrong. Badly wrong. Every single student and teacher saw it happen in real time."},{label:"SETUP",text:"Which version of this is your nightmare?"},{label:"OPTION A",text:"Option A — you tripped walking up to the stage. Not a small trip. You fully went down in front of eight hundred people. The microphone caught the sound. The vice principal asked if you were okay into the live mic."},{label:"OPTION B",text:"Option B — you blanked completely. You stood at the podium in total silence for eleven full seconds before anyone stepped in. The whole school watched the silence happen in real time."},{label:"OPTION C",text:"Option C — your voice cracked on the very first word into the live microphone. The feedback echoed it through the entire gymnasium. Everyone heard it twice."},{label:"VIP OPTION 👑",text:"VIP — you recover so smoothly and confidently that the student body actually cheers. Your teacher tells the class afterward that the way you handled it was the most impressive thing she has seen a student do. The moment becomes a positive story people tell for the rest of the year."},{label:"VIP TEASE",text:"But there's a catch — to unlock this option you have to like and subscribe."},{label:"CTA",text:"Comment A, B, C, or VIP — which version is your nightmare? And if something embarrassing has ever happened to you in front of a crowd, drop the story."}],imagePrompts:{hook:"Roblox-style cartoon image. Main Roblox character on a stage at a school assembly with the entire school watching from the bleachers. Something clearly going wrong. Hundreds of Roblox students watching. Blocky Roblox characters, bright cartoon colors, detailed gymnasium background.",optionA:"Roblox-style cartoon image. Main Roblox character fully tripped on the stairs to the stage, arms out, going down. Vice principal rushing over with a microphone. Entire student body gasping. Blocky Roblox characters, bright cartoon colors, detailed gymnasium.",optionB:"Roblox-style cartoon image. Main Roblox character frozen at a podium, completely blank, staring out at hundreds of students who are all staring back. Clock on the wall counting the seconds. Absolute silence energy. Blocky Roblox characters, bright cartoon colors.",optionC:"Roblox-style cartoon image. Main Roblox character at the podium, first word out causing a massive microphone feedback screech that echoes through the gymnasium. Every student covering their ears. Character mortified. Blocky Roblox characters, bright cartoon colors.",vip:"Roblox-style cartoon image. Main Roblox character at the podium recovering with total confidence, the whole student body starting to cheer. Teacher in the front row looking visibly impressed. Gold crown above main character. Blocky Roblox characters, bright celebratory gymnasium lighting."},footage:"📹 Roblox school gymnasium map. Assembly stage graphic. VIP recovery reveal with crowd cheer animation.",thumb:{bg:"🎮 Roblox school gymnasium, main character on stage in front of entire school",text:'📝 "EMBARRASSED IN FRONT OF THE WHOLE SCHOOL 💀" bold white',reason:"😳 Character on stage as entire school stares, drop shadow"}}
+];
+
+// ── SCRIPT RENDER CORE (shared by bank + AI paths) ───
+function _renderScriptCards(scripts) {
+  var IMG = {'HOOK':'hook','OPTION A':'optionA','OPTION B':'optionB','OPTION C':'optionC','VIP OPTION 👑':'vip'};
+  var COL = function(l) {
+    if (l.indexOf('VIP')>=0) return '#ffd700';
+    if (l==='CTA') return '#ff0000';
+    if (l==='HOOK'||l==='SETUP') return '#22c55e';
+    return '#888';
+  };
+  var html = '';
+  scripts.forEach(function(s, idx) {
+    var n = idx + 1, ci = 0, blocks = '';
+    s.sections.forEach(function(sec) {
+      var chunks = chunk(sec.text, 480);
+      var pk = IMG[sec.label];
+      var pt = pk && s.imagePrompts ? s.imagePrompts[pk] : null;
+      chunks.forEach(function(ch, pi) {
+        var cid = 's'+n+'c'+ci;
+        var lbl = chunks.length > 1 ? sec.label+' '+(pi+1)+'/'+chunks.length : sec.label;
+        var imgRow = (pt && pi===chunks.length-1) ? '<div class="img-row"><div class="img-txt">🎨 '+esc(pt)+'</div><button class="img-cp" data-pt="'+esc(pt)+'" onclick="cpImg(this)">Copy Prompt</button></div>' : '';
+        var vipCls = sec.label.indexOf('VIP')>=0 ? ' vip-lbl' : '';
+        blocks += '<div class="sc-block"><div class="sc-block-hdr" onclick="toggleBlock(this.closest(\'.sc-block\'))"><div class="sc-block-l"><span class="chev">▾</span><span class="sc-block-lbl'+vipCls+'" style="color:'+COL(sec.label)+'">'+lbl+'</span><span class="sc-block-chars">'+ch.length+' chars</span></div><div class="sc-block-r"><button class="cp-btn" onclick="event.stopPropagation();cpBlock(this,\''+cid+'\')">Copy</button></div></div><div class="sc-block-body"><div class="sc-block-inner"><div class="sc-text" id="'+cid+'">'+ch+'</div>'+imgRow+'</div></div></div>';
+        ci++;
+      });
+    });
+    html += '<div class="sc-card"><div class="sc-hdr"><div class="sc-num">Script 0'+n+' · Scenario Choice</div><div class="sc-title">'+s.title+'</div><div class="sc-tags">'+s.tags.map(function(t){return'<span class="sc-tag">'+t+'</span>';}).join('')+'</div></div><div>'+blocks+'</div><div class="sc-note">'+s.footage+'</div><div class="thumb-sec"><div class="thumb-lbl">🖼 Thumbnail Concept</div><div class="thumb-layer">'+s.thumb.bg+'</div><div class="thumb-layer">'+s.thumb.text+'</div><div class="thumb-layer">'+s.thumb.reaction+'</div></div><button class="copy-all" id="ca'+n+'" onclick="cpAll('+n+')">📋 Copy Full Script</button></div>';
+  });
+  document.getElementById('sc-container').innerHTML = html;
+  window._scripts = scripts;
+  renderScriptNav();
+  setTimeout(initScrollReveal, 32);
+}
+
+// ── SCRIPT ORCHESTRATOR ───────────────────────────────
+function renderScripts() {
+  document.getElementById('sc-date').textContent = DATE_STR + ' · Scenario Choice · 480-char TTS';
+
+  var today = new Date().toDateString();
+  var cacheKey = 'ai_scripts_' + today;
+
+  // 1. Use today's cached AI scripts if available
+  try {
+    var cached = localStorage.getItem(cacheKey);
+    if (cached) { _renderScriptCards(JSON.parse(cached)); return; }
+  } catch(_) {}
+
+  // 2. No API key — fall back to static bank (30 scripts, 10-day rotation)
+  if (!CLAUDE_API_KEY) {
+    var si = DOY % 10;
+    _renderScriptCards([SCRIPTS[si], SCRIPTS[si+10], SCRIPTS[si+20]]);
+    return;
+  }
+
+  // 3. API key present — show loading state and generate
+  document.getElementById('sc-container').innerHTML =
+    '<div class="ai-loading"><div class="ai-loading-icon">⚡</div>' +
+    '<div class="ai-loading-txt">Generating today\'s scripts…</div>' +
+    '<div class="ai-loading-sub">~10 seconds · cached for the rest of the day</div></div>';
+
+  generateScriptsFromAI().then(function(scripts) {
+    try { localStorage.setItem(cacheKey, JSON.stringify(scripts)); } catch(_) {}
+    _renderScriptCards(scripts);
+  }).catch(function(e) {
+    console.error('Script generation failed:', e);
+    var si = DOY % 10;
+    _renderScriptCards([SCRIPTS[si], SCRIPTS[si+10], SCRIPTS[si+20]]);
+  });
+}
+
+// ── AI SCRIPT GENERATION ─────────────────────────────
+async function generateScriptsFromAI() {
+  var dateStr = new Date().toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
+  var prompt =
+    'You are a YouTube Shorts scriptwriter for BaconStories (@BaconStoriesOnline), a Roblox gaming channel for 10-16 year olds.\n\n' +
+    'Today is ' + dateStr + '. Generate exactly 3 brand-new Scenario Choice scripts. ' +
+    'Each presents a relatable situation with 3 bad choices (A, B, C) plus a VIP dream option locked behind like+subscribe.\n\n' +
+    'Return ONLY valid JSON, no other text:\n' +
+    '{"scripts":[{"title":"Title with emoji 💀😭","tags":["Category","Scenario Choice","VIP Unlock"],' +
+    '"sections":[' +
+      '{"label":"HOOK","text":"Start with HEY GUYS or GUYS or WAIT — 1-2 sentence situation setup"},' +
+      '{"label":"SETUP","text":"Which [X] are you picking?"},' +
+      '{"label":"OPTION A","text":"Option A — specific relatable consequence, 2-3 sentences"},' +
+      '{"label":"OPTION B","text":"Option B — different specific consequence"},' +
+      '{"label":"OPTION C","text":"Option C — third distinct option"},' +
+      '{"label":"VIP OPTION 👑","text":"VIP — the obvious dream outcome everyone wants"},' +
+      '{"label":"VIP TEASE","text":"But there\'s a catch — to unlock this option you have to like and subscribe."},' +
+      '{"label":"CTA","text":"Comment A, B, C, or VIP — drop it below."}' +
+    '],' +
+    '"imagePrompts":{"hook":"Roblox-style cartoon image. Scene. Blocky characters, bright cartoon colors, detailed background.",' +
+      '"optionA":"Roblox-style cartoon image. Option A scene.","optionB":"Roblox-style cartoon image. Option B scene.",' +
+      '"optionC":"Roblox-style cartoon image. Option C scene.",' +
+      '"vip":"Roblox-style cartoon image. Gold crown above main character. Celebratory scene."},' +
+    '"footage":"📹 Roblox map. Text overlays per option.",' +
+    '"thumb":{"bg":"🎮 Roblox map setting","text":"📝 \\"TITLE TEXT 💀\\" in bold white/red","reaction":"emoji Character reaction, drop shadow"}' +
+    '}]}\n\n' +
+    'Rules: Each section text max 480 chars. Make 3 different scenarios — school, family/home, social/friends or Roblox. ' +
+    'VIP must be clearly the best. Be creative and fresh, not generic.';
+
+  var resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': CLAUDE_API_KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 4096,
+      messages: [{role: 'user', content: prompt}]
+    })
+  });
+
+  if (!resp.ok) throw new Error('Claude API ' + resp.status);
+  var data = await resp.json();
+  var text = data.content[0].text;
+  var match = text.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error('No JSON in response');
+  var parsed = JSON.parse(match[0]);
+  if (!parsed.scripts || !parsed.scripts.length) throw new Error('Empty scripts array');
+  return parsed.scripts.slice(0, 3);
+}
+
+// ── SCROLL REVEAL (ContainerScroll port) ──────────────
+var _revTick = false;
+var _revUpdate = null;
+
+// Called after page transition completes — resets all cards to tilted start,
+// staggers in the ones already visible, lets scroll handle the rest.
+function revealScriptCards() {
+  // Cards are already pre-tilted by go() — just stagger them in.
+  // Two rAF frames ensure the browser has committed the pre-tilt before animating.
+  var cards = document.querySelectorAll('#sc-container .sc-card');
+  var vh    = window.innerHeight;
+
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      cards.forEach(function(card, idx) {
+        var rect   = card.getBoundingClientRect();
+        var inView = rect.top < vh * 0.95 && rect.bottom > 0;
+        if (inView) {
+          setTimeout(function() {
+            card.style.transition = 'transform 500ms cubic-bezier(.22,1,.36,1), opacity 380ms ease-out';
+            card.style.transform  = 'rotateX(0deg) scale(1)';
+            card.style.opacity    = '1';
+            setTimeout(function() { card.style.transition = 'none'; }, 520);
+          }, idx * 100);
+        }
+        // Below-fold: stays at pre-tilted state, scroll reveal handles it
+      });
+    });
+  });
+}
+
+function initScrollReveal() {
+  function update() {
+    var cards = document.querySelectorAll('#sc-container .sc-card');
+    var vh = window.innerHeight;
+    cards.forEach(function(card) {
+      var rect = card.getBoundingClientRect();
+      // start animating when card top crosses 92% of viewport, finish at 18%
+      var start = vh * 0.92;
+      var end   = vh * 0.18;
+      var p = (start - rect.top) / (start - end);
+      p = Math.min(1, Math.max(0, p));
+      // smoothstep easing — matches framer-motion ease-out feel
+      var e = p * p * (3 - 2 * p);
+      var rotX = 16 * (1 - e);
+      var sc   = 1 + 0.025 * (1 - e);
+      var op   = 0.42 + 0.58 * e;
+      card.style.transform = 'rotateX(' + rotX.toFixed(2) + 'deg) scale(' + sc.toFixed(3) + ')';
+      card.style.opacity   = op.toFixed(3);
+    });
+    _revTick = false;
+  }
+  _revUpdate = update;
+  // throttle to one rAF per frame — same pattern framer-motion uses internally
+  window.addEventListener('scroll', function() {
+    if (!_revTick) { requestAnimationFrame(update); _revTick = true; }
+  }, { passive: true });
+  update();
+}
+
+function cpBlock(btn, id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+
+  // walk up to the parent .sc-block
+  var block = btn;
+  while (block && !block.classList.contains('sc-block')) block = block.parentNode;
+
+  if (block && block.classList.contains('copied')) {
+    // second click — unmark, no copy
+    block.classList.remove('copied');
+    btn.textContent = 'Copy';
+    btn.classList.remove('done');
+    return;
+  }
+
+  // first click — copy + mark persistently
+  var text = el.innerText;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).catch(function() { fbCopy(text); });
+  } else { fbCopy(text); }
+  toast();
+
+  if (block) block.classList.add('copied');
+  btn.textContent = '✓ Done';
+  btn.classList.add('done');
+}
+
+function cpImg(btn) {
+  var pt = btn.getAttribute('data-pt');
+  if (pt) doCopy(pt + '\n\n' + CHAR, btn, 'Copy Prompt');
+}
+
+function cpAll(n) {
+  var s = (window._scripts||[])[n-1];
+  if (!s) return;
+  var lines = ['SCRIPT 0'+n+' — "'+s.title+'"','Archetype: Scenario Choice',''];
+  s.sections.forEach(function(sec){
+    lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━');
+    lines.push('['+sec.label+']');
+    lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━');
+    lines.push(sec.text); lines.push('');
+  });
+  lines.push('THUMBNAIL: '+s.thumb.bg+' | '+s.thumb.text+' | '+s.thumb.reaction);
+  lines.push('HASHTAGS: #roblox #rblx #robloxshorts #shorts');
+  var btn = document.getElementById('ca'+n);
+  doCopy(lines.join('\n'), btn, '📋 Copy Full Script');
+
+  // mark every block in this script as copied
+  var cards = document.querySelectorAll('#sc-container .sc-card');
+  var card  = cards[n - 1];
+  if (card) {
+    card.querySelectorAll('.sc-block').forEach(function(block) {
+      block.classList.add('copied');
+      var b = block.querySelector('.cp-btn');
+      if (b) { b.textContent = '✓ Done'; b.classList.add('done'); }
+    });
+  }
+}
+
+// ── BUILDER ───────────────────────────────────────────
+var TEMPLATES = {
+  sc: {
+    hookTip:'Drop them into the situation immediately. No intro — they are already in it.',
+    hookText:'WAIT! [Describe the situation in 1-2 sentences. Make it feel unfair or relatable.]',
+    buildTip:'Ask the question. "Which [punishment/school/option] are you picking?"',
+    buildText:'Which [option] are you picking?',
+    payloadTip:'Three options labeled Option A, B, C. Each needs a real consequence. VIP is the dream option at the end.',
+    payloadText:'Option A — [choice and consequence in 2-3 sentences.]\n\nOption B — [different choice, different consequence.]\n\nOption C — [third distinct option.]\n\nVIP — [the dream scenario — dramatically better than A, B, or C.]\n\nBut there\'s a catch — to unlock this option you have to like and subscribe.',
+    ctaTip:'Ask them to pick a letter. Make it effortless.',
+    ctaText:'Comment Option A, B, C, or VIP — drop it below.'
+  },
+  rb: {
+    hookTip:'Start mid-thought. The viewer should be nodding before you finish the first sentence.',
+    hookText:'You KNOW exactly who [these players] are. The second [they do X], [one-sentence immediate result].',
+    buildTip:'Escalate the observation. Make it feel universal.',
+    buildText:"There's always [NUMBER] of them. Every [game/situation]. Every single time.",
+    payloadTip:'List 3-5 specific behaviors. Name exactly what they do wrong. Details = comments.',
+    payloadText:'First — [SPECIFIC TYPE]: [what they do and why it\'s annoying — 2 sentences.]\n\nSecond — [SPECIFIC TYPE]: [what they do — 2 sentences.]\n\nThird — [SPECIFIC TYPE]: [what they do — 2 sentences.]',
+    ctaTip:'"Which one is you?" drives 5x more comments than "comment below."',
+    ctaText:'Which one of these is actually YOU? Be honest in the comments.'
+  },
+  pd: {
+    hookTip:'Lead with the specific action. "They changed X" beats "something happened."',
+    hookText:'Roblox [changed/removed/added] [SPECIFIC THING] and said absolutely nothing about it.',
+    buildTip:"Establish Roblox's silence as the betrayal.",
+    buildText:"No tweet. No update log. They literally hoped nobody would notice. But some players did — and they're furious.",
+    payloadTip:'What changed, when, who it affects, before vs after, why they did it silently.',
+    payloadText:'[Explain what changed, when it happened, who it affects, what it looked like before vs after, why Roblox stayed quiet.]',
+    ctaTip:'"Did you know?" drives massive comment floods.',
+    ctaText:'Did you even know about this? Or are you just finding out right now? Drop it in the comments.'
+  },
+  rq: {
+    hookTip:'Open with the rarest tier to establish the stakes immediately.',
+    hookText:"If you've [done X], you're already in the top [%] of all Roblox players. Most people have no idea.",
+    buildTip:'Establish scale. Make "rare" feel meaningful.',
+    buildText:"Roblox has [NUMBER] monthly active users. The majority [never reached Y]. Which means [topic] players are genuinely rare. Let me rank exactly where you fall.",
+    payloadTip:'5 tiers from common to ultra-rare. Specific thresholds only.',
+    payloadText:'If you [THRESHOLD 1] — top 20%. Most players never get this far.\n\nIf you [THRESHOLD 2] — top 10%. Well above average.\n\nIf you [THRESHOLD 3] — top 5%. Fewer than 1 in 20 players.\n\nIf you [THRESHOLD 4] — top 1%. Practically elite.\n\nAnd if you [ULTRA-RARE THRESHOLD] — top 0.1%. Fewer than [NUMBER] players on the entire platform.',
+    ctaTip:'Ask them to drop their specific stat in the comments.',
+    ctaText:'Drop your [level/achievement/join year] in the comments. I want to see how rare this comment section actually is.'
+  },
+  sf: {
+    hookTip:'Lead with personal disbelief. Your reaction is contagious.',
+    hookText:'Bro these facts about [TOPIC] are so unhinged I had to look them all up twice before I believed them.',
+    buildTip:'Commit to rapid-fire. Warn them one will break their brain.',
+    buildText:"Every single one of these is real. Rapid fire — pay attention because one of these is going to completely break your brain.",
+    payloadTip:'5-6 facts. Sharp statement then wild context for each.',
+    payloadText:'Fact one — [SHOCKING STATEMENT]. [Context that makes it wilder — 2 sentences.]\n\nFact two — [SHOCKING STATEMENT]. [Context.]\n\nFact three — [SHOCKING STATEMENT]. [Context.]\n\nFact four — [SHOCKING STATEMENT]. [Context.]\n\nFact five — [THE FINAL GUT PUNCH]. [Context.]',
+    ctaTip:'Numbered CTA drives huge engagement.',
+    ctaText:'Drop the number of the one that got you worst in the comments.'
+  }
+};
+
+function buildScript() {
+  var topic = (document.getElementById('bld-topic').value||'').trim();
+  var arch  = document.getElementById('bld-arch').value;
+  var T = TEMPLATES[arch];
+  if (!T) return;
+  document.getElementById('bld-hook-tip').textContent    = T.hookTip;
+  document.getElementById('bld-hook').value              = T.hookText.replace('[TOPIC]', topic||'your topic');
+  document.getElementById('bld-build-tip').textContent   = T.buildTip;
+  document.getElementById('bld-build').value             = T.buildText.replace('[TOPIC]', topic||'your topic');
+  document.getElementById('bld-payload-tip').textContent = T.payloadTip;
+  document.getElementById('bld-payload').value           = T.payloadText;
+  document.getElementById('bld-cta-tip').textContent     = T.ctaTip;
+  document.getElementById('bld-cta').value               = T.ctaText;
+  document.getElementById('bld-out').className           = 'bld-out on';
+}
+
+function copyBuilt() {
+  var sections = [
+    {lbl:'HOOK',    id:'bld-hook'},
+    {lbl:'BUILD',   id:'bld-build'},
+    {lbl:'PAYLOAD', id:'bld-payload'},
+    {lbl:'CTA',     id:'bld-cta'},
+  ];
+  var lines = [];
+  sections.forEach(function(s){
+    lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━');
+    lines.push('['+s.lbl+']');
+    lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━');
+    lines.push(document.getElementById(s.id).value);
+    lines.push('');
+  });
+  var btn = document.getElementById('bld-cp');
+  doCopy(lines.join('\n'), btn, '📋 Copy Full Script');
+}
+
+// ── YOUTUBE ───────────────────────────────────────────
+var YT_CACHE_KEY = 'yt_home_v2';
+var YT_CACHE_TTL = 2 * 60 * 60 * 1000; // 2 hours — prevents quota burn
+
+async function loadHome() {
+  if (!YT_API_KEY) {
+    document.getElementById('api-note').style.display = 'block';
+    document.getElementById('ch-subs').innerHTML = '—<span class="ch-unit"> subscribers</span>';
+    document.getElementById('ch-subs').classList.remove('dim');
+    document.getElementById('recent-vids').innerHTML = '<div class="api-note"><p>Add your YouTube API key to see live data.</p></div>';
+    renderGraph();
+    return;
+  }
+
+  // Show cached data immediately (zero flicker) then refresh in background
+  var cached = null;
+  try {
+    var raw = localStorage.getItem(YT_CACHE_KEY);
+    if (raw) {
+      var c = JSON.parse(raw);
+      if (Date.now() - c.ts < YT_CACHE_TTL) cached = c;
+    }
+  } catch(_) {}
+
+  if (cached) {
+    renderHomeData(cached.subs, cached.chTitle, cached.vids);
+    // silent background refresh — won't block or flash
+    fetchYouTubeData().catch(function(){});
+    return;
+  }
+
+  // No cache yet — fetch and show
+  await fetchYouTubeData();
+}
+
+async function fetchYouTubeData() {
+  try {
+    var cr = await fetch('https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&id='+CHANNEL_ID+'&key='+YT_API_KEY);
+    var cd = await cr.json();
+    if (cd.error) throw new Error(cd.error.message + ' (code ' + cd.error.code + ')');
+    if (!cd.items || !cd.items.length) throw new Error('Channel not found');
+    var ch   = cd.items[0];
+    var subs = parseInt(ch.statistics.subscriberCount);
+    var chTitle = ch.snippet.title;
+
+    // store daily snapshot for growth graph
+    localStorage.setItem('subs_' + new Date().toDateString(), subs);
+    renderGraph();
+
+    var sr = await fetch('https://www.googleapis.com/youtube/v3/search?part=snippet&channelId='+CHANNEL_ID+'&order=date&maxResults=5&type=video&key='+YT_API_KEY);
+    var sd = await sr.json();
+    if (sd.error) throw new Error(sd.error.message + ' (code ' + sd.error.code + ')');
+    var ids = (sd.items||[]).map(function(i){return i.id.videoId;}).filter(Boolean).join(',');
+    if (!ids) throw new Error('No videos found');
+    var vr = await fetch('https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id='+ids+'&key='+YT_API_KEY);
+    var vd = await vr.json();
+    if (vd.error) throw new Error(vd.error.message);
+
+    var vids = (vd.items||[]).slice(0,5).map(function(v) {
+      return {
+        id:    v.id,
+        title: v.snippet.title,
+        pub:   new Date(v.snippet.publishedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}),
+        views: parseInt(v.statistics.viewCount||0),
+        thumb: (v.snippet.thumbnails.maxres||v.snippet.thumbnails.high||v.snippet.thumbnails.medium||{}).url||''
+      };
+    });
+
+    // cache so next open is instant and quota-free
+    try { localStorage.setItem(YT_CACHE_KEY, JSON.stringify({ts:Date.now(), subs, chTitle, vids})); } catch(_) {}
+
+    renderHomeData(subs, chTitle, vids);
+
+  } catch(e) {
+    console.error('YouTube API error:', e);
+    // Show whatever daily snapshot is already stored rather than a blank dash
+    var stored = parseInt(localStorage.getItem('subs_' + new Date().toDateString()));
+    document.getElementById('ch-subs').classList.remove('dim');
+    if (!isNaN(stored)) {
+      document.getElementById('ch-subs').innerHTML = fmtN(stored)+'<span class="ch-unit"> subscribers</span>';
+    }
+    document.getElementById('recent-vids').innerHTML =
+      '<div style="text-align:center;padding:20px;color:var(--mu);font-size:12px;line-height:1.7">'+
+      'Could not refresh — '+e.message+'<br>'+
+      '<span style="font-size:11px;opacity:.6">Quota resets at midnight PT · cached data shown above</span></div>';
+    renderGraph();
+  }
+}
+
+function renderHomeData(subs, chTitle, vids) {
+  document.getElementById('ch-lbl').textContent = chTitle || 'BaconStories';
+  document.getElementById('ch-subs').innerHTML  = fmtN(subs)+'<span class="ch-unit"> subscribers</span>';
+  document.getElementById('ch-subs').classList.remove('dim');
+
+  var prev = parseInt(localStorage.getItem('subs_'+new Date(Date.now()-86400000).toDateString()));
+  var gw = document.getElementById('ch-gain-wrap');
+  var ge = document.getElementById('ch-gain');
+  gw.style.display = 'block';
+  if (!isNaN(prev)) {
+    var g = subs - prev;
+    ge.textContent = (g >= 0 ? '+' : '') + g + ' today';
+    ge.className = 'ch-gain ' + (g > 0 ? 'pos' : g < 0 ? 'neg' : 'neu');
+  } else {
+    ge.textContent = 'tracking today…';
+    ge.className = 'ch-gain neu';
+  }
+
+  var avg = vids.reduce(function(s,v){return s+(v.views||0);},0) / (vids.length||1);
+  document.getElementById('recent-vids').innerHTML = vids.map(function(v) {
+    var r   = avg > 0 ? v.views/avg : 0.5;
+    var cls = r>=1.2?'g':r>=0.6?'o':'r';
+    var badge = cls==='g'?'✦ Strong':cls==='o'?'◆ Average':'▾ Needs Work';
+    var url = 'https://www.youtube.com/watch?v='+v.id;
+    return '<a class="vc '+cls+'" href="'+url+'" target="_blank" rel="noopener" style="opacity:0">'+
+      '<div class="vc-thumb">'+(v.thumb?'<img src="'+v.thumb+'" loading="lazy">':"<div class='vc-thumb-fb'>▶</div>")+
+      '<div class="vc-badge '+cls+'">'+badge+'</div>'+
+      '<div class="vc-views">'+fmtN(v.views)+' views</div></div>'+
+      '<div class="vc-body"><div class="vc-title">'+v.title+'</div>'+
+      '<div class="vc-meta"><span>'+fmtN(v.views)+' views</span><span style="color:var(--mu)">'+v.pub+'</span></div>'+
+      '</div></a>';
+  }).join('');
+  initVcReveal();
+}
+
+// ── SUBSCRIBER GROWTH GRAPH ──────────────────────────
+function renderGraph() {
+  var el = document.getElementById('sub-graph');
+  if (!el) return;
+  var data = [];
+  for (var i = 29; i >= 0; i--) {
+    var d = new Date(Date.now() - i * 86400000);
+    var v = parseInt(localStorage.getItem('subs_' + d.toDateString()));
+    if (!isNaN(v)) data.push({
+      d: d, v: v,
+      lbl: d.toLocaleDateString('en-US', {month:'short', day:'numeric'})
+    });
+  }
+  var ttv=document.getElementById('graph-ttval'),
+      ttd=document.getElementById('graph-ttdate'),
+      gf =document.getElementById('graph-footer');
+  if (data.length < 2) {
+    el.innerHTML='<text x="50%" y="58" text-anchor="middle" fill="rgba(255,255,255,0.1)" font-size="11" font-family="Inter,sans-serif">Tracking started — check back tomorrow</text>';
+    if(ttv) ttv.textContent = data.length===1 ? fmtN(data[0].v) : '—';
+    if(ttd) ttd.textContent = data.length===1 ? 'Today' : 'Collecting data';
+    if(gf)  gf.innerHTML='';
+    return;
+  }
+  var W=340,H=110,PL=2,PR=2,PT=10,PB=6;
+  var gW=W-PL-PR, gH=H-PT-PB;
+  var vals=data.map(function(d){return d.v;});
+  var mn=Math.min.apply(null,vals), mx=Math.max.apply(null,vals), rng=mx-mn||100;
+  function xp(i){return PL+(i/(data.length-1))*gW;}
+  function yp(v){return PT+gH-((v-mn)/rng)*gH;}
+  var pts=data.map(function(d,i){return [xp(i),yp(d.v)];});
+  // midpoint cubic bezier smooth line
+  var lp='M'+pts[0][0].toFixed(1)+','+pts[0][1].toFixed(1);
+  for(var i=0;i<pts.length-1;i++){
+    var mx2=((pts[i][0]+pts[i+1][0])/2).toFixed(1);
+    lp+=' C'+mx2+','+pts[i][1].toFixed(1)+' '+mx2+','+pts[i+1][1].toFixed(1)+' '+pts[i+1][0].toFixed(1)+','+pts[i+1][1].toFixed(1);
+  }
+  var ap=lp+' L'+pts[pts.length-1][0].toFixed(1)+','+(H-PB)+' L'+PL+','+(H-PB)+' Z';
+  var midY=yp(mn+rng*0.5).toFixed(1);
+  el.innerHTML=
+    '<defs>'+
+    '<linearGradient id="gg" x1="0" y1="0" x2="0" y2="1">'+
+    '<stop offset="0%" stop-color="rgba(255,0,0,0.42)"/>'+
+    '<stop offset="100%" stop-color="rgba(255,0,0,0)"/>'+
+    '</linearGradient>'+
+    '<clipPath id="gcp"><rect id="gcr" x="0" y="0" width="0" height="'+H+'"/></clipPath>'+
+    '</defs>'+
+    '<line x1="'+PL+'" y1="'+PT+'" x2="'+(W-PR)+'" y2="'+PT+'" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>'+
+    '<line x1="'+PL+'" y1="'+midY+'" x2="'+(W-PR)+'" y2="'+midY+'" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>'+
+    '<g clip-path="url(#gcp)">'+
+    '<path d="'+ap+'" fill="url(#gg)"/>'+
+    '<path d="'+lp+'" fill="none" stroke="#ff0000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'+
+    pts.map(function(p,i){
+      return '<circle class="gpt" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3.5" fill="#ff0000" stroke="#141414" stroke-width="1.5" style="opacity:0" data-i="'+i+'"/>';
+    }).join('')+
+    '</g>'+
+    '<line id="gcur" x1="0" y1="0" x2="0" y2="'+H+'" stroke="rgba(255,255,255,0.28)" stroke-width="1" stroke-dasharray="3,3" opacity="0"/>'+
+    '<circle id="gdot" cx="0" cy="0" r="5.5" fill="#ff0000" stroke="#fff" stroke-width="1.5" opacity="0"/>';
+  el._gd=data; el._gp=pts; el._gW=W; el._gH=H;
+  // footer dates
+  if(gf){
+    var n=data.length;
+    gf.innerHTML='<span class="graph-fl">'+data[0].lbl+'</span>'+
+      (n>4?'<span class="graph-fl">'+data[Math.floor(n/2)].lbl+'</span>':'<span></span>')+
+      '<span class="graph-fl">'+data[n-1].lbl+'</span>';
+  }
+  // entrance: sweep clip rect left→right (quartic ease-out)
+  (function(){
+    var st=null,dur=1300;
+    function step(ts){
+      if(!st)st=ts;
+      var p=Math.min(1,(ts-st)/dur);
+      var ease=1-Math.pow(1-p,4);
+      var r=document.getElementById('gcr');
+      if(r)r.setAttribute('width',(ease*W).toFixed(1));
+      if(p<1){requestAnimationFrame(step);}
+      else{
+        document.querySelectorAll('#sub-graph .gpt').forEach(function(pt,i){
+          setTimeout(function(){pt.style.transition='opacity .2s';pt.style.opacity='0.9';},i*50);
+        });
+      }
+    }
+    requestAnimationFrame(step);
+  })();
+  updateGraphTT(el,data.length-1);
+  // touch / mouse interaction
+  function nearest(e){
+    var rect=el.getBoundingClientRect();
+    var cx=((e.touches?e.touches[0].clientX:e.clientX)-rect.left)/rect.width*W;
+    var best=0,bd=Infinity;
+    pts.forEach(function(p,i){var dd=Math.abs(p[0]-cx);if(dd<bd){bd=dd;best=i;}});
+    return best;
+  }
+  function hideCur(){
+    var c=document.getElementById('gcur'),d=document.getElementById('gdot');
+    if(c)c.style.opacity='0';if(d)d.style.opacity='0';
+  }
+  el.addEventListener('touchstart', function(e){updateGraphTT(el,nearest(e));},{passive:true});
+  el.addEventListener('touchmove',  function(e){e.preventDefault();updateGraphTT(el,nearest(e));},{passive:false});
+  el.addEventListener('touchend',   function(){updateGraphTT(el,el._gd.length-1);hideCur();});
+  el.addEventListener('mousemove',  function(e){updateGraphTT(el,nearest(e));});
+  el.addEventListener('mouseleave', function(){updateGraphTT(el,el._gd.length-1);hideCur();});
+}
+
+function updateGraphTT(svg,idx){
+  var d=svg._gd,p=svg._gp;
+  if(!d||!p||idx<0||idx>=d.length)return;
+  var cur=document.getElementById('gcur'),dot=document.getElementById('gdot'),
+      ttv=document.getElementById('graph-ttval'),ttd=document.getElementById('graph-ttdate');
+  if(cur){cur.setAttribute('x1',p[idx][0].toFixed(1));cur.setAttribute('x2',p[idx][0].toFixed(1));cur.style.opacity='1';}
+  if(dot){dot.setAttribute('cx',p[idx][0].toFixed(1));dot.setAttribute('cy',p[idx][1].toFixed(1));dot.style.opacity='1';}
+  var val=d[idx].v;
+  var delta=idx>0?val-d[idx-1].v:null;
+  var dc=delta>0?'var(--grn)':delta<0?'#ff4444':'var(--mu)';
+  var ds=delta!==null?(delta>=0?'+':'')+delta:'';
+  if(ttv)ttv.innerHTML=fmtN(val)+(ds?'<span style="font-size:11px;font-weight:700;margin-left:5px;color:'+dc+'">'+ds+'</span>':'');
+  if(ttd)ttd.textContent=d[idx].lbl;
+}
+
+// ── VIDEO CARD SCROLL REVEAL ──────────────────────────
+function initVcReveal(){
+  var _tick=false;
+  function update(){
+    var cards=document.querySelectorAll('#recent-vids .vc');
+    var vh=window.innerHeight;
+    cards.forEach(function(card){
+      var rect=card.getBoundingClientRect();
+      var start=vh*0.96,end=vh*0.12;
+      var p=Math.min(1,Math.max(0,(start-rect.top)/(start-end)));
+      var e=p*p*(3-2*p);
+      card.style.transform='rotateX('+(12*(1-e)).toFixed(2)+'deg) scale('+(1+0.02*(1-e)).toFixed(3)+')';
+      card.style.opacity=(0.4+0.6*e).toFixed(3);
+    });
+    _tick=false;
+  }
+  window.addEventListener('scroll',function(){if(!_tick){requestAnimationFrame(update);_tick=true;}},{passive:true});
+  update();
+}
+
+// ── DEBRIEF ───────────────────────────────────────────
+function loadDebrief() {
+  var el = document.getElementById('dbr-analysis');
+  if (!el) return;
+  var ytData = null;
+  try {
+    var raw = localStorage.getItem(YT_CACHE_KEY);
+    if (raw) { var cc = JSON.parse(raw); if (Date.now() - cc.ts < YT_CACHE_TTL) ytData = cc; }
+  } catch(_) {}
+  try { _renderDebriefContent(el, ytData); } catch(e) {
+    el.innerHTML = '<div class="api-note"><p>Could not load analysis. Open the Home tab first to fetch your channel data, then come back.</p></div>';
+    console.error('Debrief render error:', e);
+  }
+  // Wire notes auto-save (idempotent)
+  var ta = document.getElementById('dbr-notes-ta');
+  if (ta && !ta._wired) {
+    ta._wired = true;
+    var saved = localStorage.getItem('debrief_notes') || '';
+    ta.value = saved;
+    ta.addEventListener('input', function() {
+      try { localStorage.setItem('debrief_notes', ta.value); } catch(_) {}
+      var sv = document.getElementById('dbr-notes-saved');
+      if (sv) { sv.classList.add('on'); clearTimeout(sv._t); sv._t = setTimeout(function(){sv.classList.remove('on');}, 1600); }
+    });
+  }
+}
+
+function _renderDebriefContent(container, ytData) {
+  var html = '';
+
+  if (ytData && ytData.vids && ytData.vids.length >= 2) {
+    var vids   = ytData.vids;
+    var subs   = ytData.subs || 0;
+    var total  = vids.reduce(function(s,v){return s+(v.views||0);},0);
+    var avg    = Math.round(total / vids.length);
+    var sorted = vids.slice().sort(function(a,b){return b.views-a.views;});
+    var top    = sorted[0];
+    var bot    = sorted[sorted.length-1];
+    var above  = sorted.filter(function(v){return v.views >= avg*1.2;});
+    var below  = sorted.filter(function(v){return v.views < avg*0.8;});
+
+    var yd = parseInt(localStorage.getItem('subs_'+new Date(Date.now()-86400000).toDateString()));
+    var wk = parseInt(localStorage.getItem('subs_'+new Date(Date.now()-7*86400000).toDateString()));
+    var dGrow = isNaN(yd) ? null : subs - yd;
+    var wGrow = isNaN(wk) ? null : subs - wk;
+
+    // ── What's Working ──
+    var working = [];
+    if (top) {
+      var mult = avg > 0 ? Math.round(top.views/avg*10)/10 : 1;
+      working.push({title:'Top performer: "'+top.title+'"',
+        detail:fmtN(top.views)+' views — '+mult+'x your recent average. This title and format is connecting. Use it as the template for your next upload.'});
+    }
+    if (above.length >= 1) {
+      working.push({title:above.length+' of '+vids.length+' videos above average',
+        detail:'Average across recent videos: '+fmtN(avg)+' views. Videos beating it: '+above.map(function(v){return '"'+v.title+'"';}).join(', ')+'.'});
+    }
+    if (dGrow !== null && dGrow > 0) {
+      working.push({title:'+'+dGrow+' subscribers today',
+        detail:'You gained '+dGrow+' subscribers in the last 24 hours. Posting is driving active growth right now — keep the momentum going.'});
+    } else if (wGrow !== null && wGrow > 0) {
+      working.push({title:'+'+wGrow+' subscribers this week',
+        detail:'Up '+wGrow+' over 7 days. Consistent weekly growth is what builds algorithm distribution on Shorts over time.'});
+    }
+    if (working.length < 2) {
+      working.push({title:'Channel has '+fmtN(subs)+' subscribers',
+        detail:'You have '+vids.length+' recent videos tracked. Focus on posting consistently to keep the algorithm distributing your content.'});
+    }
+
+    // ── What Needs Work ──
+    var notW = [];
+    if (bot && avg > 0 && bot.views < avg*0.65) {
+      notW.push({title:'Lowest performer needs a look',
+        detail:'"'+bot.title+'" is at '+fmtN(bot.views)+' views vs your '+fmtN(avg)+' average. Compare its title to "'+top.title+'" — the gap is almost always in specificity.'});
+    }
+    if (below.length >= 2) {
+      notW.push({title:below.length+' videos pulling the average down',
+        detail:below.slice(0,3).map(function(v){return '"'+v.title+'"';}).join(', ')+'. Look for what these have in common vs your top performers — titles, hooks, or posting day.'});
+    }
+    if (dGrow !== null && dGrow <= 0 && wGrow !== null && wGrow <= 0) {
+      notW.push({title:'Subscriber growth is flat right now',
+        detail:'No net new subs today or this week. This usually means a posting gap. The Shorts algorithm stops distributing when content stops coming in.'});
+    }
+    if (notW.length === 0) {
+      notW.push({title:'No major red flags in recent data',
+        detail:'Your videos are performing consistently. The next lever is pushing your top format harder and narrowing the gap between your best and weakest titles.'});
+    }
+
+    // ── Tips ──
+    var tips = [];
+    tips.push({title:'Clone your best title structure',
+      detail:'"'+top.title+'" is your benchmark. Break down every word choice — the emotion, the specificity, the emoji placement. Your next 3 titles should follow the exact same pattern.'});
+    tips.push({title:'Post every 2 days minimum',
+      detail:'Shorts distribution is tied to posting frequency. Channels that post every 2 days consistently outperform channels that burst-post and then go quiet.'});
+    tips.push({title:'Always end with a specific comment prompt',
+      detail:'"Comment A, B, C, or VIP" works because it gives one easy action. Generic "comment below" gets ignored. Every video needs a direct question with a one-letter answer.'});
+    if (bot && avg > 0 && bot.views < avg * 0.8) {
+      var gap = fmtN(top.views - bot.views);
+      tips.push({title:'Analyse the '+gap+'-view gap',
+        detail:'The difference between "'+top.title+'" and "'+bot.title+'" is '+gap+' views. The title and hook are where that gap lives. Rewrite the weaker title in the style of the stronger one and see what changes.'});
+    } else {
+      tips.push({title:'Batch-record 3 Shorts in one session',
+        detail:'Recording in batches eliminates the daily motivation barrier and lets you schedule posts 2 days apart without thinking about it. Consistency beats quality on Shorts.'});
+    }
+
+    function card(cls, icon, lbl, items) {
+      var s = '<div class="dbr-card"><div class="dbr-card-lbl '+cls+'">'+icon+' '+lbl+'</div>';
+      items.forEach(function(i){ s += '<div class="dbr-item"><div class="dbr-dot '+cls+'"></div><div class="dbr-txt"><strong>'+esc(i.title)+'</strong> — '+esc(i.detail)+'</div></div>'; });
+      return s+'</div>';
+    }
+    html += card('g',   '\u2716', "What's Working",  working);
+    html += card('r',   '\u25be', "What Needs Work",  notW);
+    html += card('gold','\u25c6', 'Tips',              tips);
+    html += '<button class="dbr-refresh" onclick="refreshDebrief()">\u21bb Refresh Analysis</button>';
+
+  } else {
+    html += '<div class="dbr-card"><div class="dbr-card-lbl" style="color:var(--mu2)">\u2665 No Data Yet</div>';
+    html += '<div class="dbr-item"><div class="dbr-dot" style="background:var(--mu)"></div><div class="dbr-txt">Open the Home tab first to load your YouTube channel data, then come back here for your analysis.</div></div></div>';
+  }
+
+  container.innerHTML = html;
+}
+
+
+function refreshDebrief() {
+  loadDebrief();
+}
+// ── SCRIPT QUICK-NAV ─────────────────────────────────
+function toggleScNav() {
+  var nav = document.getElementById('sc-nav');
+  if (nav) nav.classList.toggle('open');
+}
+
+function renderScriptNav() {
+  var items = document.getElementById('sc-nav-items');
+  if (!items || !window._scripts) return;
+  items.innerHTML = window._scripts.map(function(s, i) {
+    return '<button class="sc-nav-btn" onclick="jumpToScript(' + i + ')">' +
+      '<span class="sc-nav-num">Script 0' + (i + 1) + '</span>' +
+      '<span class="sc-nav-title">' + esc(s.title) + '</span>' +
+      '</button>';
+  }).join('');
+}
+
+function jumpToScript(idx) {
+  // close nav
+  var nav = document.getElementById('sc-nav');
+  if (nav) nav.classList.remove('open');
+  // scroll to card after close animation
+  setTimeout(function() {
+    var cards = document.querySelectorAll('#sc-container .sc-card');
+    if (cards[idx]) {
+      cards[idx].scrollIntoView({behavior: 'smooth', block: 'start'});
+    }
+  }, 120);
+}
+
+// ── INIT ──────────────────────────────────────────────
+renderScripts();
+loadHome();
+loadDebrief();
+updateLamp('home');
+startShaderBg();
+</script>
+</body>
+</html>
