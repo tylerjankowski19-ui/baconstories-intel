@@ -1104,7 +1104,7 @@ async function fetchYouTubeData() {
     var stored = parseInt(localStorage.getItem('subs_' + new Date().toDateString()));
     document.getElementById('ch-subs').classList.remove('dim');
     if (!isNaN(stored)) {
-      document.getElementById('ch-subs').innerHTML = fmtN(stored)+'<span class="ch-unit"> subscribers</span>';
+      document.getElementById('ch-subs').innerHTML = stored.toLocaleString()+'<span class="ch-unit"> subscribers</span>';
     }
     document.getElementById('recent-vids').innerHTML =
       '<div style="text-align:center;padding:20px;color:var(--mu);font-size:12px;line-height:1.7">'+
@@ -1116,7 +1116,7 @@ async function fetchYouTubeData() {
 
 function renderHomeData(subs, chTitle, vids) {
   document.getElementById('ch-lbl').textContent = chTitle || 'BaconStories';
-  document.getElementById('ch-subs').innerHTML  = fmtN(subs)+'<span class="ch-unit"> subscribers</span>';
+  document.getElementById('ch-subs').innerHTML  = subs.toLocaleString()+'<span class="ch-unit"> subscribers</span>';
   document.getElementById('ch-subs').classList.remove('dim');
 
   var prev = parseInt(localStorage.getItem('subs_'+new Date(Date.now()-86400000).toDateString()));
