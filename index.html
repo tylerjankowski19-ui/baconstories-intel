@@ -695,6 +695,7 @@ const SCRIPTS = [
 
 // ── SCRIPT RENDER CORE (shared by bank + AI paths) ───
 function _renderScriptCards(scripts) {
+  scripts = (scripts||[]).filter(Boolean); /* crash-proof: skip empty slots */
   var IMG = {'HOOK':'hook','OPTION A':'optionA','OPTION B':'optionB','OPTION C':'optionC','VIP OPTION 👑':'vip'};
   var COL = function(l) {
     if (l.indexOf('VIP')>=0) return '#ffd700';
