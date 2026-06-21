@@ -346,10 +346,17 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .dbr-note{font-size:11.5px;color:var(--mu2);line-height:1.6;background:var(--s2);border:1px solid var(--bd);border-radius:14px;padding:13px 15px;margin-bottom:14px}
 .dbr-refresh{width:100%;padding:13px;background:var(--s2);border:1px solid var(--bd2);border-radius:13px;color:var(--tx);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .16s var(--spring)}
 .dbr-refresh:active{transform:scale(.98)}
+.pie-wrap{display:flex;align-items:center;gap:16px}
+.pie-legend{flex:1;min-width:0}
+.pie-leg{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px}
+.pie-leg:last-child{margin-bottom:0}
+.pie-dot{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+.pie-lbl{flex:1;color:var(--mu2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pie-val{font-weight:800;color:var(--tx)}
 
 /* ════════════ LIGHT THEME (white base) ════════════ */
 :root{
-  --bg:#f4f4f7;--s1:#ffffff;--s2:#f1f1f4;--s3:#e7e7ec;
+  --bg:#e7e7ee;--s1:#ffffff;--s2:#f1f1f4;--s3:#e7e7ec;
   --bd:rgba(0,0,0,.09);--bd2:rgba(0,0,0,.15);
   --tx:#101013;--mu:#9b9ba3;--mu2:#5c5c66;
   --hair:linear-gradient(90deg,transparent,rgba(0,0,0,.08),transparent);
@@ -370,23 +377,25 @@ body{background:var(--bg)}
 .heat-cell{border-color:rgba(0,0,0,.05)}
 .perf-thumb{background:linear-gradient(135deg,#fbeceb,#f1f1f4)}
 
-/* ════════════ FROSTED GLASS (lines show through) ════════════ */
+/* ════════════ FROSTED GLASS (lines show through, but defined) ════════════ */
 .sc-card,.ch-card,.pcard,.stat,.graph-card,.sc-nav,.bld-form,.api-note,.vc{
-  background:rgba(255,255,255,.38);
-  backdrop-filter:blur(14px) saturate(1.18);
-  -webkit-backdrop-filter:blur(14px) saturate(1.18);
-  border-color:rgba(255,255,255,.5)
+  background:rgba(255,255,255,.66);
+  backdrop-filter:blur(16px) saturate(1.2);
+  -webkit-backdrop-filter:blur(16px) saturate(1.2);
+  border:1px solid rgba(0,0,0,.1);
+  box-shadow:0 2px 6px rgba(20,20,40,.06),0 16px 32px -20px rgba(20,20,40,.45)
 }
-.ch-card{background:linear-gradient(135deg,rgba(255,240,239,.46),rgba(255,255,255,.36))}
-.sc-hdr{background:rgba(255,255,255,.2)}
+.ch-card{background:linear-gradient(135deg,rgba(255,237,236,.74),rgba(255,255,255,.66))}
+.sc-hdr{background:rgba(255,255,255,.5)}
 .bld-section,.dbr-note,.dbr-refresh,.perf-item,.streak-log,.sc-nav-btn,.bld-input,.bld-sel{
-  background:rgba(255,255,255,.32);
-  backdrop-filter:blur(9px) saturate(1.12);
-  -webkit-backdrop-filter:blur(9px) saturate(1.12)
+  background:rgba(255,255,255,.6);
+  border:1px solid rgba(0,0,0,.08);
+  backdrop-filter:blur(10px) saturate(1.14);
+  -webkit-backdrop-filter:blur(10px) saturate(1.14)
 }
-.heat-cell{background:rgba(255,255,255,.3)}
-.hdr{background:rgba(255,255,255,.5)}
-.nav-inner{background:rgba(255,255,255,.48)}
+.heat-cell{background:rgba(255,255,255,.5)}
+.hdr{background:rgba(255,255,255,.8)}
+.nav-inner{background:rgba(255,255,255,.74)}
 </style>
 </head>
 <body>
@@ -451,8 +460,6 @@ body{background:var(--bg)}
   <div id="api-note" style="display:none" class="api-note">
     <p>To show live data, set <code>YT_API_KEY</code> at the top of the script in <code>index.html</code>.</p>
   </div>
-  <div class="sec-lbl">Recent Shorts</div>
-  <div id="recent-vids"><div style="text-align:center;padding:32px 0;color:var(--mu);font-size:14px">Loading…</div></div>
 </div>
 
 <div class="page" id="page-scripts">
@@ -694,7 +701,7 @@ function startShaderBg(){
   if(!_gl)initShaderBg();
   if(!_gl||_glAnimId)return;
   var cv=document.getElementById('shader-canvas');
-  if(cv)cv.style.opacity='0.88';
+  if(cv)cv.style.opacity='0.5';
   (function loop(){
     _glTime+=0.016;
     _gl.uniform1f(_glTimeLoc,_glTime);
@@ -1258,7 +1265,6 @@ async function loadHome() {
     document.getElementById('api-note').style.display = 'block';
     document.getElementById('ch-subs').innerHTML = '—<span class="ch-unit"> subscribers</span>';
     document.getElementById('ch-subs').classList.remove('dim');
-    document.getElementById('recent-vids').innerHTML = '<div class="api-note"><p>Add your YouTube API key to see live data.</p></div>';
     renderGraph();
     renderStats([]);
     renderPerformance([]);
@@ -1339,10 +1345,6 @@ async function fetchYouTubeData() {
     if (!isNaN(stored)) {
       document.getElementById('ch-subs').innerHTML = stored.toLocaleString()+'<span class="ch-unit"> subscribers</span>';
     }
-    document.getElementById('recent-vids').innerHTML =
-      '<div style="text-align:center;padding:20px;color:var(--mu);font-size:12px;line-height:1.7">'+
-      'Could not refresh — '+e.message+'<br>'+
-      '<span style="font-size:11px;opacity:.6">Quota resets at midnight PT · cached data shown above</span></div>';
     renderGraph();
   }
 }
@@ -1365,21 +1367,6 @@ function renderHomeData(subs, chTitle, vids) {
     ge.className = 'ch-gain neu';
   }
 
-  var avg = vids.reduce(function(s,v){return s+(v.views||0);},0) / (vids.length||1);
-  document.getElementById('recent-vids').innerHTML = vids.map(function(v) {
-    var r   = avg > 0 ? v.views/avg : 0.5;
-    var cls = r>=1.2?'g':r>=0.6?'o':'r';
-    var badge = cls==='g'?'✦ Strong':cls==='o'?'◆ Average':'▾ Needs Work';
-    var url = 'https://www.youtube.com/watch?v='+v.id;
-    return '<a class="vc '+cls+'" href="'+url+'" target="_blank" rel="noopener" style="opacity:0">'+
-      '<div class="vc-thumb">'+(v.thumb?'<img src="'+v.thumb+'" loading="lazy">':"<div class='vc-thumb-fb'>▶</div>")+
-      '<div class="vc-badge '+cls+'">'+badge+'</div>'+
-      '<div class="vc-views">'+fmtN(v.views)+' views</div></div>'+
-      '<div class="vc-body"><div class="vc-title">'+v.title+'</div>'+
-      '<div class="vc-meta"><span>'+fmtN(v.views)+' views</span><span style="color:var(--mu)">'+v.pub+'</span></div>'+
-      '</div></a>';
-  }).join('');
-  initVcReveal();
   renderStats(vids);
   renderPerformance(vids);
 }
@@ -1556,51 +1543,74 @@ function _miniGraph(data, color){
     '<path d="'+lp+'" fill="none" stroke="'+color+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 }
 
+function _pieChart(segments){
+  var total=segments.reduce(function(a,s){return a+(s.value||0);},0);
+  if(total<=0) return '<div class="dbr-empty">No data yet</div>';
+  var r=42, c=2*Math.PI*r, off=0, circles='';
+  segments.forEach(function(s){
+    var len=((s.value||0)/total)*c;
+    circles+='<circle cx="50" cy="50" r="'+r+'" fill="none" stroke="'+s.color+'" stroke-width="15" stroke-dasharray="'+len.toFixed(2)+' '+(c-len).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'" transform="rotate(-90 50 50)"/>';
+    off+=len;
+  });
+  var legend=segments.filter(function(s){return (s.value||0)>0;}).map(function(s){
+    var pct=Math.round((s.value||0)/total*100);
+    return '<div class="pie-leg"><span class="pie-dot" style="background:'+s.color+'"></span><span class="pie-lbl">'+esc(s.label)+'</span><span class="pie-val">'+pct+'%</span></div>';
+  }).join('');
+  return '<div class="pie-wrap"><svg viewBox="0 0 100 100" style="width:104px;height:104px;flex-shrink:0">'+circles+'</svg><div class="pie-legend">'+legend+'</div></div>';
+}
+
 function renderDebriefAnalytics(container, yt){
   if(!yt || !yt.vids || !yt.vids.length){
     container.innerHTML = '<div class="api-note"><p>Open the Home tab to load your channel data, then come back for full analytics.</p></div>';
     return;
   }
-  var vids = yt.vids, subs = yt.subs||0, tv = yt.totalViews||0, vc = yt.videoCount||0;
-  function series(prefix){
-    var out=[];
-    for(var i=29;i>=0;i--){
-      var d=new Date(Date.now()-i*86400000);
-      var v=parseInt(localStorage.getItem(prefix+d.toDateString()));
-      if(!isNaN(v)) out.push({v:v, lbl:d.toLocaleDateString('en-US',{month:'short',day:'numeric'})});
-    }
-    return out;
-  }
-  var subS=series('subs_'), viewS=series('views_');
-  function delta(s){ return s.length>1 ? s[s.length-1].v - s[0].v : null; }
-  var subD=delta(subS), viewD=delta(viewS);
-  function chip(d){ if(d===null) return '<span class="dbr-chip neu">tracking…</span>'; var cls=d>0?'pos':d<0?'neg':'neu'; return '<span class="dbr-chip '+cls+'">'+(d>=0?'+':'')+fmtN(d)+' · 30d</span>'; }
-  function stat(ic,cls,val,lbl){ return '<div class="stat"><div class="stat-top"><div class="stat-ic '+cls+'">'+ic+'</div><div class="stat-lbl">'+lbl+'</div></div><div class="stat-val">'+val+'</div></div>'; }
-
+  var vids = yt.vids, tv = yt.totalViews||0;
+  var totLikes=0, totComments=0, totViews=0;
+  vids.forEach(function(v){ totLikes+=(v.likes||0); totComments+=(v.comments||0); totViews+=(v.views||0); });
+  var avg = vids.length ? totViews/vids.length : 0;
   var es=0, ec=0;
   vids.forEach(function(v){ if(v.views){ es += ((v.likes||0)+(v.comments||0))/v.views; ec++; } });
   var engPct = ec ? (es/ec*100).toFixed(1)+'%' : '—';
 
+  // 30-day total-views trend (distinct from Home's subscriber graph)
+  var viewS=[];
+  for(var i=29;i>=0;i--){ var d=new Date(Date.now()-i*86400000); var x=parseInt(localStorage.getItem('views_'+d.toDateString())); if(!isNaN(x)) viewS.push({v:x}); }
+  var viewD = viewS.length>1 ? viewS[viewS.length-1].v - viewS[0].v : null;
+
+  function stat(ic,cls,val,lbl){ return '<div class="stat"><div class="stat-top"><div class="stat-ic '+cls+'">'+ic+'</div><div class="stat-lbl">'+lbl+'</div></div><div class="stat-val">'+val+'</div></div>'; }
+  function chip(dd){ if(dd===null) return '<span class="dbr-chip neu">tracking…</span>'; var cls=dd>0?'pos':dd<0?'neg':'neu'; return '<span class="dbr-chip '+cls+'">'+(dd>=0?'+':'')+fmtN(dd)+' · 30d</span>'; }
+
+  var palette=['#ff2d2d','#ff7a3d','#ffc24d','#22c55e','#3b82f6','#a855f7'];
+  var sorted=vids.slice().sort(function(a,b){return (b.views||0)-(a.views||0);});
+  var shareSeg=sorted.map(function(v,i){ return {label:(v.title||'Short').replace(/[💀😭😈👑🔥]/g,'').trim().slice(0,20)||'Short', value:v.views||0, color:palette[i%palette.length]}; });
+  var engSeg=[{label:'Likes',value:totLikes,color:'#ff2d2d'},{label:'Comments',value:totComments,color:'#3b82f6'}];
+  var strong=0,avgT=0,weak=0;
+  vids.forEach(function(v){ var r=avg>0?v.views/avg:1; if(r>=1.2)strong++; else if(r>=0.6)avgT++; else weak++; });
+  var tierSeg=[{label:'Strong',value:strong,color:'#22c55e'},{label:'Average',value:avgT,color:'#ffc24d'},{label:'Needs work',value:weak,color:'#ff2d2d'}];
+
   var html = '';
   html += '<div class="stat-grid">'+
-    stat('◆','r', fmtN(subs), 'Subscribers') +
-    stat('▶','g', fmtN(tv), 'Total views') +
-    stat('▦','o', fmtN(vc), 'Videos') +
-    stat('♥','gld', engPct, 'Avg engagement') +
+    stat('▶','r', fmtN(tv), 'Total views') +
+    stat('♥','o', fmtN(totLikes), 'Likes · recent') +
+    stat('✦','g', fmtN(totComments), 'Comments · recent') +
+    stat('◆','gld', engPct, 'Avg engagement') +
   '</div>';
 
-  html += '<div class="pcard dbr-gcard"><div class="dbr-gtop"><div class="sec-lbl">Subscribers · 30 days</div>'+chip(subD)+'</div>'+_miniGraph(subS,'#ff2d2d')+'</div>';
-  html += '<div class="pcard dbr-gcard"><div class="dbr-gtop"><div class="sec-lbl">Total views · 30 days</div>'+chip(viewD)+'</div>'+_miniGraph(viewS,'#22c55e')+'</div>';
+  html += '<div class="pcard dbr-tcard"><div class="sec-lbl" style="margin-bottom:14px">View share · recent shorts</div>'+_pieChart(shareSeg)+'</div>';
+  html += '<div class="pcard dbr-tcard"><div class="sec-lbl" style="margin-bottom:14px">Engagement mix · likes vs comments</div>'+_pieChart(engSeg)+'</div>';
+  html += '<div class="pcard dbr-tcard"><div class="sec-lbl" style="margin-bottom:14px">Performance tiers · vs your average</div>'+_pieChart(tierSeg)+'</div>';
 
-  html += '<div class="pcard dbr-tcard"><div class="sec-lbl" style="margin-bottom:12px">Recent uploads</div>'+
+  html += '<div class="pcard dbr-gcard"><div class="dbr-gtop"><div class="sec-lbl">Total views · 30 days</div>'+chip(viewD)+'</div>'+_miniGraph(viewS,'#ff2d2d')+'</div>';
+
+  html += '<div class="pcard dbr-tcard"><div class="sec-lbl" style="margin-bottom:12px">Shorts ranked by views</div>'+
     '<table class="dbr-tbl"><thead><tr><th>Short</th><th>Views</th><th>Likes</th><th>Cmts</th><th>Eng</th></tr></thead><tbody>'+
-    vids.map(function(v){
+    sorted.map(function(v){
       var e = v.views ? (((v.likes||0)+(v.comments||0))/v.views*100).toFixed(1)+'%' : '—';
       return '<tr><td class="dbr-tt">'+esc(v.title||'')+'</td><td>'+fmtN(v.views||0)+'</td><td>'+fmtN(v.likes||0)+'</td><td>'+fmtN(v.comments||0)+'</td><td>'+e+'</td></tr>';
     }).join('')+
     '</tbody></table></div>';
 
-  html += '<div class="dbr-note">Note: watch time and average view duration require connecting the YouTube Analytics API via Google sign-in. The current setup uses the public Data API, which reports subscribers, total views, likes and comments — but not watch time.</div>';
+  html += '<div class="dbr-note">Note: watch time and average view duration require connecting the YouTube Analytics API via Google sign-in. The current setup uses the public Data API, which reports views, subscribers, likes and comments — but not watch time.</div>';
   html += '<button class="dbr-refresh" onclick="refreshDebrief()">↻ Refresh</button>';
 
   container.innerHTML = html;
